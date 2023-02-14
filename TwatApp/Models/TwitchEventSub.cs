@@ -16,6 +16,7 @@ using System.Web;
 using Newtonsoft.Json;
 using TwitchLib;
 using TwitchLib.Api;
+using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.Api.Helix.Models.EventSub;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
@@ -111,7 +112,7 @@ namespace EventSub
         /// removes a subscription from the subscription list.
         /// Will only stop recieving notifications when reconnected.
         /// </summary>
-        public void unsubscripe(Subscription subscription) => m_subscriptions.Remove(subscription!);
+        public void unsubscripe(Subscription subscription) => m_subscriptions.Remove(m_subscriptions.First(x => x.Key == subscription).Key);
 
         /// <summary>
         /// establish connection to twitch websocket server and sets up all the necessary subscriptions.
@@ -133,17 +134,23 @@ namespace EventSub
 
             JsonNode? welcome_payload = JsonNode.Parse(await recvStr());
 
+            Trace.WriteLine(welcome_payload!.ToString());
+
             m_session_id = welcome_payload?["payload"]?["session"]?["id"]?.GetValue<string>();
 
             // subscribe to required events
 
             foreach (Subscription subscription in m_subscriptions.Keys)
             {
-                // use twitchlib to subscribe to event.
-                CreateEventSubSubscriptionResponse response = await m_twitch_api.Helix.EventSub.CreateEventSubSubscriptionAsync(
-                    subscription.Type, "1", new(subscription.Conditions), TwitchLib.Api.Core.Enums.EventSubTransportMethod.Websocket, websocketSessionId: m_session_id);
 
-                // subscriptions list will only contain at maximum 1 element.
+                    Trace.WriteLine(m_twitch_api.Settings.AccessToken);
+                    // use twitchlib to subscribe to event.
+                    CreateEventSubSubscriptionResponse response = await m_twitch_api.Helix.EventSub.CreateEventSubSubscriptionAsync(
+                        subscription.Type, "1", new(subscription.Conditions), TwitchLib.Api.Core.Enums.EventSubTransportMethod.Websocket, websocketSessionId: m_session_id);
+
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+
+                Trace.WriteLine(response.TotalCost);
                 // if there are 0 elements in the list, the subscription was not setup correctly.
 
                 result[subscription] = response.Subscriptions.Length == 1;
@@ -168,6 +175,7 @@ namespace EventSub
             if (web_socket.State == WebSocketState.Open)
             {
                 await web_socket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, default);
+                web_socket = new();
 
                 // stop and join the separate message thread.
                 m_websocket_thread?.Join();
@@ -209,12 +217,9 @@ namespace EventSub
 
                 if (payload != string.Empty)
                 {
-                    Console.WriteLine(payload);
                     JsonNode body = JsonNode.Parse(payload)!;
 
                     // handle twitch message
-
-                        Trace.WriteLine(body);
                     if (body?["metadata"]?["message_type"]?.GetValue<string>() == "session_keepalive")
                     {
                         // TODO: make sure keepalive is checked
@@ -226,6 +231,7 @@ namespace EventSub
                             body!["metadata"]!["subscription_type"]!.GetValue<string>(),
                             JsonConvert.DeserializeObject<Dictionary<string, string>>(body["payload"]!["subscription"]!["condition"]!.ToString())!);
 
+                        // dictionary do not have equal hashes even if they are equal, so there must be performed a comparison on each key in the subscription dictionary, in order for the proper subscription to be found.
                         NotifyEvent notification_callback = m_subscriptions.First(x => x.Key.Equals(subscription)).Value;
 
                         await Task.Run(() => notification_callback.Invoke(new NotifyEventArgs(body["metadata"]!["message_id"]!.GetValue<string>(),
@@ -238,17 +244,12 @@ namespace EventSub
             }
         }
 
-        protected void callbackFinished(IAsyncResult ar)
-        {
-            Console.WriteLine(JsonConvert.SerializeObject(ar));
-        }
-
         ~TwitchEventSub()
         {
-            web_socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed connection", default);
+            disconnect().GetAwaiter().GetResult();
         }
 
-        protected TwitchAPI m_twitch_api = new();
+        protected TwitchAPI m_twitch_api;
         protected ClientWebSocket web_socket = new();
         protected HttpClient m_client = new();
         protected string? m_session_id;

@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.Toolkit.Uwp.Notifications;
 using TwatApp.ViewModels;
 using TwatApp.Views;
 
