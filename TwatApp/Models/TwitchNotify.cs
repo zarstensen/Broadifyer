@@ -20,10 +20,15 @@ using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.Games;
 using System.Windows.Documents;
 using System.Threading;
-using Stream = TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream;
-using TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams;
 using TwitchLib.Api.Helix;
 using System.Collections.ObjectModel;
+using TwitchLib.Api.Core.Exceptions;
+using Avalonia.Media.Imaging;
+using System.Drawing;
+using Bitmap = Avalonia.Media.Imaging.Bitmap;
+using TwitchLibStream = TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream;
+using SystemStream = System.IO.Stream;
+using Avalonia.Platform;
 
 namespace TwatApp.Models
 {
@@ -195,6 +200,20 @@ namespace TwatApp.Models
         }
 
         /// <summary>
+        /// attempts to retrieve a single IStreamer object from the given name.
+        /// if the streamer is not found, null is returned.
+        /// </summary>
+        public async Task<IStreamer?> streamerFromName(string name)
+        {
+            var streamers = await streamersFromNames(new() { name });
+
+            if (streamers.Count != 1)
+                return null;
+
+            return streamers[0];
+        }
+
+        /// <summary>
         /// get a list of streamers form the specified streamer ids
         /// </summary>
         public async Task<List<IStreamer>> streamersFromIds(List<string> ids)
@@ -208,6 +227,20 @@ namespace TwatApp.Models
             GetUsersResponse users = await m_twitch_api.Helix.Users.GetUsersAsync(ids: ids );
 
             return streamersFromResponse(users);
+        }
+
+        /// <summary>
+        /// attempts to retrieve a single IStreamer object from the given id.
+        /// if the streamer is not found, null is returned.
+        /// </summary>
+        public async Task<IStreamer?> streamerFromId(string id)
+        {
+            var streamers = await streamersFromIds(new() { id });
+
+            if (streamers.Count != 1)
+                return null;
+
+            return streamers[0];
         }
 
         /// <summary>
@@ -288,11 +321,11 @@ namespace TwatApp.Models
         /// </summary>
         public async Task addStreamers(List<IStreamer> streamers)
         {
+            await streamerIcons(streamers);
+
             foreach (IStreamer streamer in streamers)
                 if (!m_streamers.ContainsKey(streamer.Id))
                     m_streamers[streamer.Id] = new StreamerInfo(streamer);
-
-            await streamerIcons(streamers);
         }
 
         /// <summary>
@@ -401,42 +434,49 @@ namespace TwatApp.Models
         {
             while(m_polling)
             {
-                List<string> ids = new(m_streamers.Count);
-
-                // if there are no registered streamers, simply do nothing and wait for the poll interval,
-                // before checking if any streamers have been registered.
-
-                if (m_streamers.Count == 0)
+                try
                 {
-                    Thread.Sleep(PollInterval * 1000);
-                    continue;
-                }
+                    List<string> ids = new(m_streamers.Count);
 
-                foreach(IStreamerInfo streamer_info in m_streamers.Values)
+                    // if there are no registered streamers, simply do nothing and wait for the poll interval,
+                    // before checking if any streamers have been registered.
+
+                    if (m_streamers.Count == 0)
+                    {
+                        Thread.Sleep(PollInterval * 1000);
+                        continue;
+                    }
+
+                    foreach (IStreamerInfo streamer_info in m_streamers.Values)
+                    {
+                        if (!streamer_info.Disable)
+                            ids.Add(streamer_info.Streamer.Id);
+                    }
+
+                    GetStreamsResponse response = await m_twitch_api.Helix.Streams.GetStreamsAsync(userIds: ids);
+
+                    HashSet<string> live_users = new();
+
+                    // handle users that went live
+
+                    foreach (TwitchLibStream stream in response.Streams)
+                    {
+                        IStreamerInfo streamer_info = m_streamers[stream.UserId];
+
+                        live_users.Add(stream.UserId);
+
+                        await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
+                    }
+
+                    // handle users that are not / no longer live
+
+                    foreach (IStreamerInfo streamer_info in m_streamers.Values.Where(info => !live_users.Contains(info.Streamer.Id)))
+                        await updateStreamInfo(streamer_info, false, null);
+                }
+                catch (Exception e) when (e is GatewayTimeoutException || e is TooManyRequestsException || e is InternalServerErrorException)
                 {
-                    if (!streamer_info.Disable)
-                        ids.Add(streamer_info.Streamer.Id);
+                    Trace.WriteLine($"Exception caught whilst polling twitch api:\n{e.GetType().Name}\n{e}");
                 }
-
-                GetStreamsResponse response = await m_twitch_api.Helix.Streams.GetStreamsAsync(userIds: ids);
-
-                HashSet<string> live_users = new();
-
-                // handle users that went live
-
-                foreach(Stream stream in response.Streams)
-                {
-                    IStreamerInfo streamer_info = m_streamers[stream.UserId];
-
-                    live_users.Add(stream.UserId);
-
-                    await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
-                }
-
-                // handle users that are not / no longer live
-
-                foreach(IStreamerInfo streamer_info in m_streamers.Values.Where(info => !live_users.Contains(info.Streamer.Id)))
-                    await updateStreamInfo(streamer_info, false, null);
 
                 Thread.Sleep(PollInterval * 1000);
             }
@@ -452,7 +492,7 @@ namespace TwatApp.Models
             // 
             // the first time this is called, the IsLive property will be null.
             // currently the user will not get a notification, when a streamer is polled for the first time.
-            if(!(streamer_info.IsLive ?? true) && is_live)
+            if(!((streamer_info as StreamerInfo).is_live ?? true) && is_live)
             {
                 state_changed = true;
 
@@ -515,7 +555,11 @@ namespace TwatApp.Models
         {
             public string Id => m_id;
             public string DisplayName => m_name;
+            public string LoginName { get => DisplayName.ToLower(); }
+
             public string IconUri => m_icon_uri;
+            public string IconFile => Path.GetFullPath($"icons/streamers/{Id}.png");
+
 
             public Streamer(string id, string name, string icon_uri)
             {
@@ -537,6 +581,9 @@ namespace TwatApp.Models
                 this.categories = categories ?? new();
                 this.whitelist = whitelist;
                 this.disable = disable;
+
+                icon_rgb = new(Streamer.IconFile);
+                icon_gray = grayFromRgb(icon_rgb);
             }
 
             public IStreamer Streamer => streamer;
@@ -547,7 +594,9 @@ namespace TwatApp.Models
 
             public ICategory? CurrentCategory => current_category;
 
-            public bool? IsLive => is_live;
+            public bool IsLive => is_live ?? false;
+
+            public Bitmap Icon => IsLive ? icon_rgb : icon_gray;
 
             [JsonIgnore]
             public IStreamer streamer;
@@ -561,6 +610,40 @@ namespace TwatApp.Models
             public ICategory? current_category = null;
             [JsonIgnore]
             public bool? is_live = null;
+            [JsonIgnore]
+            public Bitmap icon_rgb;
+            [JsonIgnore]
+            public Bitmap icon_gray;
+
+            protected Bitmap grayFromRgb(Bitmap source)
+            {
+                SystemStream image_stream = new MemoryStream();
+
+                source.Save(image_stream);
+
+                image_stream.Seek(0, SeekOrigin.Begin);
+
+                WriteableBitmap grayscale_bitmap = WriteableBitmap.Decode(image_stream);
+
+                using (var buffer = grayscale_bitmap.Lock()) unsafe
+                {
+                    byte* pixel = (byte*)buffer.Address;
+
+                    for (int i = 0; i < buffer.Size.Width * buffer.Size.Height; i++)
+                    {
+                        if (buffer.Format == PixelFormat.Rgba8888 || buffer.Format == PixelFormat.Bgra8888)
+                        {
+                            byte avg = (byte)((pixel[0] + pixel[1] + pixel[2]) / 3);
+                            pixel[0] = avg;
+                            pixel[1] = avg;
+                            pixel[2] = avg;
+                            pixel += 4;
+                        }
+                    }
+                }
+
+                return grayscale_bitmap;
+            }
         }
 
         public class Category : ICategory
@@ -569,6 +652,7 @@ namespace TwatApp.Models
 
             public string Id => m_id;
 
+            public string IconFile => Path.GetFullPath($"icons/categories/{Id}.png");
 
             public Category(string id, string name)
             {
@@ -591,6 +675,8 @@ namespace TwatApp.Models
             public ICategory Category => m_category;
 
             public bool Disable { get => m_disable; set => m_disable = value; }
+
+            public Bitmap Icon => throw new NotImplementedException();
 
             protected bool m_disable;
             protected ICategory m_category;

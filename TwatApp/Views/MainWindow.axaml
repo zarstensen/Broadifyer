@@ -2,6 +2,7 @@
     x:Class="TwatApp.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="using:TwatApp.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:TwatApp.ViewModels"
@@ -15,7 +16,24 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="1*,1*">
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        RowDefinitions="30, 1*">
+        <TextBlock Text="{Binding streamer}" />
+        <c:StreamerSection
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            AddCommand="{Binding addCommand}"
+            AddFollowedCommand="{Binding addFollowedCommand}"
+            RemoveStreamerCommand="{Binding removeStreamer}"
+            StreamerInput="{Binding streamer, Mode=TwoWay}"
+            Streamers="{Binding Streamers}" />
+    </Grid>
+    <!--<Grid RowDefinitions="1*,1*">
         <TextBlock
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -27,5 +45,5 @@
             Command="{Binding SetupSubscribe}">
             Establish Subscriptions
         </Button>
-    </Grid>
+    </Grid>-->
 </Window>

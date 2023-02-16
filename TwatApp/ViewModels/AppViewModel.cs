@@ -12,11 +12,13 @@ using System.Threading.Tasks;
 namespace TwatApp.ViewModels
 {
     
-
     public class AppViewModel : ViewModelBase
     {
         public AppViewModel()
         {
+            if (Design.IsDesignMode)
+                return;
+
             ToastNotificationManagerCompat.OnActivated += toast_args =>
             {
                 ToastArguments args = ToastArguments.Parse(toast_args.Argument);

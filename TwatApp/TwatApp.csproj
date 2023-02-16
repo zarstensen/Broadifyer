@@ -10,9 +10,11 @@
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
     <PlatformTarget>x64</PlatformTarget>
     <ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Remove="Assets\Default.axaml" />
     <None Remove=".gitignore" />
     <None Remove="close_tab.html" />
     <None Remove="parse_token.html" />
@@ -43,5 +45,10 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.8.0" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Default.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
   </ItemGroup>
 </Project>

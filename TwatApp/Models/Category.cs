@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
 
 namespace TwatApp.Models
 {
@@ -25,7 +26,7 @@ namespace TwatApp.Models
         /// path to where the category icon file will be stored.
         /// </summary>
         [JsonIgnore]
-        public string IconFile => Path.GetFullPath($"icons/categories/{Id}.png");
+        public string IconFile { get; }
 
         bool IEqualityComparer<ICategory>.Equals(ICategory? x, ICategory? y)
         {
@@ -51,5 +52,6 @@ namespace TwatApp.Models
     {
         public ICategory Category { get; }
         public bool Disable { get; set; }
+        public Bitmap Icon { get; }
     }
 }

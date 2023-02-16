@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
+using System.Collections;
 
 namespace TwatApp.Models
 {
     /// <summary>
     /// represents an identifier class that represents a twitch broadcaster
     /// </summary>
-    public interface IStreamer : IEqualityComparer<IStreamer>
+    public interface IStreamer : IEqualityComparer<IStreamer>, IComparable<IStreamer>
     {
         /// <summary>
         /// id of the broadcaster
@@ -27,19 +29,27 @@ namespace TwatApp.Models
         /// </summary>
 
         [JsonIgnore]
-        public string LoginName => DisplayName.ToLower();
+        public string LoginName { get; }
         /// <summary>
         /// path to where the broadcaster icon / profile image should be stored.
         /// </summary>
 
         [JsonIgnore]
-        public string IconFile => Path.GetFullPath($"icons/streamers/{Id}.png");
+        public string IconFile { get; }
         /// <summary>
         /// uri to where the broadcaster icon / profile image is stored online.
         /// </summary>
 
         [JsonIgnore]
         public string IconUri { get; }
+
+        int IComparable<IStreamer>.CompareTo(IStreamer? other)
+        {
+            if(other == null)
+                return 1;
+
+            return DisplayName.CompareTo(other.DisplayName);
+        }
 
         bool IEqualityComparer<IStreamer>.Equals(IStreamer? x, IStreamer? y)
         {
@@ -59,12 +69,16 @@ namespace TwatApp.Models
     /// class representing various configuration and state info about a specific IStreamer instance.
     /// </summary>
 
-    public interface IStreamerInfo
+    public interface IStreamerInfo : IComparable<IStreamerInfo>
     {
         /// <summary>
         /// the IStreamer instance this class contains data about.
         /// </summary>
         public IStreamer Streamer { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Bitmap Icon { get; }
         /// <summary>
         /// what categories should be filtered, when deciding wheather to send a notification or not.
         /// 
@@ -89,7 +103,7 @@ namespace TwatApp.Models
         /// wheather the broadcaster is currently live.
         /// </summary>
         [JsonIgnore]
-        public bool? IsLive { get; }
+        public bool IsLive { get; }
         /// <summary>
         /// if true:
         ///     no notifications will be sent, no matter what
@@ -97,5 +111,18 @@ namespace TwatApp.Models
         ///     notifications will be sent, if the live and filtered categories conditions are met.
         /// </summary>
         public bool Disable { get; set; }
+
+        int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
+        {
+            if (other == null)
+                return 1;
+
+            int live_compare = IsLive.CompareTo(other.IsLive);
+
+            if (live_compare != 0)
+                return -live_compare;
+
+            return Streamer.CompareTo(other.Streamer);
+        }
     }
 }

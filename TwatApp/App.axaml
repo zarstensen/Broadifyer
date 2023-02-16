@@ -2,8 +2,11 @@
     x:Class="TwatApp.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cv="using:TwatApp.Converters"
     xmlns:local="using:TwatApp"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="using:TwatApp.ViewModels">
+
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
@@ -12,9 +15,20 @@
         <vm:AppViewModel />
     </Application.DataContext>
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Styles/Resources.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme Mode="Light" />
+        <StyleInclude Source="/Styles/MainStyle.axaml" />
+        <StyleInclude Source="/Styles/DebugStyle.axaml" />
     </Application.Styles>
+
 
     <TrayIcon.Icons>
         <TrayIcons>

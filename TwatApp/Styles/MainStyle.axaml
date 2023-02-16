@@ -1,0 +1,84 @@
+﻿<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cv="using:TwatApp.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel>
+                <Button Classes="Button1">Test Button</Button>
+                <TextBox Classes="InputField">Test Input Field</TextBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--  Button  -->
+
+    <Style Selector="Button.Button1">
+        <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
+        <Setter Property="Background" Value="{StaticResource Background4}" />
+        <Setter Property="Foreground" Value="{StaticResource Background5}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button:pointerover /template/ ContentPresenter">
+        <Setter Property="Button.Background" Value="{Binding $parent[Button].Background, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{Binding $parent[Button].Foreground, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    </Style>
+
+    <!--  InputField  -->
+
+    <Style Selector="TextBox.InputField">
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{StaticResource Background1}" />
+        <Setter Property="Foreground" Value="{StaticResource Background4}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource Background3}" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="TextBox.InputField:pointerover /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    </Style>
+
+    <Style Selector="TextBox.InputField:focus /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    </Style>
+
+    <Style Selector="TextBox.InputField:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    </Style>
+
+    <Style Selector="TextBox.InputField:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{StaticResource Background4}" />
+    </Style>
+
+    <!--  TextFields  -->
+
+    <!--  Type 1  -->
+
+    <Style Selector="TextBlock.h1, TextBlock.h2, TextBlock.h3">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource Background4}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.h1">
+        <Setter Property="FontSize" Value="{StaticResource FontSize1}" />
+    </Style>
+
+    <Style Selector="TextBlock.h2">
+        <Setter Property="FontSize" Value="{StaticResource FontSize2}" />
+    </Style>
+
+    <Style Selector="TextBlock.h3">
+        <Setter Property="FontSize" Value="{StaticResource FontSize3}" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+
+</Styles>
