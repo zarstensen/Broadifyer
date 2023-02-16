@@ -326,6 +326,8 @@ namespace TwatApp.Models
             foreach (IStreamer streamer in streamers)
                 if (!m_streamers.ContainsKey(streamer.Id))
                     m_streamers[streamer.Id] = new StreamerInfo(streamer);
+
+            await poll();
         }
 
         /// <summary>
@@ -434,51 +436,53 @@ namespace TwatApp.Models
         {
             while(m_polling)
             {
-                try
-                {
-                    List<string> ids = new(m_streamers.Count);
-
-                    // if there are no registered streamers, simply do nothing and wait for the poll interval,
-                    // before checking if any streamers have been registered.
-
-                    if (m_streamers.Count == 0)
-                    {
-                        Thread.Sleep(PollInterval * 1000);
-                        continue;
-                    }
-
-                    foreach (IStreamerInfo streamer_info in m_streamers.Values)
-                    {
-                        if (!streamer_info.Disable)
-                            ids.Add(streamer_info.Streamer.Id);
-                    }
-
-                    GetStreamsResponse response = await m_twitch_api.Helix.Streams.GetStreamsAsync(userIds: ids);
-
-                    HashSet<string> live_users = new();
-
-                    // handle users that went live
-
-                    foreach (TwitchLibStream stream in response.Streams)
-                    {
-                        IStreamerInfo streamer_info = m_streamers[stream.UserId];
-
-                        live_users.Add(stream.UserId);
-
-                        await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
-                    }
-
-                    // handle users that are not / no longer live
-
-                    foreach (IStreamerInfo streamer_info in m_streamers.Values.Where(info => !live_users.Contains(info.Streamer.Id)))
-                        await updateStreamInfo(streamer_info, false, null);
-                }
-                catch (Exception e) when (e is GatewayTimeoutException || e is TooManyRequestsException || e is InternalServerErrorException)
-                {
-                    Trace.WriteLine($"Exception caught whilst polling twitch api:\n{e.GetType().Name}\n{e}");
-                }
+                await poll();
 
                 Thread.Sleep(PollInterval * 1000);
+            }
+        }
+
+        protected async Task poll()
+        {
+            try
+            {
+                List<string> ids = new(m_streamers.Count);
+
+                // if there are no registered streamers, simply do nothing and wait for the poll interval,
+                // before checking if any streamers have been registered.
+
+                if (m_streamers.Count == 0)
+                    return;
+
+                foreach (IStreamerInfo streamer_info in m_streamers.Values)
+                {
+                    if (!streamer_info.Disable)
+                        ids.Add(streamer_info.Streamer.Id);
+                }
+
+                GetStreamsResponse response = await m_twitch_api.Helix.Streams.GetStreamsAsync(userIds: ids);
+
+                HashSet<string> live_users = new();
+
+                // handle users that went live
+
+                foreach (TwitchLibStream stream in response.Streams)
+                {
+                    IStreamerInfo streamer_info = m_streamers[stream.UserId];
+
+                    live_users.Add(stream.UserId);
+
+                    await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
+                }
+
+                // handle users that are not / no longer live
+
+                foreach (IStreamerInfo streamer_info in m_streamers.Values.Where(info => !live_users.Contains(info.Streamer.Id)))
+                    await updateStreamInfo(streamer_info, false, null);
+            }
+            catch (Exception e) when (e is GatewayTimeoutException || e is TooManyRequestsException || e is InternalServerErrorException)
+            {
+                Trace.WriteLine($"Exception caught whilst polling twitch api:\n{e.GetType().Name}\n{e}");
             }
         }
 
