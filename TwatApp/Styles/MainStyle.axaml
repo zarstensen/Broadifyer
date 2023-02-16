@@ -4,17 +4,23 @@
     xmlns:cv="using:TwatApp.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
     <Design.PreviewWith>
-        <Border Padding="20">
-            <StackPanel>
-                <Button Classes="Button1">Test Button</Button>
-                <TextBox Classes="InputField">Test Input Field</TextBox>
-            </StackPanel>
+        <Border Padding="20" Background="{StaticResource Background1}">
+            <Border Padding="10" Background="{StaticResource Background2}">
+                <StackPanel>
+                    <Button Classes="Button1">Test Button</Button>
+                    <TextBox Classes="InputField">Test Input Field</TextBox>
+                    <TextBlock Classes="h1">Test Text h1</TextBlock>
+                    <TextBlock Classes="h2">Test Text h2</TextBlock>
+                    <TextBlock Classes="h3">Test Text h3</TextBlock>
+                </StackPanel>
+            </Border>
         </Border>
     </Design.PreviewWith>
 
     <!--  Button  -->
 
     <Style Selector="Button.Button1">
+        <Setter Property="CornerRadius" Value="5" />
         <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
         <Setter Property="Background" Value="{StaticResource Background4}" />
         <Setter Property="Foreground" Value="{StaticResource Background5}" />
@@ -33,11 +39,14 @@
     <!--  InputField  -->
 
     <Style Selector="TextBox.InputField">
+        <Setter Property="CornerRadius" Value="5" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Background" Value="{StaticResource Background1}" />
         <Setter Property="Foreground" Value="{StaticResource Background4}" />
         <Setter Property="SelectionBrush" Value="{StaticResource Background3}" />
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CaretBrush" Value="{StaticResource Background5}" />
     </Style>
 
     <Style Selector="TextBox.InputField:pointerover /template/ TextBlock#PART_Watermark">
