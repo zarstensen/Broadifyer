@@ -21,6 +21,7 @@ namespace TwatApp.Models
         /// <summary>
         /// name of the category
         /// </summary>
+        [JsonIgnore]
         string Name { get; }
         /// <summary>
         /// path to where the category icon file will be stored.

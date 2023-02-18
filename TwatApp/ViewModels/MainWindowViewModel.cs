@@ -17,15 +17,11 @@ namespace TwatApp.ViewModels
 
         public MainWindowViewModel()
         {
+            notifier = (App.Current!.DataContext as AppViewModel)!.notifier;
+
             if (!Design.IsDesignMode)
             {
-                new Task(async () =>
-                    {
-                        await notifier.authUser("token.txt", false);
-                        notifier.PollInterval = 1;
-                        notifier.startNotify();
-                    }).Start();
-                
+                notifier.StreamerChanged += (sender, arg) => this.RaisePropertyChanged(nameof(Streamers));
             }
         }
 
@@ -39,7 +35,7 @@ namespace TwatApp.ViewModels
 
         public async void addCommand()
         {
-            if (streamer == "" || streamer.Contains(' '))
+            if (streamer.Value == "" || streamer.Value.Contains(' '))
                 return;
 
             var found_streamer = await notifier.streamerFromName(streamer);
@@ -78,8 +74,28 @@ namespace TwatApp.ViewModels
             }
         }
 
-        TwitchNotify notifier = new("mjnfz52170tvwmq4nk1vldg0hufjfv");
-        public string streamer { get; set; } = "";
+        public void toggleDisable(Button control)
+        {
+            if (control.DataContext is IStreamerInfo streamer_info)
+            {
+                streamer_info.Disable = !streamer_info.Disable;
+                // converter is not called here for some reason, so we must change the content manually
+                control.Content = streamer_info.Disable ? "ENABLE" : "DISABLE";
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public void SelectedStreamerChanged(object? sender, SelectionChangedEventArgs args)
+        {
+            StreamerName = StreamerName + "EEEEEE";
+            this.RaisePropertyChanged(nameof(SelectedStreamer));
+            this.RaisePropertyChanged(nameof(StreamerName));
+        }
+
+        TwitchNotify notifier;
+        public React<string> streamer { get; set; } = new();
+        public React<string?> StreamerName { get; set; } = new();
+        public React<IStreamerInfo?> SelectedStreamer { get; set; } = new();
         public List<IStreamerInfo> Streamers
         {
             get

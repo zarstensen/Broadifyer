@@ -7,8 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:TwatApp.ViewModels"
     Title="TwatApp"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    Width="950"
+    Height="665"
+    MinWidth="770"
+    MinHeight="250"
+    d:DesignHeight="665"
+    d:DesignWidth="950"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
 
@@ -16,13 +20,19 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+
     <Grid
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        RowDefinitions="30, 1*">
-        <TextBlock Text="{Binding streamer}" />
+        Background="{StaticResource Background1}"
+        ColumnDefinitions="1*,1*">
         <c:StreamerSection
+            x:Name="StreamerSection"
             Grid.Row="1"
+            Margin="30,0,30,30"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
@@ -30,8 +40,17 @@
             AddCommand="{Binding addCommand}"
             AddFollowedCommand="{Binding addFollowedCommand}"
             RemoveStreamerCommand="{Binding removeStreamer}"
-            StreamerInput="{Binding streamer, Mode=TwoWay}"
-            Streamers="{Binding Streamers}" />
+            SelectedStreamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
+            StreamerInput="{Binding StreamerName.Value}"
+            Streamers="{Binding Streamers}"
+            ToggleDisableCommand="{Binding toggleDisable}" />
+        <c:CategorySection
+            Grid.Column="1"
+            Margin="0,0,30,30"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
+            StreamerName="{Binding SelectedStreamer.Value.Streamer.DisplayName}" />
     </Grid>
     <!--<Grid RowDefinitions="1*,1*">
         <TextBlock

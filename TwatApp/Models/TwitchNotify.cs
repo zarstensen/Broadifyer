@@ -1,47 +1,40 @@
-﻿using System;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Net;
-using System.Text;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Api;
-using System.IO;
-using EventSub;
-using Newtonsoft.Json;
-using Microsoft.Toolkit.Uwp.Notifications;
-using TwitchLib.Api.Helix.Models.Streams.GetStreams;
-using System.Diagnostics.CodeAnalysis;
-using TwitchLib.Api.Helix.Models.Users.GetUserFollows;
-using TwitchLib.Api.Core.Enums;
-using TwitchLib.Api.Helix.Models.Games;
-using System.Windows.Documents;
-using System.Threading;
-using TwitchLib.Api.Helix;
-using System.Collections.ObjectModel;
 using TwitchLib.Api.Core.Exceptions;
-using Avalonia.Media.Imaging;
-using System.Drawing;
+using TwitchLib.Api.Helix.Models.Games;
+using TwitchLib.Api.Helix.Models.Streams.GetStreams;
+using TwitchLib.Api.Helix.Models.Users.GetUserFollows;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
-using TwitchLibStream = TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream;
 using SystemStream = System.IO.Stream;
-using Avalonia.Platform;
+using TwitchLibStream = TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream;
 
 namespace TwatApp.Models
 {
     /// <summary>
     /// class responsible for notifying a user, using windows toast notifications, based on registered streamers and their category conditions.
-    /// 
+    ///
     /// use addStreamers and removeStreamrs to register or unregister streamers for notifications.
     /// streamersFromIds or streamersFromNames can be used for retrieving IStreamer instances, from various broadcaster identifiers.
-    /// 
+    ///
     /// same for categoriesFromIds and categoriesFromNames.
-    /// 
+    ///
     /// use startNotify and stopNotify to control when an instance will send toast notifications.
-    /// 
+    ///
     /// </summary>
     public class TwitchNotify
     {
@@ -52,10 +45,12 @@ namespace TwatApp.Models
         /// if the value is too low, rate limit exceptions may occur.
         /// </summary>
         public int PollInterval { get; set; } = 60;
+
         /// <summary>
         /// invoked whenever any of the registered streamers change their stream status or category.
         /// </summary>
         public EventHandler<IStreamerInfo>? StreamerChanged;
+
         /// <summary>
         /// readonly dictionary of the registered streamers, mapping the streamer id to the corresponding IStreamerInfo instance
         /// </summary>
@@ -72,9 +67,9 @@ namespace TwatApp.Models
 
         /// <summary>
         /// start the poll thread, and activate notifying of streamers going live.
-        /// 
+        ///
         /// must be called after user has been authorized.
-        /// 
+        ///
         /// </summary>
         public void startNotify()
         {
@@ -170,7 +165,7 @@ namespace TwatApp.Models
                     }
                 }
 
-                if(token_file_dir != null)
+                if (token_file_dir != null)
                     File.WriteAllText(token_file_dir, token);
             }
 
@@ -224,7 +219,7 @@ namespace TwatApp.Models
             if (ids.Count == 0)
                 return new();
 
-            GetUsersResponse users = await m_twitch_api.Helix.Users.GetUsersAsync(ids: ids );
+            GetUsersResponse users = await m_twitch_api.Helix.Users.GetUsersAsync(ids: ids);
 
             return streamersFromResponse(users);
         }
@@ -257,14 +252,14 @@ namespace TwatApp.Models
 
             return await streamersFromIds(ids);
         }
-        
+
         /// <summary>
         /// get category instances from category names.
-        /// 
+        ///
         /// makes use of the same cache strategy as the categoriesFromIds method.
         /// is way less efficient, as the name needs to be searches for in the cache using a linear method,
         /// so please use the categoriesFromIds if the category id is known.
-        /// 
+        ///
         /// </summary>
         public async Task<List<ICategory>> categoriesFromNames(List<string> names)
         {
@@ -289,13 +284,12 @@ namespace TwatApp.Models
 
         /// <summary>
         /// get category instances from category ids.
-        /// 
+        ///
         /// additionally, if the category has already been retrieved,
         /// this method returns a cached ICategory instance, instead of performing a get request to the twitch api-
         /// </summary>
         public async Task<List<ICategory>> categoriesFromIds(List<string> ids)
         {
-
             List<string> non_cached_ids = ids.Where(id => !m_cached_categories.ContainsKey(id)).ToList();
 
             if (non_cached_ids.Count > 0)
@@ -321,20 +315,23 @@ namespace TwatApp.Models
         /// </summary>
         public async Task addStreamers(List<IStreamer> streamers)
         {
-            await streamerIcons(streamers);
-
             foreach (IStreamer streamer in streamers)
+            {
                 if (!m_streamers.ContainsKey(streamer.Id))
-                    m_streamers[streamer.Id] = new StreamerInfo(streamer);
-
+                {
+                    m_streamers[streamer.Id] = new StreamerInfo((Streamer)streamer);
+                    await m_streamers[streamer.Id].prepareIcons();
+                    StreamerChanged?.Invoke(this, m_streamers[streamer.Id]);
+                }
+            }
             await poll();
         }
 
         /// <summary>
         /// remove the streamer from the streamer list.
-        /// 
+        ///
         /// this means the IStreamInfo instance is also forgotten, so if the streamer is later readded, the categories and so on will not be remembered.
-        /// 
+        ///
         /// if the intention is to temporarily stop notifications from the passed streamers,
         /// please use the associated IStreamerInfos Disable property isntead.
         /// </summary>
@@ -361,15 +358,22 @@ namespace TwatApp.Models
         /// overwrites any currently registered streamers.
         /// </summary>
         /// <param name="file"></param>
-        public void loadConfiguration(string file)
+        public async Task loadConfiguration(string file)
         {
-            if(File.Exists(file))
+            if (File.Exists(file))
             {
                 string contents = File.ReadAllText(file);
 
-                m_streamers = JsonConvert.DeserializeObject<Dictionary<string, IStreamerInfo>>(contents)!;
-            }
+                var config = JsonConvert.DeserializeObject<Dictionary<string, StreamerInfo>>(contents)!;
+                
+                m_streamers = config.Select(kv => new KeyValuePair<string, IStreamerInfo>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
 
+                foreach (IStreamerInfo streamer in currentStreamers())
+                {
+                    await streamer.prepareIcons();
+                    StreamerChanged?.Invoke(this, streamer);
+                }
+            }
         }
 
         /// <summary>
@@ -380,7 +384,7 @@ namespace TwatApp.Models
             return m_streamers.Values.ToList();
         }
 
-        #endregion
+        #endregion public
 
         #region protected fields
 
@@ -392,7 +396,7 @@ namespace TwatApp.Models
         protected Thread? m_poll_thread = null;
         protected Dictionary<string, ICategory> m_cached_categories = new();
 
-        #endregion
+        #endregion protected fields
 
         #region protected methods
 
@@ -401,7 +405,7 @@ namespace TwatApp.Models
         {
             List<IStreamer> streamers = new(users.Users.Length);
 
-            foreach(User user in users.Users)
+            foreach (User user in users.Users)
                 streamers.Add(new Streamer(user.Id, user.DisplayName, user.ProfileImageUrl));
 
             return streamers;
@@ -417,6 +421,7 @@ namespace TwatApp.Models
 
             return categories;
         }
+
         protected async Task streamerIcons(List<IStreamer> streamers)
         {
             foreach (IStreamer streamer in streamers)
@@ -434,7 +439,7 @@ namespace TwatApp.Models
         // thread responsible for polling the twitch api
         protected async Task pollThread()
         {
-            while(m_polling)
+            while (m_polling)
             {
                 await poll();
 
@@ -446,7 +451,6 @@ namespace TwatApp.Models
         {
             try
             {
-                List<string> ids = new(m_streamers.Count);
 
                 // if there are no registered streamers, simply do nothing and wait for the poll interval,
                 // before checking if any streamers have been registered.
@@ -454,11 +458,7 @@ namespace TwatApp.Models
                 if (m_streamers.Count == 0)
                     return;
 
-                foreach (IStreamerInfo streamer_info in m_streamers.Values)
-                {
-                    if (!streamer_info.Disable)
-                        ids.Add(streamer_info.Streamer.Id);
-                }
+                List<string> ids = currentStreamers().Where(info => !info.Disable).Select(info => info.Streamer.Id).ToList();
 
                 GetStreamsResponse response = await m_twitch_api.Helix.Streams.GetStreamsAsync(userIds: ids);
 
@@ -493,10 +493,10 @@ namespace TwatApp.Models
 
             // check if a toast noficiation should be sent
             // this should happen if the user has just gone live, and the filtered categories are correct.
-            // 
+            //
             // the first time this is called, the IsLive property will be null.
             // currently the user will not get a notification, when a streamer is polled for the first time.
-            if(!((streamer_info as StreamerInfo).is_live ?? true) && is_live)
+            if (!((streamer_info as StreamerInfo).is_live ?? true) && is_live)
             {
                 state_changed = true;
 
@@ -508,7 +508,7 @@ namespace TwatApp.Models
                 }
                 else
                 {
-                     should_notify = !streamer_info.WhitelistCategories;
+                    should_notify = !streamer_info.WhitelistCategories;
 
                     foreach (ICategoryInfo category_info in streamer_info.FilteredCategories)
                     {
@@ -534,8 +534,8 @@ namespace TwatApp.Models
                 (streamer_info as StreamerInfo)!.current_category = (await categoriesFromIds(new() { category_id }))[0];
             else
                 (streamer_info as StreamerInfo)!.current_category = null;
-            
-            if(state_changed)
+
+            if (state_changed)
                 StreamerChanged?.Invoke(this, streamer_info);
         }
 
@@ -550,12 +550,11 @@ namespace TwatApp.Models
                 Show();
         }
 
-
-        #endregion
+        #endregion protected methods
 
         #region interface implementations
 
-        class Streamer : IStreamer
+        private class Streamer : IStreamer
         {
             public string Id => m_id;
             public string DisplayName => m_name;
@@ -564,30 +563,35 @@ namespace TwatApp.Models
             public string IconUri => m_icon_uri;
             public string IconFile => Path.GetFullPath($"icons/streamers/{Id}.png");
 
-
-            public Streamer(string id, string name, string icon_uri)
+            public Streamer(string id, string displayname, string iconuri)
             {
                 m_id = id;
-                m_name = name;
-                m_icon_uri = icon_uri;
+                m_name = displayname;
+                m_icon_uri = iconuri;
+            }
+
+            public async Task prepareIcon()
+            {
+                string full_icon_path = Path.GetFullPath(IconFile);
+
+                Directory.CreateDirectory(Directory.GetParent(full_icon_path)!.ToString());
+                await File.WriteAllBytesAsync(full_icon_path, await s_http_client.GetByteArrayAsync(IconUri));
             }
 
             protected string m_name;
             protected string m_id;
             protected string m_icon_uri;
+            protected static HttpClient s_http_client = new();
         }
 
-        class StreamerInfo : IStreamerInfo
+        private class StreamerInfo : IStreamerInfo
         {
-            public StreamerInfo(IStreamer streamer, List<ICategoryInfo>? categories = null, bool whitelist = true, bool disable = false)
+            public StreamerInfo(Streamer streamer, List<ICategoryInfo>? categories = null, bool whitelist = true, bool disable = false)
             {
                 this.streamer = streamer;
                 this.categories = categories ?? new();
                 this.whitelist = whitelist;
                 this.disable = disable;
-
-                icon_rgb = new(Streamer.IconFile);
-                icon_gray = grayFromRgb(icon_rgb);
             }
 
             public IStreamer Streamer => streamer;
@@ -600,25 +604,39 @@ namespace TwatApp.Models
 
             public bool IsLive => is_live ?? false;
 
-            public Bitmap Icon => IsLive ? icon_rgb : icon_gray;
+            public Bitmap? Icon => IsLive ? icon_rgb : icon_gray;
 
             [JsonIgnore]
-            public IStreamer streamer;
+            public Streamer streamer;
+
             [JsonIgnore]
             public List<ICategoryInfo> categories = new();
+
             [JsonIgnore]
             public bool whitelist = true;
+
             [JsonIgnore]
             public bool disable = false;
+
             [JsonIgnore]
             public ICategory? current_category = null;
+
             [JsonIgnore]
             public bool? is_live = null;
-            [JsonIgnore]
-            public Bitmap icon_rgb;
-            [JsonIgnore]
-            public Bitmap icon_gray;
 
+            [JsonIgnore]
+            public Bitmap? icon_rgb = null;
+
+            [JsonIgnore]
+            public Bitmap? icon_gray = null;
+
+            public async Task prepareIcons()
+            {
+                await streamer.prepareIcon();
+
+                icon_rgb = new(Streamer.IconFile);
+                icon_gray = grayFromRgb(icon_rgb);
+            }
             protected Bitmap grayFromRgb(Bitmap source)
             {
                 SystemStream image_stream = new MemoryStream();
@@ -630,21 +648,21 @@ namespace TwatApp.Models
                 WriteableBitmap grayscale_bitmap = WriteableBitmap.Decode(image_stream);
 
                 using (var buffer = grayscale_bitmap.Lock()) unsafe
-                {
-                    byte* pixel = (byte*)buffer.Address;
-
-                    for (int i = 0; i < buffer.Size.Width * buffer.Size.Height; i++)
                     {
-                        if (buffer.Format == PixelFormat.Rgba8888 || buffer.Format == PixelFormat.Bgra8888)
+                        byte* pixel = (byte*)buffer.Address;
+
+                        for (int i = 0; i < buffer.Size.Width * buffer.Size.Height; i++)
                         {
-                            byte avg = (byte)((pixel[0] + pixel[1] + pixel[2]) / 3);
-                            pixel[0] = avg;
-                            pixel[1] = avg;
-                            pixel[2] = avg;
-                            pixel += 4;
+                            if (buffer.Format == PixelFormat.Rgba8888 || buffer.Format == PixelFormat.Bgra8888)
+                            {
+                                byte avg = (byte)((pixel[0] + pixel[1] + pixel[2]) / 3);
+                                pixel[0] = avg;
+                                pixel[1] = avg;
+                                pixel[2] = avg;
+                                pixel += 4;
+                            }
                         }
                     }
-                }
 
                 return grayscale_bitmap;
             }
@@ -684,10 +702,8 @@ namespace TwatApp.Models
 
             protected bool m_disable;
             protected ICategory m_category;
-
         }
 
-        #endregion
-
+        #endregion interface implementations
     }
 }

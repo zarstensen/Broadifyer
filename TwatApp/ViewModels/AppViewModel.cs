@@ -2,12 +2,15 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TwatApp.Models;
+using TwitchLib.Api.Helix;
 
 namespace TwatApp.ViewModels
 {
@@ -18,6 +21,14 @@ namespace TwatApp.ViewModels
         {
             if (Design.IsDesignMode)
                 return;
+
+            new Task(async () =>
+            {
+                await notifier.authUser("token.txt", false);
+                await notifier.loadConfiguration("config.json");
+                notifier.PollInterval = 1;
+                notifier.startNotify();
+            }).Start();
 
             ToastNotificationManagerCompat.OnActivated += toast_args =>
             {
@@ -33,6 +44,7 @@ namespace TwatApp.ViewModels
         {
             ToastNotificationManagerCompat.History.Clear();
             ToastNotificationManagerCompat.Uninstall();
+            notifier.saveConfiguration("config.json");
         }
 
         public void ExitCommand()
@@ -40,5 +52,7 @@ namespace TwatApp.ViewModels
             IClassicDesktopStyleApplicationLifetime lifetime = (IClassicDesktopStyleApplicationLifetime)App.Current!.ApplicationLifetime!;
             lifetime.TryShutdown();
         }
+
+        public TwitchNotify notifier = new("mjnfz52170tvwmq4nk1vldg0hufjfv");
     }
 }

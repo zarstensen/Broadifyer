@@ -39,8 +39,6 @@ namespace TwatApp.Models
         /// <summary>
         /// uri to where the broadcaster icon / profile image is stored online.
         /// </summary>
-
-        [JsonIgnore]
         public string IconUri { get; }
 
         int IComparable<IStreamer>.CompareTo(IStreamer? other)
@@ -78,7 +76,8 @@ namespace TwatApp.Models
         /// <summary>
         /// 
         /// </summary>
-        public Bitmap Icon { get; }
+        [JsonIgnore]
+        public Bitmap? Icon { get; }
         /// <summary>
         /// what categories should be filtered, when deciding wheather to send a notification or not.
         /// 
@@ -111,6 +110,8 @@ namespace TwatApp.Models
         ///     notifications will be sent, if the live and filtered categories conditions are met.
         /// </summary>
         public bool Disable { get; set; }
+
+        public Task prepareIcons();
 
         int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
         {
