@@ -8,7 +8,8 @@
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource Background1}" RowDefinitions="50,1*">
+
+    <Grid RowDefinitions="50,1*">
         <TextBlock Classes="h1">
             Streamers
         </TextBlock>
