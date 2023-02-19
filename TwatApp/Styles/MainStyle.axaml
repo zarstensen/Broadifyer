@@ -81,22 +81,32 @@
         <Setter Property="CaretBrush" Value="{StaticResource Background5}" />
     </Style>
 
-    <Style Selector="TextBox.InputField:pointerover /template/ TextBlock#PART_Watermark">
+    <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark">
         <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox.InputField:focus /template/ TextBlock#PART_Watermark">
+    <Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark">
         <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox.InputField:pointerover /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
         <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox.InputField:focus /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
         <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="BorderBrush" Value="{StaticResource Background4}" />
+    </Style>
+
+    <Style Selector="TextBox:pointerover /template/ ContentPresenter">
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    </Style>
+
+    <Style Selector="TextBox:focus /template/ ContentPresenter">
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
     <!--  TextFields  -->

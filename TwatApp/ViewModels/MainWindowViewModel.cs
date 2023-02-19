@@ -18,6 +18,7 @@ namespace TwatApp.ViewModels
         /// property containing the string value in the streamer name input field, for the StreamerSection control.
         /// </summary>
         public React<string> StreamerInput { get; set; } = "";
+        public React<string> CategoryInput { get; set; } = "";
         /// <summary>
         /// property containing the currently selected streamer, in the StreamerSection streamer listbox.
         /// </summary>
@@ -56,7 +57,9 @@ namespace TwatApp.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// attempt to find a streamer with the name stored in StreamerInput, and add it to the TwitchNotify streamer list.
+        /// </summary>
         public async void addStreamer()
         {
             if (StreamerInput.Value == "" || StreamerInput.Value.Contains(' '))
@@ -82,6 +85,25 @@ namespace TwatApp.ViewModels
         {
             await notifier.addStreamers(await notifier.followedStreamers());
             this.RaisePropertyChanged(nameof(Streamers));
+        }
+
+        /// <summary>
+        /// attempt to add a category with the name stored in CategoryInput, and associate it with the passed streamer.
+        /// </summary>
+        /// <param name="streamer"></param>
+        public async void addCategory()
+        {
+            if (CategoryInput.Value == "" || CategoryInput.Value.Contains(' '))
+                return;
+
+            var found_category = await notifier.categoryFromName(CategoryInput);
+
+            if(found_category == null || SelectedStreamer.Value == null)
+            {
+                return;
+            }
+
+            notifier.filterCategory(found_category, SelectedStreamer.Value.streamer_info.Streamer);
         }
 
         public void removeStreamer(IStreamer streamer)

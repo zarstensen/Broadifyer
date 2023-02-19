@@ -83,13 +83,16 @@ namespace TwatApp.Models
         [JsonIgnore]
         public Bitmap? RgbIcon { get; }
         /// <summary>
+        /// 
+        /// dictionary of category ids and their associated ICategoryInfo instances, for this streamer.
+        /// 
         /// what categories should be filtered, when deciding wheather to send a notification or not.
         /// 
         /// wheather the notification will be sent if the broadcaster is streaming or not streaming the category,
         /// is dependent on the WhitelistCategories property.
         /// 
         /// </summary>
-        public List<ICategoryInfo> FilteredCategories { get; }
+        public Dictionary<string, ICategoryInfo> FilteredCategories { get; }
         /// <summary>
         /// if true:
         ///     the user will only be sent a notification, if the streamer is streaming any of the filtered categories

@@ -24,25 +24,16 @@
                 <!--  Streamer adder  -->
                 <Border Background="{StaticResource Background3}" CornerRadius="25,25,0,0">
                     <Grid Margin="10,20" ColumnDefinitions="1*,175">
-                        <TextBox
-                            Classes="InputField"
-                            Text="{Binding #self.StreamerInput}"
-                            Watermark="Streamer name..." />
+                        <TextBox Text="{Binding #self.StreamerInput}" Watermark="Streamer name..." />
                         <StackPanel
                             Grid.Column="1"
                             Margin="11,0,0,0"
                             Orientation="Horizontal"
                             Spacing="11">
-                            <Button
-                                Grid.Column="1"
-                                Classes="Button1"
-                                Command="{Binding #self.AddCommand}">
+                            <Button Grid.Column="1" Command="{Binding #self.AddCommand}">
                                 ADD
                             </Button>
-                            <Button
-                                Grid.Column="2"
-                                Classes="Button1"
-                                Command="{Binding #self.AddFollowedCommand}">
+                            <Button Grid.Column="2" Command="{Binding #self.AddFollowedCommand}">
                                 ADD FOLLOWED
                             </Button>
                         </StackPanel>
@@ -119,7 +110,6 @@
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
                                         Background="{StaticResource Background3}"
-                                        Classes="Button1"
                                         Command="{Binding #self.RemoveCommand}"
                                         CommandParameter="{Binding Streamer}"
                                         Foreground="{StaticResource Background4}">

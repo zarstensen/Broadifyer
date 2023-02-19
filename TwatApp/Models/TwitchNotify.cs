@@ -269,7 +269,7 @@ namespace TwatApp.Models
         /// </summary>
         public async Task<List<ICategory>> categoriesFromNames(List<string> names)
         {
-            List<string> non_cached_names = names.Where(name => m_cached_categories.Values.Any(value => value.Name == name)).ToList();
+            List<string> non_cached_names = names.Where(name => !m_cached_categories.Values.Any(value => value.Name == name)).ToList();
 
             if (non_cached_names.Count > 0)
             {
@@ -286,6 +286,15 @@ namespace TwatApp.Models
             // now act as if all ids exist in the cache
 
             return m_cached_categories.Values.Where(category => names.Contains(category.Name)).ToList();
+        }
+
+        public async Task<ICategory?> categoryFromName(string name)
+        {
+            List<ICategory> found_categoreis = await categoriesFromNames(new() { name });
+
+            if (found_categoreis.Count != 1)
+                return null;
+            return found_categoreis[0];
         }
 
         /// <summary>
@@ -349,6 +358,11 @@ namespace TwatApp.Models
                 File.Delete(streamer.IconFileOnline);
                 File.Delete(streamer.IconFileOffline);
             }
+        }
+
+        public void filterCategory(ICategory category, IStreamer streamer)
+        {
+            m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category));
         }
 
         /// <summary>
@@ -501,7 +515,7 @@ namespace TwatApp.Models
                 {
                     should_notify = !streamer_info.WhitelistCategories;
 
-                    foreach (ICategoryInfo category_info in streamer_info.FilteredCategories)
+                    foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
                     {
                         if (category_info.Category.Id == category_id)
                         {
@@ -610,7 +624,7 @@ namespace TwatApp.Models
 
         private class StreamerInfo : IStreamerInfo
         {
-            public StreamerInfo(Streamer streamer, List<ICategoryInfo>? categories = null, bool whitelist = true, bool enable = true)
+            public StreamerInfo(Streamer streamer, Dictionary<string, ICategoryInfo>? categories = null, bool whitelist = true, bool enable = true)
             {
                 this.streamer = streamer;
                 m_categories = categories ?? new();
@@ -620,7 +634,7 @@ namespace TwatApp.Models
 
             public IStreamer Streamer => streamer;
 
-            public List<ICategoryInfo> FilteredCategories => m_categories;
+            public Dictionary<string, ICategoryInfo> FilteredCategories => m_categories;
             public bool WhitelistCategories { get => m_whitelist; set => m_whitelist = value; }
             public bool Enable { get => m_enable; set => m_enable = value; }
 
@@ -636,7 +650,7 @@ namespace TwatApp.Models
             public Streamer streamer;
 
             [JsonIgnore]
-            protected List<ICategoryInfo> m_categories = new();
+            protected Dictionary<string, ICategoryInfo> m_categories = new();
 
             [JsonIgnore]
             protected bool m_whitelist = true;

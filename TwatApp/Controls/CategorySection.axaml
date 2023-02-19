@@ -8,7 +8,7 @@
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource Background1}" RowDefinitions="50,1*">
+    <Grid RowDefinitions="50,1*">
         <StackPanel Orientation="Horizontal">
             <TextBlock Classes="h1">
                 Categories
@@ -46,12 +46,12 @@
                                 Command="{Binding #self.AddCommand}">
                                 ADD
                             </Button>
-                            <Button
+                            <ToggleButton
                                 Grid.Column="2"
-                                Classes="Button1"
+                                Classes="Whitelist"
                                 Command="{Binding #self.ToggleWhitelistCommand}">
                                 WHITELIST
-                            </Button>
+                            </ToggleButton>
                         </StackPanel>
                     </Grid>
                 </Border>

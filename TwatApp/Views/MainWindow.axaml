@@ -42,13 +42,14 @@
             RemoveCommand="{Binding removeStreamer}"
             SelectedStreamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
             StreamerInput="{Binding StreamerInput.Value}"
-            StreamerModified="{Binding onStreamerModified}"
-            Streamers="{Binding Streamers}"/>
+            Streamers="{Binding Streamers}" />
         <c:CategorySection
             Grid.Column="1"
             Margin="0,0,30,30"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
+            AddCommand="{Binding addCategory}"
+            CategoryInput="{Binding CategoryInput.Value, Mode=TwoWay}"
             Streamer="{Binding SelectedStreamer.Value.Streamer, Mode=TwoWay}" />
     </Grid>
     <!--<Grid RowDefinitions="1*,1*">
