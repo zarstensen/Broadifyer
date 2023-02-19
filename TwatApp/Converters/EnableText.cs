@@ -5,19 +5,23 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TwatApp.Models;
 
 namespace TwatApp.Converters
 {
-    public class DisableText : IValueConverter
+    public class EnableText : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is bool disable)
-                return disable ? "ENABLE" : "DISABLE";
+            if (value is bool enable)
+                return enable ? "DISABLE" : "ENABLE";
             else
                 throw new NotImplementedException();
         }
 
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();        
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -8,7 +8,7 @@
     <TrimMode>copyused</TrimMode>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <PlatformTarget>x64</PlatformTarget>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>Enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
   </PropertyGroup>

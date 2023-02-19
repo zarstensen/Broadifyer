@@ -37,20 +37,19 @@
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
-            AddCommand="{Binding addCommand}"
-            AddFollowedCommand="{Binding addFollowedCommand}"
-            RemoveStreamerCommand="{Binding removeStreamer}"
+            AddCommand="{Binding addStreamer}"
+            AddFollowedCommand="{Binding addFollowedStreamers}"
+            RemoveCommand="{Binding removeStreamer}"
             SelectedStreamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
-            StreamerInput="{Binding StreamerName.Value}"
-            Streamers="{Binding Streamers}"
-            ToggleDisableCommand="{Binding toggleDisable}" />
+            StreamerInput="{Binding StreamerInput.Value}"
+            StreamerModified="{Binding onStreamerModified}"
+            Streamers="{Binding Streamers}"/>
         <c:CategorySection
             Grid.Column="1"
             Margin="0,0,30,30"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
-            StreamerName="{Binding SelectedStreamer.Value.Streamer.DisplayName}" />
+            Streamer="{Binding SelectedStreamer.Value.Streamer, Mode=TwoWay}" />
     </Grid>
     <!--<Grid RowDefinitions="1*,1*">
         <TextBlock

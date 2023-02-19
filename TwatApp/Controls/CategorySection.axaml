@@ -18,7 +18,7 @@
                 VerticalAlignment="Bottom"
                 Classes="h2"
                 FontWeight="Normal"
-                Text="{Binding #self.StreamerName}" />
+                Text="{Binding #self.Streamer.DisplayName}" />
         </StackPanel>
 
         <!--  Streamer editor  -->
@@ -112,9 +112,9 @@
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
                                         Classes="Button1"
-                                        Command="{Binding #self.ToggleDisableCommand}"
+                                        Command="{Binding #self.ToggleEnableCommand}"
                                         CommandParameter="{Binding $self}"
-                                        Content="{Binding Disable, Converter={StaticResource DisableTextConverter}}" />
+                                        Content="{Binding Enable, Converter={StaticResource EnableTextConverter}}" />
                                 </Grid>
 
                                 <!--  Separator  -->

@@ -9,13 +9,13 @@ namespace TwatApp.Models
 {
     public class React<T> : ReactiveObject
     {
-        public React()
+        public React(T val = default!, string? name = null, ReactiveObject? obj = null)
         {
-            Value = default!;
-        }
+            // removes null reference warning, even though it is assigned already in the Value propertyw.
+            m_data = val;
 
-        public React(T val)
-        {
+            m_name = name ?? nameof(Value);
+            m_obj = obj ?? this;
             Value = val;
         }
 
@@ -32,13 +32,11 @@ namespace TwatApp.Models
         public T Value
         {
             get => m_data;
-            set
-            {
-                m_data = value;
-                this.RaisePropertyChanged(nameof(Value));
-            }
+            set => m_obj.RaiseAndSetIfChanged(ref m_data, value, m_name);
         }
 
         protected T m_data;
+        protected string m_name;
+        protected ReactiveObject m_obj;
     }
 }

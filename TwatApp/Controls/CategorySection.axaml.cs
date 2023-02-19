@@ -10,9 +10,6 @@ namespace TwatApp.Controls
         public CategorySection()
         {
             InitializeComponent();
-
-            StreamerNameProperty.Changed.AddClassHandler<CategorySection>((x, y) => Trace.WriteLine("TTTT"));
-
 		}
 
 		public static readonly StyledProperty<IStreamer?> StreamerProperty =
@@ -23,16 +20,6 @@ namespace TwatApp.Controls
 		{
 			get => GetValue(StreamerProperty);
 			set => SetValue(StreamerProperty, value);
-		}
-
-
-		public static readonly StyledProperty<string> StreamerNameProperty =
-			AvaloniaProperty.Register<CategorySection, string>(nameof(StreamerName));
-
-		public string StreamerName
-		{
-			get => GetValue(StreamerNameProperty);
-			set => SetValue(StreamerNameProperty, value);
 		}
 
 

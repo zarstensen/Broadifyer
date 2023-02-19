@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using DynamicData.Kernel;
 using DynamicData.Tests;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Input;
 using TwatApp.Models;
+using TwatApp.ViewModels;
 
 namespace TwatApp.Controls
 {
@@ -16,35 +18,26 @@ namespace TwatApp.Controls
 		public StreamerSection()
         {
             InitializeComponent();
-			StreamerInputProperty.Changed.AddClassHandler<StreamerSection>((x, y) => Trace.WriteLine(y.NewValue));
         }
 
-		public static readonly StyledProperty<IStreamerInfo?> SelectedStreamerProperty =
-			AvaloniaProperty.Register<StreamerSection, IStreamerInfo?>(nameof(SelectedStreamer), defaultBindingMode: BindingMode.OneWayToSource);
 
-		public IStreamerInfo? SelectedStreamer
+		public static readonly StyledProperty<ICommand> ToggleEnableCommandProperty =
+			AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(ToggleEnableCommand));
+
+		public ICommand ToggleEnableCommand
 		{
-			get => GetValue(SelectedStreamerProperty);
-			set => SetValue(SelectedStreamerProperty, value);
-		}
-
-		public static readonly StyledProperty<ICommand> ToggleDisableCommandProperty =
-			AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(ToggleDisableCommand));
-
-		public ICommand ToggleDisableCommand
-		{
-			get => GetValue(ToggleDisableCommandProperty);
-			set => SetValue(ToggleDisableCommandProperty, value);
+			get => GetValue(ToggleEnableCommandProperty);
+			set => SetValue(ToggleEnableCommandProperty, value);
 		}
 
 
-		public static readonly StyledProperty<ICommand> RemoveStreamerCommandProperty =
-			AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(RemoveStreamerCommand));
+		public static readonly StyledProperty<ICommand> RemoveCommandProperty =
+			AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(RemoveCommand));
 
-		public ICommand RemoveStreamerCommand
+		public ICommand RemoveCommand
 		{
-			get => GetValue(RemoveStreamerCommandProperty);
-			set => SetValue(RemoveStreamerCommandProperty, value);
+			get => GetValue(RemoveCommandProperty);
+			set => SetValue(RemoveCommandProperty, value);
 		}
 
 
@@ -68,6 +61,16 @@ namespace TwatApp.Controls
 		}
 
 
+		public static readonly StyledProperty<ICommand> StreamerModifiedProperty =
+			AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(StreamerModified));
+
+		public ICommand StreamerModified
+		{
+			get => GetValue(StreamerModifiedProperty);
+			set => SetValue(StreamerModifiedProperty, value);
+		}
+
+
 		public static readonly StyledProperty<string> StreamerInputProperty =
 			AvaloniaProperty.Register<StreamerSection, string>(nameof(StreamerInput), defaultBindingMode: BindingMode.TwoWay);
 
@@ -77,22 +80,22 @@ namespace TwatApp.Controls
 			set => SetValue(StreamerInputProperty, value);
 		}
 
-		public static readonly StyledProperty<List<IStreamerInfo>> StreamersProperty =
-			AvaloniaProperty.Register<StreamerSection, List<IStreamerInfo>>(nameof(Streamers));
+		public static readonly StyledProperty<IList<StreamerViewModel>> StreamersProperty =
+			AvaloniaProperty.Register<StreamerSection, IList<StreamerViewModel>>(nameof(Streamers));
 
-		public List<IStreamerInfo> Streamers
+		public IList<StreamerViewModel> Streamers
 		{
 			get => GetValue(StreamersProperty);
 			set => SetValue(StreamersProperty, value);
 		}
 
-		public void StreamerChanged(object sender, Avalonia.Controls.SelectionChangedEventArgs args)
-		{
-			
-			RaisePropertyChanged(SelectedStreamerProperty, Avalonia.Data.Optional<IStreamerInfo?>.Empty, Avalonia.Data.Optional<IStreamerInfo?>.Empty);
-		}
+        public static readonly StyledProperty<StreamerViewModel?> SelectedStreamerProperty =
+            AvaloniaProperty.Register<StreamerSection, StreamerViewModel?>(nameof(SelectedStreamer), defaultBindingMode: BindingMode.OneWayToSource);
 
-
-
-	}
+        public StreamerViewModel? SelectedStreamer
+        {
+            get => GetValue(SelectedStreamerProperty);
+            set => SetValue(SelectedStreamerProperty, value);
+        }
+    }
 }

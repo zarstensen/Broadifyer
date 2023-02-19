@@ -14,7 +14,7 @@ namespace TwatApp.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if(value is SolidColorBrush)
+            if(value is SolidColorBrush && parameter is string)
             {
                 SolidColorBrush brush = (SolidColorBrush)value;
                 Color color = brush.Color;
@@ -28,7 +28,7 @@ namespace TwatApp.Converters
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is SolidColorBrush)
+            if (value is SolidColorBrush && parameter is string)
             {
                 SolidColorBrush brush = (SolidColorBrush)value;
                 Color color = brush.Color;

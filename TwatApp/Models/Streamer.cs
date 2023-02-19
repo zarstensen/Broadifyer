@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using System.Collections;
+using ReactiveUI;
 
 namespace TwatApp.Models
 {
@@ -35,7 +36,9 @@ namespace TwatApp.Models
         /// </summary>
 
         [JsonIgnore]
-        public string IconFile { get; }
+        public string IconFileOnline { get; }
+        [JsonIgnore]
+        public string IconFileOffline { get; }
         /// <summary>
         /// uri to where the broadcaster icon / profile image is stored online.
         /// </summary>
@@ -73,11 +76,12 @@ namespace TwatApp.Models
         /// the IStreamer instance this class contains data about.
         /// </summary>
         public IStreamer Streamer { get; }
-        /// <summary>
-        /// 
-        /// </summary>
+        
         [JsonIgnore]
-        public Bitmap? Icon { get; }
+        public Bitmap? GrayIcon { get; }
+        
+        [JsonIgnore]
+        public Bitmap? RgbIcon { get; }
         /// <summary>
         /// what categories should be filtered, when deciding wheather to send a notification or not.
         /// 
@@ -100,25 +104,28 @@ namespace TwatApp.Models
         public ICategory? CurrentCategory { get; }
         /// <summary>
         /// wheather the broadcaster is currently live.
+        /// if null, the streamer broadcast status has not yet been polled.
         /// </summary>
         [JsonIgnore]
-        public bool IsLive { get; }
+        public bool? IsLive { get; }
         /// <summary>
         /// if true:
-        ///     no notifications will be sent, no matter what
-        /// if false:
         ///     notifications will be sent, if the live and filtered categories conditions are met.
+        /// if false:
+        ///     no notifications will be sent, no matter what
         /// </summary>
-        public bool Disable { get; set; }
+        public bool Enable { get; set; }
 
         public Task prepareIcons();
+
+        //public event EventHandler<IStreamerInfo> StreamerUpdated;
 
         int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
         {
             if (other == null)
                 return 1;
 
-            int live_compare = IsLive.CompareTo(other.IsLive);
+            int live_compare = (IsLive ?? false).CompareTo((other.IsLive ?? false));
 
             if (live_compare != 0)
                 return -live_compare;

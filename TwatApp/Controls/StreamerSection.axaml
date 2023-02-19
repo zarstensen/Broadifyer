@@ -101,12 +101,12 @@
                                         Grid.ColumnSpan="2"
                                         VerticalAlignment="Center"
                                         Classes="h2"
-                                        Text="{Binding Streamer.DisplayName}" />
+                                        Text="{Binding DisplayName}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         VerticalAlignment="Center"
                                         Classes="h3"
-                                        Text="{Binding CurrentCategory.Name}" />
+                                        Text="{Binding CategoryName}" />
 
                                     <!--  Buttons  -->
                                     <Button
@@ -119,23 +119,27 @@
                                         HorizontalContentAlignment="Center"
                                         Background="{StaticResource Background3}"
                                         Classes="Button1"
-                                        Command="{Binding #self.RemoveStreamerCommand}"
+                                        Command="{Binding #self.RemoveCommand}"
                                         CommandParameter="{Binding Streamer}"
                                         Foreground="{StaticResource Background4}">
                                         <!--  TODO: should maybe not be text but an icon or something?  -->
                                         X
                                     </Button>
-                                    <Button
+                                    <ToggleButton
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Margin="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
-                                        Classes="Button1"
-                                        Command="{Binding #self.ToggleDisableCommand}"
+                                        Command="{Binding #self.StreamerModified}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding Enable.Value, Converter={StaticResource EnableTextConverter}}"
+                                        IsChecked="{Binding Enable.Value}" />
+                                    <!--
+                                        Command="{Binding #self.ToggleEnableCommand}"
                                         CommandParameter="{Binding $self}"
-                                        Content="{Binding Disable, Converter={StaticResource DisableTextConverter}}" />
+                                    -->
                                 </Grid>
 
                                 <!--  Separator  -->

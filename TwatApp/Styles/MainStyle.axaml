@@ -6,12 +6,14 @@
     <Design.PreviewWith>
         <Border Padding="20" Background="{StaticResource Background1}">
             <Border Padding="10" Background="{StaticResource Background2}">
-                <StackPanel>
-                    <Button Classes="Button1">Test Button</Button>
-                    <TextBox Classes="InputField">Test Input Field</TextBox>
-                    <TextBlock Classes="h1">Test Text h1</TextBlock>
-                    <TextBlock Classes="h2">Test Text h2</TextBlock>
-                    <TextBlock Classes="h3">Test Text h3</TextBlock>
+                <StackPanel Spacing="5">
+                    <Button>Button</Button>
+                    <ToggleButton IsChecked="false">Toggle Button</ToggleButton>
+                    <TextBox>Input Text</TextBox>
+                    <TextBox Watermark="Watermark Text" />
+                    <TextBlock Classes="h1">Text h1</TextBlock>
+                    <TextBlock Classes="h2">Text h2</TextBlock>
+                    <TextBlock Classes="h3">Text h3</TextBlock>
                 </StackPanel>
             </Border>
         </Border>
@@ -19,7 +21,7 @@
 
     <!--  Button  -->
 
-    <Style Selector="Button.Button1">
+    <Style Selector="Button,ToggleButton">
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
         <Setter Property="Background" Value="{StaticResource Background4}" />
@@ -36,9 +38,39 @@
         <Setter Property="Button.Foreground" Value="{Binding $parent[Button].Foreground, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
+    <!--  Toggle Button  -->
+
+    <Style Selector="ToggleButton">
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
+        <Setter Property="Background" Value="{StaticResource Background3}" />
+        <Setter Property="Button.Foreground" Value="{StaticResource Background4}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{StaticResource Background4}" />
+        <Setter Property="ToggleButton.Foreground" Value="{StaticResource Background5}" />
+    </Style>
+
+    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{Binding $parent.Background, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+
+    <Style Selector="ToggleButton:pointerover:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Button.Background" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{StaticResource Background5}" />
+
+    </Style>
+
     <!--  InputField  -->
 
-    <Style Selector="TextBox.InputField">
+    <Style Selector="TextBox">
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
