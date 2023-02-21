@@ -41,15 +41,8 @@
     <!--  Toggle Button  -->
 
     <Style Selector="ToggleButton">
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
         <Setter Property="Background" Value="{StaticResource Background3}" />
         <Setter Property="Button.Foreground" Value="{StaticResource Background4}" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
@@ -81,32 +74,23 @@
         <Setter Property="CaretBrush" Value="{StaticResource Background5}" />
     </Style>
 
-    <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark">
+    <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_Watermark">
         <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-    </Style>
-
-    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement, TextBox:focus /template/ Border#PART_BorderElement">
         <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="{StaticResource Background4}" />
-    </Style>
-
-    <Style Selector="TextBox:pointerover /template/ ContentPresenter">
+    <Style Selector="TextBox:pointerover /template/ TextPresenter#PART_TextPresenter, TextBox:focus /template/ TextPresenter#PART_TextPresenter">
         <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
         <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
         <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
-    <Style Selector="TextBox:focus /template/ ContentPresenter">
-        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{StaticResource Background4}" />
     </Style>
 
     <!--  TextFields  -->
