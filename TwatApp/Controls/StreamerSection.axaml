@@ -44,7 +44,7 @@
                     x:Name="StreamerList"
                     Grid.Row="1"
                     Background="Transparent"
-                    Items="{Binding #self.Streamers}"
+                    Items="{Binding #self.Streamers, Mode=OneWay}"
                     SelectedItem="{Binding #self.SelectedStreamer, Mode=TwoWay}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -111,7 +111,7 @@
                                         HorizontalContentAlignment="Center"
                                         Background="{StaticResource Background3}"
                                         Command="{Binding #self.RemoveCommand}"
-                                        CommandParameter="{Binding Streamer}"
+                                        CommandParameter="{Binding}"
                                         Foreground="{StaticResource Background4}">
                                         <!--  TODO: should maybe not be text but an icon or something?  -->
                                         X

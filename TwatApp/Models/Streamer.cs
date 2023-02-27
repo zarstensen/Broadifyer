@@ -66,6 +66,12 @@ namespace TwatApp.Models
         }
     }
 
+    public enum StreamerChange
+    {
+        Broadcast,
+        Category,
+    }
+
     /// <summary>
     /// class representing various configuration and state info about a specific IStreamer instance.
     /// </summary>
@@ -111,6 +117,8 @@ namespace TwatApp.Models
         /// </summary>
         [JsonIgnore]
         public bool? IsLive { get; }
+        [JsonIgnore]
+        public bool WasNotified { get; }
         /// <summary>
         /// if true:
         ///     notifications will be sent, if the live and filtered categories conditions are met.
@@ -121,7 +129,7 @@ namespace TwatApp.Models
 
         public Task prepareIcons();
 
-        //public event EventHandler<IStreamerInfo> StreamerUpdated;
+        public event EventHandler<StreamerChange>? StreamerUpdated;
 
         int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
         {

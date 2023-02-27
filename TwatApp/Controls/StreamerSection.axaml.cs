@@ -7,6 +7,7 @@ using DynamicData.Tests;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using TwatApp.Models;
 using TwatApp.ViewModels;
@@ -42,10 +43,12 @@ namespace TwatApp.Controls
         public StreamerSection()
         {
             InitializeComponent();
+			SelectedStreamerProperty.Changed.Subscribe(x => Trace.WriteLine($"val: {x.NewValue}"));
         }
 
 
-		public ICommand ToggleEnableCommand
+
+        public ICommand ToggleEnableCommand
 		{
 			get => GetValue(ToggleEnableCommandProperty);
 			set => SetValue(ToggleEnableCommandProperty, value);

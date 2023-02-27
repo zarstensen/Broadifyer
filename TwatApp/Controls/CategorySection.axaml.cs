@@ -18,8 +18,7 @@ namespace TwatApp.Controls
         public static readonly StyledProperty<string> CategoryInputProperty =
     AvaloniaProperty.Register<CategorySection, string>(nameof(CategoryInput));
 
-
-        public CategorySection()
+		public CategorySection()
         {
             InitializeComponent();
 		}
@@ -33,7 +32,11 @@ namespace TwatApp.Controls
 		public StreamerViewModel? Streamer
 		{
 			get => GetValue(StreamerProperty);
-			set => SetValue(StreamerProperty, value);
+			set
+			{
+				SetValue(StreamerProperty, value);
+				Trace.WriteLine("UPDATE CATEGORIES");
+			}
 		}
 
 		public string CategoryInput

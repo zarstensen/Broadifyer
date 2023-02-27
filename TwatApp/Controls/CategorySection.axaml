@@ -49,7 +49,7 @@
                             <ToggleButton
                                 Grid.Column="2"
                                 Classes="Whitelist"
-                                Command="{Binding #self.ToggleWhitelistCommand}">
+                                IsChecked="{Binding #self.WhitelistMode}">
                                 WHITELIST
                             </ToggleButton>
                         </StackPanel>
@@ -63,60 +63,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,10">
-
-                                <!--  Icon Image  -->
-
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding Icon}">
-                                    <Image.Clip>
-                                        <EllipseGeometry Rect="0,0,60,60" />
-                                    </Image.Clip>
-                                </Image>
-
-                                <Grid
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    ColumnDefinitions="1*,120"
-                                    RowDefinitions="1*,1*">
-                                    <!--  Category info  -->
-                                    <TextBlock
-                                        Grid.ColumnSpan="2"
-                                        VerticalAlignment="Center"
-                                        Classes="h2"
-                                        Text="{Binding Category.Name}" />
-
-                                    <!--  Buttons  -->
-                                    <Button
-                                        Grid.Column="1"
-                                        Width="25"
-                                        Height="25"
-                                        Padding="0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Background="{StaticResource Background3}"
-                                        Classes="Button1"
-                                        Command="{Binding #self.RemoveCommand}"
-                                        CommandParameter="{Binding Category}"
-                                        Foreground="{StaticResource Background4}">
-                                        <!--  TODO: should maybe not be text but an icon or something?  -->
-                                        X
-                                    </Button>
-                                    <Button
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="0"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        Classes="Button1"
-                                        Command="{Binding #self.ToggleEnableCommand}"
-                                        CommandParameter="{Binding $self}"
-                                        Content="{Binding Enable, Converter={StaticResource EnableTextConverter}}" />
-                                </Grid>
-
+                                <TextBlock Text="{Binding Name}" />
                                 <!--  Separator  -->
 
                                 <Border

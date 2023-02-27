@@ -10,23 +10,25 @@ using TwatApp.Models;
 
 namespace TwatApp.ViewModels
 {
-    public class CategoryViewModel : ReactiveObject
+    public class CategoryViewModel : ReactiveObject, IViewModel<ICategoryInfo>
     {
         public Expose<bool, ICategoryInfo> Enable { get; set; }
         //public Bitmap? Icon { get => m_category_info.Icon; }
-        public string Name { get => m_category_info.Category.Name; }
+        public string Name { get => category_info.Category.Name; }
+
+        public CategoryViewModel() { }
 
         public CategoryViewModel(ICategoryInfo category_info)
         {
-            m_category_info = category_info;
-            Enable = new(m_category_info, nameof(m_category_info.Enable));
+            supplyModel(category_info);
         }
 
-        protected ICategoryInfo m_category_info;
-    }
+        public ICategoryInfo category_info;
 
-    //public class WhitelistedCategories : ReactiveObject
-    //{
-    //    AvaloniaList<CategoryViewModel> WhitelistedCategories { get; }
-    //}
+        public void supplyModel(ICategoryInfo model)
+        {
+            this.category_info = model;
+            Enable = new(category_info, nameof(category_info.Enable));
+        }
+    }
 }

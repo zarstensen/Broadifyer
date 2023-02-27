@@ -27,7 +27,7 @@ namespace TwatApp.ViewModels
             {
                 await notifier.authUser("token.txt", false);
                 await notifier.loadConfiguration("config.json");
-                notifier.PollInterval = 10;
+                notifier.PollInterval = 1;
                 notifier.StreamerNotify += notifyUser;
                 notifier.startNotify();
             }).Start();

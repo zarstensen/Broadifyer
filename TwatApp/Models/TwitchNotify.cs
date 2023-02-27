@@ -49,10 +49,6 @@ namespace TwatApp.Models
         public int PollInterval { get; set; } = 60;
 
         /// <summary>
-        /// invoked whenever any of the registered streamers change their stream status or category.
-        /// </summary>
-        public EventHandler<IStreamerInfo>? StreamerChanged;
-        /// <summary>
         /// invoked whenever a user should be notified of a streamers broadcast.
         /// </summary>
         public EventHandler<IStreamerInfo>? StreamerNotify;
@@ -269,6 +265,8 @@ namespace TwatApp.Models
         /// </summary>
         public async Task<List<ICategory>> categoriesFromNames(List<string> names)
         {
+            names = names.Select(elem => elem.ToLower()).ToList();
+
             List<string> non_cached_names = names.Where(name => !m_cached_categories.Values.Any(value => value.Name == name)).ToList();
 
             if (non_cached_names.Count > 0)
@@ -285,7 +283,7 @@ namespace TwatApp.Models
 
             // now act as if all ids exist in the cache
 
-            return m_cached_categories.Values.Where(category => names.Contains(category.Name)).ToList();
+            return m_cached_categories.Values.Where(category => names.Contains(category.Name.ToLower())).ToList();
         }
 
         public async Task<ICategory?> categoryFromName(string name)
@@ -336,7 +334,7 @@ namespace TwatApp.Models
                 {
                     m_streamers[streamer.Id] = new StreamerInfo((Streamer)streamer);
                     await m_streamers[streamer.Id].prepareIcons();
-                    StreamerChanged?.Invoke(this, m_streamers[streamer.Id]);
+                    //(m_streamers[streamer.Id] as StreamerInfo)!.notifyUpdate();
                 }
             }
             await poll();
@@ -392,7 +390,11 @@ namespace TwatApp.Models
                 foreach (IStreamerInfo streamer in currentStreamers())
                 {
                     await streamer.prepareIcons();
-                    StreamerChanged?.Invoke(this, streamer);
+
+                    //if (streamer is StreamerInfo sinfo)
+                    //    sinfo.notifyUpdate();
+                    //else
+                    //    throw new InvalidCastException();
                 }
             }
         }
@@ -495,7 +497,8 @@ namespace TwatApp.Models
         // update the passed streamer_info api and call StreamerChanged and streamerNotify if necessary
         protected async Task updateStreamInfo(IStreamerInfo streamer_info, bool is_live, string? category_id)
         {
-            bool state_changed = false;
+            bool broadcast_change = false;
+            bool category_change = false;
             bool should_notify = false;
 
             // check if a toast noficiation should be sent
@@ -503,48 +506,63 @@ namespace TwatApp.Models
             //
             // the first time this is called, the IsLive property will be null.
             // currently, the user will not get a notification, when a streamer is polled for the first time.
-            if (!(streamer_info.IsLive ?? true) && is_live)
+
+            broadcast_change = streamer_info.IsLive ?? true != is_live;
+
+            if (!broadcast_change && streamer_info.CurrentCategory?.Id == category_id)
+                category_change = true;
+
+            if (streamer_info.FilteredCategories.Count == 0)
             {
-                state_changed = true;
+                should_notify = is_live;
+            }
+            else
+            {
+                should_notify = !streamer_info.WhitelistCategories;
 
-                if (streamer_info.FilteredCategories.Count == 0)
+                foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
                 {
-                    should_notify = true;
-                }
-                else
-                {
-                    should_notify = !streamer_info.WhitelistCategories;
-
-                    foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
+                    if (category_info.Category.Id == category_id)
                     {
-                        if (category_info.Category.Id == category_id)
-                        {
-                            if (!category_info.Enable)
-                                should_notify = !should_notify;
+                        if (!category_info.Enable)
+                            should_notify = !should_notify;
 
-                            break;
-                        }
+                        break;
                     }
                 }
             }
+            
 
             // update fields.
 
-            if (streamer_info.IsLive != is_live || (streamer_info.CurrentCategory?.Id ?? String.Empty) != category_id)
-                state_changed = true;
+            if(streamer_info is StreamerInfo sinfo)
+            {
+                sinfo!.is_live = is_live;
 
-            (streamer_info as StreamerInfo)!.is_live = is_live;
+                // reset notified status, as the user should only be notified once per broadcast start.
+                if (!(sinfo.IsLive ?? false))
+                    sinfo.was_notified = false;
 
-            if (category_id != null && category_id != "")
-                (streamer_info as StreamerInfo)!.current_category = (await categoriesFromIds(new() { category_id }))[0];
+                if (category_id != null && category_id != "")
+                    sinfo.current_category = (await categoriesFromIds(new() { category_id }))[0];
+                else
+                    sinfo.current_category = null;
+
+                if (broadcast_change)
+                    sinfo.notifyUpdate(StreamerChange.Broadcast);
+                else if (category_change)
+                    sinfo.notifyUpdate(StreamerChange.Category);
+
+                if (should_notify && !sinfo.was_notified)
+                {
+                    sinfo.was_notified = true;
+                    StreamerNotify?.Invoke(this, streamer_info);
+                }
+            }
             else
-                (streamer_info as StreamerInfo)!.current_category = null;
+                // should never be hit.
+                throw new InvalidCastException();
 
-            if (state_changed)
-                StreamerChanged?.Invoke(this, streamer_info);
-
-            if (should_notify)
-                StreamerNotify?.Invoke(this, streamer_info);
         }
 
         #endregion protected methods
@@ -646,6 +664,8 @@ namespace TwatApp.Models
 
             public Bitmap? RgbIcon => m_icon_rgb;
 
+            public bool WasNotified => was_notified;
+
             [JsonIgnore]
             public Streamer streamer;
 
@@ -669,6 +689,10 @@ namespace TwatApp.Models
 
             [JsonIgnore]
             protected Bitmap? m_icon_gray = null;
+            [JsonIgnore]
+            public bool was_notified = false;
+
+            public event EventHandler<StreamerChange>? StreamerUpdated;
 
             public async Task prepareIcons()
             {
@@ -678,6 +702,10 @@ namespace TwatApp.Models
                 m_icon_gray = new(Streamer.IconFileOffline);
             }
             
+            public void notifyUpdate(StreamerChange change)
+            {
+                StreamerUpdated?.Invoke(this, change);
+            }
         }
 
         public class Category : ICategory

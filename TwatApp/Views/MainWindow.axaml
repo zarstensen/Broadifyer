@@ -20,9 +20,9 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:MainWindowViewModel />
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Grid
         HorizontalAlignment="Stretch"
@@ -50,6 +50,6 @@
             VerticalAlignment="Stretch"
             AddCommand="{Binding addCategory}"
             CategoryInput="{Binding CategoryInput.Value, Mode=TwoWay}"
-            Streamer="{Binding SelectedStreamer.Value.Streamer, Mode=TwoWay}" />
+            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}" />
     </Grid>
 </Window>
