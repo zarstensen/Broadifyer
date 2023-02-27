@@ -334,7 +334,6 @@ namespace TwatApp.Models
                 {
                     m_streamers[streamer.Id] = new StreamerInfo((Streamer)streamer);
                     await m_streamers[streamer.Id].prepareIcons();
-                    //(m_streamers[streamer.Id] as StreamerInfo)!.notifyUpdate();
                 }
             }
             await poll();
@@ -358,6 +357,9 @@ namespace TwatApp.Models
             }
         }
 
+        /// <summary>
+        /// adds a category to filter for notifications associated with the passed streamer.
+        /// </summary>
         public void filterCategory(ICategory category, IStreamer streamer)
         {
             m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category));
@@ -388,14 +390,7 @@ namespace TwatApp.Models
                 m_streamers = config.Select(kv => new KeyValuePair<string, IStreamerInfo>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
 
                 foreach (IStreamerInfo streamer in currentStreamers())
-                {
                     await streamer.prepareIcons();
-
-                    //if (streamer is StreamerInfo sinfo)
-                    //    sinfo.notifyUpdate();
-                    //else
-                    //    throw new InvalidCastException();
-                }
             }
         }
 
@@ -462,7 +457,6 @@ namespace TwatApp.Models
             {
                 // if there are no registered live streamers, simply do nothing and wait for the poll interval,
 
-                
                 List<string> ids = currentStreamers().Where(info => info.Enable).Select(info => info.Streamer.Id).ToList();
 
                 if (ids.Count == 0)
@@ -497,9 +491,7 @@ namespace TwatApp.Models
         // update the passed streamer_info api and call StreamerChanged and streamerNotify if necessary
         protected async Task updateStreamInfo(IStreamerInfo streamer_info, bool is_live, string? category_id)
         {
-            bool broadcast_change = false;
             bool category_change = false;
-            bool should_notify = false;
 
             // check if a toast noficiation should be sent
             // this should happen if the user has just gone live, and the filtered categories are correct.
@@ -507,10 +499,12 @@ namespace TwatApp.Models
             // the first time this is called, the IsLive property will be null.
             // currently, the user will not get a notification, when a streamer is polled for the first time.
 
-            broadcast_change = streamer_info.IsLive ?? true != is_live;
+            bool broadcast_change = streamer_info.IsLive ?? true != is_live;
 
             if (!broadcast_change && streamer_info.CurrentCategory?.Id == category_id)
                 category_change = true;
+
+            bool should_notify;
 
             if (streamer_info.FilteredCategories.Count == 0)
             {
@@ -531,11 +525,11 @@ namespace TwatApp.Models
                     }
                 }
             }
-            
+
 
             // update fields.
 
-            if(streamer_info is StreamerInfo sinfo)
+            if (streamer_info is StreamerInfo sinfo)
             {
                 sinfo!.is_live = is_live;
 
@@ -588,6 +582,9 @@ namespace TwatApp.Models
 
             public async Task prepareIcon()
             {
+                // prepare a full rgb local image, as well as a grayscale version of the image,
+                // in order to avoid re applying the grayscale image step, every time the offline icon is used.
+                
                 if (File.Exists(IconFileOnline))
                     return;
 
@@ -611,6 +608,8 @@ namespace TwatApp.Models
 
             protected Bitmap grayFromRgb(Bitmap source)
             {
+                // in order to modify the source image, it is saved to a memory stream, which is loaded into a WiteableBitmap, that then is modified and returned as a Bitmap.
+
                 SystemStream image_stream = new MemoryStream();
 
                 source.Save(image_stream);
@@ -627,6 +626,7 @@ namespace TwatApp.Models
                         {
                             if (buffer.Format == PixelFormat.Rgba8888 || buffer.Format == PixelFormat.Bgra8888)
                             {
+                                // take the average value of the red green and blue channel, as the gray value.
                                 byte avg = (byte)((pixel[0] + pixel[1] + pixel[2]) / 3);
                                 pixel[0] = avg;
                                 pixel[1] = avg;
@@ -670,25 +670,11 @@ namespace TwatApp.Models
             public Streamer streamer;
 
             [JsonIgnore]
-            protected Dictionary<string, ICategoryInfo> m_categories = new();
-
-            [JsonIgnore]
-            protected bool m_whitelist = true;
-
-            [JsonIgnore]
-            protected bool m_enable;
-
-            [JsonIgnore]
             public ICategory? current_category = null;
 
             [JsonIgnore]
             public bool? is_live = null;
 
-            [JsonIgnore]
-            protected Bitmap? m_icon_rgb = null;
-
-            [JsonIgnore]
-            protected Bitmap? m_icon_gray = null;
             [JsonIgnore]
             public bool was_notified = false;
 
@@ -702,10 +688,27 @@ namespace TwatApp.Models
                 m_icon_gray = new(Streamer.IconFileOffline);
             }
             
+            // StreamerUpdate cannot be invoked outside this class, so this helper method is implemented,
+            // in order for the TwitchNotifyer instance, to invoke a StreamerUpdated event.
             public void notifyUpdate(StreamerChange change)
             {
                 StreamerUpdated?.Invoke(this, change);
             }
+            
+            [JsonIgnore]
+            protected Dictionary<string, ICategoryInfo> m_categories = new();
+
+            [JsonIgnore]
+            protected bool m_whitelist = true;
+
+            [JsonIgnore]
+            protected bool m_enable;
+
+            [JsonIgnore]
+            protected Bitmap? m_icon_rgb = null;
+
+            [JsonIgnore]
+            protected Bitmap? m_icon_gray = null;
         }
 
         public class Category : ICategory
@@ -764,8 +767,6 @@ namespace TwatApp.Models
             protected Bitmap? m_icon = null;
             protected bool m_enable;
             protected ICategory m_category;
-
-
         }
 
         #endregion interface implementations

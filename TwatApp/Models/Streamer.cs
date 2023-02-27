@@ -92,9 +92,9 @@ namespace TwatApp.Models
         /// 
         /// dictionary of category ids and their associated ICategoryInfo instances, for this streamer.
         /// 
-        /// what categories should be filtered, when deciding wheather to send a notification or not.
+        /// what categories should be filtered, when deciding whether to send a notification or not.
         /// 
-        /// wheather the notification will be sent if the broadcaster is streaming or not streaming the category,
+        /// whether the notification will be sent if the broadcaster is streaming or not streaming the category,
         /// is dependent on the WhitelistCategories property.
         /// 
         /// </summary>
@@ -112,11 +112,15 @@ namespace TwatApp.Models
         [JsonIgnore]
         public ICategory? CurrentCategory { get; }
         /// <summary>
-        /// wheather the broadcaster is currently live.
+        /// whether the broadcaster is currently live.
         /// if null, the streamer broadcast status has not yet been polled.
         /// </summary>
         [JsonIgnore]
         public bool? IsLive { get; }
+        /// <summary>
+        /// specifies whether the user has already been notified about the current broadcaster going live.
+        /// ideally, the user should only be notified once, per broadcast start.
+        /// </summary>
         [JsonIgnore]
         public bool WasNotified { get; }
         /// <summary>
@@ -126,9 +130,17 @@ namespace TwatApp.Models
         ///     no notifications will be sent, no matter what
         /// </summary>
         public bool Enable { get; set; }
-
+        /// <summary>
+        /// should be called, when the streamer icons should be downloaded, preprocessed and prepared for loading into the model.
+        /// </summary>
+        /// <returns></returns>
         public Task prepareIcons();
 
+        /// <summary>
+        /// called any time the streamer state is updated.
+        /// StreamerChange specifies which property has changed.
+        /// Can either be a Category change, or a broadcast status (is the boradcaster live or not) change.
+        /// </summary>
         public event EventHandler<StreamerChange>? StreamerUpdated;
 
         int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
