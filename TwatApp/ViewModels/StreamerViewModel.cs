@@ -3,6 +3,7 @@ using Avalonia.Platform;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using TwatApp.Models;
 
 namespace TwatApp.ViewModels
 {
-    public class StreamerViewModel : ReactiveObject, IViewModel<IStreamerInfo>
+    public class StreamerViewModel : ReactiveObject
     {
         public IStreamer Streamer { get => streamer_info.Streamer; }
         public Expose<bool, IStreamerInfo> Enable { get; set; }
@@ -19,47 +20,34 @@ namespace TwatApp.ViewModels
         public string CategoryName { get => streamer_info.CurrentCategory?.Name ?? ""; }
         public Bitmap? Icon { get => IsLive ? streamer_info.RgbIcon : streamer_info.GrayIcon; }
 
-        public IList<CategoryViewModel> FilteredCategories {
-            get
-            {
-                return m_categories.Data.Values.ToList();
-            }
-        }
-
-        public StreamerViewModel()
-        { }
+        public ObservableCollection<CategoryViewModel> FilteredCategories { get; set; } = new();
 
         public StreamerViewModel(IStreamerInfo streamer_info)
-        {
-            supplyModel(streamer_info);
-        }
-
-        public void supplyModel(IStreamerInfo streamer_info)
         {
             this.streamer_info = streamer_info;
 
             streamer_info.StreamerUpdated += (s, e) =>
             {
-                switch(e)
+                switch (e)
                 {
                     case StreamerChange.Broadcast:
                         this.RaisePropertyChanged(nameof(IsLive));
                         this.RaisePropertyChanged(nameof(Icon));
-                    break;
-                    
+                        break;
+
                     case StreamerChange.Category:
                         this.RaisePropertyChanged(nameof(CategoryName));
-                    break;
+                        break;
                 }
             };
 
-            m_categories = new(streamer_info.FilteredCategories);
+            foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
+                FilteredCategories.Add(new(category_info));
 
             Enable = new(streamer_info, nameof(streamer_info.Enable));
         }
 
         protected React<string> m_category_name = new();
-        protected DictWrapper<string, CategoryViewModel, ICategoryInfo> m_categories;
 
         public IStreamerInfo streamer_info;
     }

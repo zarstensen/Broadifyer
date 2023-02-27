@@ -8,9 +8,4 @@ namespace TwatApp.ViewModels
     public class ViewModelBase : ReactiveObject
     {
     }
-
-    public interface IViewModel<TModel>
-    {
-        public void supplyModel(TModel model);
-    }
 }

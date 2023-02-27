@@ -116,8 +116,12 @@ namespace TwatApp.ViewModels
                 return;
             }
 
-            notifier.filterCategory(found_category, SelectedStreamer.Value.streamer_info.Streamer);
+            var cinfo = notifier.filterCategory(found_category, SelectedStreamer.Value.streamer_info.Streamer);
             this.RaisePropertyChanged(nameof(SelectedStreamer.Value));
+
+            await cinfo.prepareIcons();
+
+            SelectedStreamer.Value.FilteredCategories.Add(new(cinfo));
         }
 
         public void removeStreamer(StreamerViewModel streamer)

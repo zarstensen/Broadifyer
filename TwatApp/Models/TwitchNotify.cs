@@ -360,9 +360,10 @@ namespace TwatApp.Models
         /// <summary>
         /// adds a category to filter for notifications associated with the passed streamer.
         /// </summary>
-        public void filterCategory(ICategory category, IStreamer streamer)
+        public ICategoryInfo filterCategory(ICategory category, IStreamer streamer)
         {
             m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category));
+            return m_streamers[streamer.Id].FilteredCategories[category.Id];
         }
 
         /// <summary>
@@ -754,7 +755,7 @@ namespace TwatApp.Models
                 {
                     string full_icon_path = Path.GetFullPath(Category.IconFile);
                     Directory.CreateDirectory(Directory.GetParent(full_icon_path)!.ToString());
-                    await File.WriteAllBytesAsync(full_icon_path, await s_http_client.GetByteArrayAsync(Category.IconUri));
+                    await File.WriteAllBytesAsync(full_icon_path, await s_http_client.GetByteArrayAsync(Category.IconUri.Replace("{width}", "300").Replace("{height}", "400")));
                 }
 
                 m_icon = new Bitmap(Category.IconFile);
