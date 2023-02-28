@@ -106,7 +106,7 @@ namespace TwatApp.ViewModels
         /// <param name="streamer"></param>
         public async void addCategory()
         {
-            if (CategoryInput.Value == "" || CategoryInput.Value.Contains(' '))
+            if (CategoryInput.Value == "")
                 return;
 
             var found_category = await notifier.categoryFromName(CategoryInput);

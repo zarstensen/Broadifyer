@@ -362,7 +362,7 @@ namespace TwatApp.Models
         /// </summary>
         public ICategoryInfo filterCategory(ICategory category, IStreamer streamer)
         {
-            m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category));
+            m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category as Category));
             return m_streamers[streamer.Id].FilteredCategories[category.Id];
         }
 
@@ -388,10 +388,15 @@ namespace TwatApp.Models
 
                 var config = JsonConvert.DeserializeObject<Dictionary<string, StreamerInfo>>(contents)!;
                 
-                m_streamers = config.Select(kv => new KeyValuePair<string, IStreamerInfo>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
+                m_streamers = config?.Select(kv => new KeyValuePair<string, IStreamerInfo>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value) ?? new();
 
                 foreach (IStreamerInfo streamer in currentStreamers())
+                {
                     await streamer.prepareIcons();
+                    
+                    foreach (ICategoryInfo category in streamer.FilteredCategories.Values)
+                        await category.prepareIcons();
+                }
             }
         }
 
@@ -643,10 +648,10 @@ namespace TwatApp.Models
 
         private class StreamerInfo : IStreamerInfo
         {
-            public StreamerInfo(Streamer streamer, Dictionary<string, ICategoryInfo>? categories = null, bool whitelist = true, bool enable = true)
+            public StreamerInfo(Streamer streamer, Dictionary<string, CategoryInfo>? filteredcategories = null, bool whitelist = true, bool enable = true)
             {
                 this.streamer = streamer;
-                m_categories = categories ?? new();
+                m_categories = filteredcategories?.ToDictionary(x => x.Key, x => (ICategoryInfo)x.Value) ?? new();
                 m_whitelist = whitelist;
                 m_enable = enable;
             }
@@ -720,7 +725,7 @@ namespace TwatApp.Models
 
             public string IconFile => Path.GetFullPath($"icons/categories/{Id}.png");
 
-            public string IconUri => m_icon_uri;
+            public string IconUri => m_icon_uri.Replace("{width}", "300").Replace("{height}", "400");
 
             public Category(string id, string name, string iconuri)
             {
@@ -736,7 +741,7 @@ namespace TwatApp.Models
 
         public class CategoryInfo : ICategoryInfo
         {
-            public CategoryInfo(ICategory category, bool enable = true)
+            public CategoryInfo(Category category, bool enable = true)
             {
                 m_category = category;
                 m_enable = enable;
@@ -755,7 +760,7 @@ namespace TwatApp.Models
                 {
                     string full_icon_path = Path.GetFullPath(Category.IconFile);
                     Directory.CreateDirectory(Directory.GetParent(full_icon_path)!.ToString());
-                    await File.WriteAllBytesAsync(full_icon_path, await s_http_client.GetByteArrayAsync(Category.IconUri.Replace("{width}", "300").Replace("{height}", "400")));
+                    await File.WriteAllBytesAsync(full_icon_path, await s_http_client.GetByteArrayAsync(Category.IconUri));
                 }
 
                 m_icon = new Bitmap(Category.IconFile);

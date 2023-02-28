@@ -45,6 +45,7 @@
                     Grid.Row="1"
                     Background="Transparent"
                     Items="{Binding #self.Streamers, Mode=OneWay}"
+					SelectionMode="AlwaysSelected"
                     SelectedItem="{Binding #self.SelectedStreamer, Mode=TwoWay}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

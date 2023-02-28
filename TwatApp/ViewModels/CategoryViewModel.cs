@@ -13,7 +13,7 @@ namespace TwatApp.ViewModels
     public class CategoryViewModel : ReactiveObject
     {
         public Expose<bool, ICategoryInfo> Enable { get; set; }
-        //public Bitmap? Icon { get => m_category_info.Icon; }
+        public Bitmap? Icon { get => category_info.Icon; }
         public string Name { get => category_info.Category.Name; }
 
         public CategoryViewModel(ICategoryInfo model)
