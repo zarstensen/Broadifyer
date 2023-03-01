@@ -18,11 +18,11 @@
 
         <Border
             Grid.Row="2"
-            Background="{StaticResource Background2}"
+            Background="{StaticResource Color2}"
             CornerRadius="25">
             <Grid RowDefinitions="75,1*">
                 <!--  Streamer adder  -->
-                <Border Background="{StaticResource Background3}" CornerRadius="25,25,0,0">
+                <Border Background="{StaticResource Color3}" CornerRadius="25,25,0,0">
                     <Grid Margin="10,20" ColumnDefinitions="1*,175">
                         <TextBox Text="{Binding #self.StreamerInput}" Watermark="Streamer name..." />
                         <StackPanel
@@ -70,7 +70,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Bottom"
                                     Background="Red"
-                                    BorderBrush="{StaticResource Background1}"
+                                    BorderBrush="{StaticResource Color1}"
                                     BorderThickness="1"
                                     CornerRadius="2"
                                     IsVisible="{Binding IsLive}">
@@ -110,10 +110,10 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
-                                        Background="{StaticResource Background3}"
+                                        Background="{StaticResource Color3}"
                                         Command="{Binding #self.RemoveCommand}"
                                         CommandParameter="{Binding}"
-                                        Foreground="{StaticResource Background4}">
+                                        Foreground="{StaticResource Color4}">
                                         <!--  TODO: should maybe not be text but an icon or something?  -->
                                         X
                                     </Button>
@@ -145,8 +145,8 @@
                                     Grid.ColumnSpan="2"
                                     Height="2"
                                     HorizontalAlignment="Stretch"
-                                    Background="{StaticResource Background3}"
-                                    BorderBrush="{StaticResource Background3}"
+                                    Background="{StaticResource Color3}"
+                                    BorderBrush="{StaticResource Color4}"
                                     BorderThickness="0"
                                     CornerRadius="25" />
                             </Grid>

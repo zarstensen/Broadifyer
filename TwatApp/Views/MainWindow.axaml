@@ -27,7 +27,7 @@
     <Grid
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Background="{StaticResource Background1}"
+        Background="{StaticResource Color1}"
         ColumnDefinitions="1*,1*">
         <c:StreamerSection
             x:Name="StreamerSection"

@@ -4,8 +4,8 @@
     xmlns:cv="using:TwatApp.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
     <Design.PreviewWith>
-        <Border Padding="20" Background="{StaticResource Background1}">
-            <Border Padding="10" Background="{StaticResource Background2}">
+        <Border Padding="20" Background="{StaticResource Color1}">
+            <Border Padding="10" Background="{StaticResource Color2}">
                 <StackPanel Spacing="5">
                     <Button>Button</Button>
                     <ToggleButton IsChecked="false">Toggle Button</ToggleButton>
@@ -20,13 +20,28 @@
         </Border>
     </Design.PreviewWith>
 
+    <Styles.Resources>
+        <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource Color5}" />
+        <SolidColorBrush x:Key="ButtonBackground" Color="{StaticResource Color4}" />
+
+        <SolidColorBrush x:Key="ButtonNoCheckBackground" Color="{StaticResource Color3}" />
+        <SolidColorBrush x:Key="ButtonNoCheckForeground" Color="{StaticResource Color4}" />
+
+        <SolidColorBrush x:Key="InputBackground" Color="{StaticResource Color1}" />
+        <SolidColorBrush x:Key="InputForeground" Color="{StaticResource Color4}" />
+        <SolidColorBrush x:Key="InputWatermark" Color="{StaticResource Color3}" />
+        <SolidColorBrush x:Key="InputSelect" Color="{StaticResource Color3}" />
+
+        <SolidColorBrush x:Key="TextForeground" Color="{StaticResource Color4}" />
+    </Styles.Resources>
+
     <!--  Button  -->
 
     <Style Selector="Button,ToggleButton">
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="FontSize" Value="{StaticResource FontSize4}" />
-        <Setter Property="Background" Value="{StaticResource Background4}" />
-        <Setter Property="Foreground" Value="{StaticResource Background5}" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource ButtonForeground}" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -35,30 +50,30 @@
     </Style>
 
     <Style Selector="Button:pointerover /template/ ContentPresenter">
-        <Setter Property="Button.Background" Value="{Binding $parent[Button].Background, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="Button.Foreground" Value="{Binding $parent[Button].Foreground, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource ButtonForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
     <!--  Toggle Button  -->
 
     <Style Selector="ToggleButton">
-        <Setter Property="Background" Value="{StaticResource Background3}" />
-        <Setter Property="Button.Foreground" Value="{StaticResource Background4}" />
+        <Setter Property="Background" Value="{StaticResource ButtonNoCheckBackground}" />
+        <Setter Property="Button.Foreground" Value="{StaticResource ButtonNoCheckForeground}" />
     </Style>
 
     <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{StaticResource Background4}" />
-        <Setter Property="ToggleButton.Foreground" Value="{StaticResource Background5}" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+        <Setter Property="ToggleButton.Foreground" Value="{StaticResource ButtonForeground}" />
     </Style>
 
     <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{Binding $parent.Background, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="Button.Foreground" Value="{Binding $parent[Button].Foreground}" />
+        <Setter Property="Background" Value="{Binding Source={StaticResource ButtonNoCheckBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{StaticResource ButtonNoCheckForeground}" />
     </Style>
 
     <Style Selector="ToggleButton:pointerover:checked /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Button.Background" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="Button.Foreground" Value="{StaticResource Background5}" />
+        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{StaticResource ButtonForeground}" />
     </Style>
 
     <!--  Content control inside toggle button  -->
@@ -107,30 +122,34 @@
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Background" Value="{StaticResource Background1}" />
-        <Setter Property="Foreground" Value="{StaticResource Background4}" />
-        <Setter Property="SelectionBrush" Value="{StaticResource Background3}" />
+        <Setter Property="Background" Value="{StaticResource InputBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource InputForeground}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource InputSelect}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CaretBrush" Value="{StaticResource Background5}" />
+        <Setter Property="CaretBrush" Value="{StaticResource Color5}" />
+    </Style>
+
+    <Style Selector="TextBox /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{StaticResource InputWatermark}" />
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Foreground" Value="{Binding Source={StaticResource InputWatermark}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement, TextBox:focus /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{Binding Source={StaticResource Background1}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Background" Value="{Binding Source={StaticResource InputBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ TextPresenter#PART_TextPresenter, TextBox:focus /template/ TextPresenter#PART_TextPresenter">
-        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
     </Style>
 
     <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="{StaticResource Background4}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Color4}" />
     </Style>
 
     <!--  TextFields  -->
@@ -139,7 +158,7 @@
 
     <Style Selector="TextBlock.h1, TextBlock.h2, TextBlock.h3">
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Foreground" Value="{StaticResource Background4}" />
+        <Setter Property="Foreground" Value="{StaticResource TextForeground}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
