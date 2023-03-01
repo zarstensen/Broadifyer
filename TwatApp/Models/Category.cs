@@ -22,7 +22,7 @@ namespace TwatApp.Models
         /// name of the category
         /// </summary>
         string Name { get; }
-        [JsonIgnore]
+
         string IconUri { get; }
         /// <summary>
         /// path to where the category icon file will be stored.
@@ -54,6 +54,7 @@ namespace TwatApp.Models
     {
         public ICategory Category { get; }
         public bool Enable { get; set; }
+        [JsonIgnore]
         public Bitmap? Icon { get; }
         public Task prepareIcons();
     }

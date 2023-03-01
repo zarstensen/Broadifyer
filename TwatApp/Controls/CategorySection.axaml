@@ -60,14 +60,26 @@
                     Grid.Row="1"
                     Background="Transparent"
                     Items="{Binding #self.Streamer.FilteredCategories}">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Focusable" Value="False" />
+                        </Style>
+                    </ListBox.Styles>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,10">
-                                <TextBlock Text="{Binding Name}" />
+                            <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,1*,10">
+                                <Image Source="{Binding Icon}" />
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Classes="h2"
+                                    Text="{Binding Name}" />
+
                                 <!--  Separator  -->
 
                                 <Border
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.ColumnSpan="2"
                                     Height="2"
                                     HorizontalAlignment="Stretch"
