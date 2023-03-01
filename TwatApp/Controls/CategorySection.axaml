@@ -48,9 +48,16 @@
                             </Button>
                             <ToggleButton
                                 Grid.Column="2"
-                                Classes="Whitelist"
+                                Classes="WhiteBlacklist"
                                 IsChecked="{Binding #self.WhitelistMode}">
-                                WHITELIST
+                                <StackPanel>
+                                    <ContentControl Classes="checked">
+                                        WHITELISTED
+                                    </ContentControl>
+                                    <ContentControl Classes="unchecked">
+                                        BLACKLISTED
+                                    </ContentControl>
+                                </StackPanel>
                             </ToggleButton>
                         </StackPanel>
                     </Grid>
@@ -67,26 +74,65 @@
                     </ListBox.Styles>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,1*,10">
-                                <Image Source="{Binding Icon}" />
-
+                            <Grid ColumnDefinitions="60,1*, 120" RowDefinitions="1*,1*,10">
+                                <Image
+                                    Grid.RowSpan="2"
+                                    Height="60"
+                                    Source="{Binding Icon}" />
+                                <!--  Category name  -->
                                 <TextBlock
                                     Grid.Row="0"
                                     Grid.Column="1"
+                                    Margin="10,0"
                                     Classes="h2"
                                     Text="{Binding Name}" />
 
+                                <!--  Buttons  -->
+
+                                <Button
+                                    Grid.Column="2"
+                                    Width="25"
+                                    Height="25"
+                                    Padding="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    Background="{StaticResource Background3}"
+                                    Command="{Binding #self.RemoveCommand}"
+                                    CommandParameter="{Binding}"
+                                    Foreground="{StaticResource Background4}">
+                                    X
+                                </Button>
+
+                                <ToggleButton
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Margin="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    IsChecked="{Binding Enable.Value}">
+                                    <StackPanel>
+                                        <ContentControl Classes="checked">
+                                            ENABLED
+                                        </ContentControl>
+                                        <ContentControl Classes="unchecked">
+                                            DISABLED
+                                        </ContentControl>
+                                    </StackPanel>
+                                </ToggleButton>
                                 <!--  Separator  -->
 
                                 <Border
                                     Grid.Row="2"
-                                    Grid.ColumnSpan="2"
+                                    Grid.ColumnSpan="3"
                                     Height="2"
                                     HorizontalAlignment="Stretch"
                                     Background="{StaticResource Background3}"
                                     BorderBrush="{StaticResource Background3}"
                                     BorderThickness="0"
                                     CornerRadius="25" />
+
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

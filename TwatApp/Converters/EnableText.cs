@@ -14,7 +14,7 @@ namespace TwatApp.Converters
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is bool enable)
-                return enable ? "DISABLE" : "ENABLE";
+                return enable ? "ENABLED" : "DISABLED";
             else
                 throw new NotImplementedException();
         }

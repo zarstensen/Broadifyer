@@ -19,6 +19,7 @@ namespace TwatApp.ViewModels
         public string DisplayName { get => streamer_info.Streamer.DisplayName; }
         public string CategoryName { get => streamer_info.CurrentCategory?.Name ?? ""; }
         public Bitmap? Icon { get => IsLive ? streamer_info.RgbIcon : streamer_info.GrayIcon; }
+        public bool IsWhitelisted { get => streamer_info.WhitelistCategories; set => streamer_info.WhitelistCategories = value; }
 
         public ObservableCollection<CategoryViewModel> FilteredCategories { get; set; } = new();
 

@@ -9,7 +9,16 @@ namespace TwatApp.Controls
 {
     public partial class CategorySection : UserControl
     {
-        public static readonly StyledProperty<ICommand> AddCommandProperty =
+
+
+		public static readonly StyledProperty<bool> WhitelistModeProperty =
+			AvaloniaProperty.Register<CategorySection, bool>(nameof(WhitelistMode));
+
+		public static readonly StyledProperty<ICommand> RemoveCommandProperty =
+			AvaloniaProperty.Register<CategorySection, ICommand>(nameof(RemoveCommand));
+
+
+		public static readonly StyledProperty<ICommand> AddCommandProperty =
     AvaloniaProperty.Register<CategorySection, ICommand>(nameof(AddCommand));
 
         public static readonly StyledProperty<StreamerViewModel?> StreamerProperty =
@@ -23,13 +32,25 @@ namespace TwatApp.Controls
             InitializeComponent();
 		}
 
-		public ICommand AddCommand
+        public bool WhitelistMode
+        {
+            get => GetValue(WhitelistModeProperty);
+            set => SetValue(WhitelistModeProperty, value);
+        }
+
+
+        public ICommand AddCommand
 		{
 			get => GetValue(AddCommandProperty);
 			set => SetValue(AddCommandProperty, value);
 		}
+        public ICommand RemoveCommand
+        {
+            get => GetValue(RemoveCommandProperty);
+            set => SetValue(RemoveCommandProperty, value);
+        }
 
-		public StreamerViewModel? Streamer
+        public StreamerViewModel? Streamer
 		{
 			get => GetValue(StreamerProperty);
 			set

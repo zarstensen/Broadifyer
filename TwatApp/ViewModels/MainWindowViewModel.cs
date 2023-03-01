@@ -84,6 +84,7 @@ namespace TwatApp.ViewModels
             m_streamers.Add(new(notifier.Streamers[found_streamer.Id]));
             this.RaisePropertyChanged(nameof(Streamers));
             Trace.WriteLine(found_streamer);
+            notifier.saveConfiguration("config.json");
         }
 
         /// <summary>
@@ -98,6 +99,8 @@ namespace TwatApp.ViewModels
                 m_streamers.Add(new(notifier.Streamers[streamer.Id]));
 
             this.RaisePropertyChanged(nameof(Streamers));
+
+            notifier.saveConfiguration("config.json");
         }
 
         /// <summary>
@@ -122,6 +125,14 @@ namespace TwatApp.ViewModels
             await cinfo.prepareIcons();
 
             SelectedStreamer.Value.FilteredCategories.Add(new(cinfo));
+            notifier.saveConfiguration("config.json");
+        }
+
+        public void removeCategory(CategoryViewModel category)
+        {
+            SelectedStreamer.Value.FilteredCategories.Remove(category);
+            SelectedStreamer.Value.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
+            notifier.saveConfiguration("config.json");
         }
 
         public void removeStreamer(StreamerViewModel streamer)
@@ -133,6 +144,7 @@ namespace TwatApp.ViewModels
                 notifier.removeStreamers(new() { streamer.streamer_info.Streamer });
                 m_streamers.Remove(streamer);
                 this.RaisePropertyChanged(nameof(Streamers));
+                notifier.saveConfiguration("config.json");
             }
         }
 

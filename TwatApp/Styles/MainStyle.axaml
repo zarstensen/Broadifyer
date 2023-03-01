@@ -9,6 +9,7 @@
                 <StackPanel Spacing="5">
                     <Button>Button</Button>
                     <ToggleButton IsChecked="false">Toggle Button</ToggleButton>
+                    <ToggleButton Classes="WhiteBlacklist" IsChecked="false">WhiteBlacklist Button</ToggleButton>
                     <TextBox>Input Text</TextBox>
                     <TextBox Watermark="Watermark Text" />
                     <TextBlock Classes="h1">Text h1</TextBlock>
@@ -58,7 +59,46 @@
     <Style Selector="ToggleButton:pointerover:checked /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Button.Background" Value="{Binding Source={StaticResource Background4}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
         <Setter Property="Button.Foreground" Value="{StaticResource Background5}" />
+    </Style>
 
+    <!--  Content control inside toggle button  -->
+
+    <Style Selector="ToggleButton:checked ContentControl.checked">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="ToggleButton:unchecked ContentControl.checked">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="ToggleButton:checked ContentControl.unchecked">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="ToggleButton:unchecked ContentControl.unchecked">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!--  white/blacklist toggle button  -->
+
+    <Style Selector="ToggleButton.WhiteBlacklist">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="Button.Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="ToggleButton.WhiteBlacklist:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="ToggleButton.Foreground" Value="Black" />
+    </Style>
+
+    <Style Selector="ToggleButton.WhiteBlacklist:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="Button.Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="ToggleButton.WhiteBlacklist:pointerover:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Button.Background" Value="White" />
+        <Setter Property="Button.Foreground" Value="Black" />
     </Style>
 
     <!--  InputField  -->

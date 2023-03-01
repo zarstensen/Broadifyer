@@ -45,8 +45,8 @@
                     Grid.Row="1"
                     Background="Transparent"
                     Items="{Binding #self.Streamers, Mode=OneWay}"
-					SelectionMode="AlwaysSelected"
-                    SelectedItem="{Binding #self.SelectedStreamer, Mode=TwoWay}">
+                    SelectedItem="{Binding #self.SelectedStreamer, Mode=TwoWay}"
+                    SelectionMode="AlwaysSelected">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,10">
@@ -126,12 +126,16 @@
                                         HorizontalContentAlignment="Center"
                                         Command="{Binding #self.StreamerModified}"
                                         CommandParameter="{Binding}"
-                                        Content="{Binding Enable.Value, Converter={StaticResource EnableTextConverter}}"
-                                        IsChecked="{Binding Enable.Value}" />
-                                    <!--
-                                        Command="{Binding #self.ToggleEnableCommand}"
-                                        CommandParameter="{Binding $self}"
-                                    -->
+                                        IsChecked="{Binding Enable.Value}">
+                                        <StackPanel>
+                                            <ContentControl Classes="checked">
+                                                ENABLED
+                                            </ContentControl>
+                                            <ContentControl Classes="unchecked">
+                                                DISABLED
+                                            </ContentControl>
+                                        </StackPanel>
+                                    </ToggleButton>
                                 </Grid>
 
                                 <!--  Separator  -->

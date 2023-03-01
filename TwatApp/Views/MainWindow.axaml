@@ -50,6 +50,8 @@
             VerticalAlignment="Stretch"
             AddCommand="{Binding addCategory}"
             CategoryInput="{Binding CategoryInput.Value, Mode=TwoWay}"
-            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}" />
+            RemoveCommand="{Binding removeCategory}"
+            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
+            WhitelistMode="{Binding SelectedStreamer.Value.IsWhitelisted}" />
     </Grid>
 </Window>
