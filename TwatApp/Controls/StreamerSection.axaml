@@ -18,11 +18,11 @@
 
         <Border
             Grid.Row="2"
-            Background="{StaticResource Background2}"
+            Background="{StaticResource Color2}"
             CornerRadius="25">
             <Grid RowDefinitions="75,1*">
                 <!--  Streamer adder  -->
-                <Border Background="{StaticResource Background3}" CornerRadius="25,25,0,0">
+                <Border Background="{StaticResource Color3}" CornerRadius="25,25,0,0">
                     <Grid Margin="10,20" ColumnDefinitions="1*,175">
                         <TextBox Text="{Binding #self.StreamerInput}" Watermark="Streamer name..." />
                         <StackPanel
