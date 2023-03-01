@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using ReactiveUI;
 using System;
@@ -45,6 +46,36 @@ namespace TwatApp.ViewModels
             }
         }
 
+        public bool RunsOnStartup {
+            get
+            {
+                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (run_key == null)
+                    return false;
+
+                return (string?)run_key.GetValue("Twats") == Environment.ProcessPath;
+            }
+            set
+            {
+                if (RunsOnStartup == value)
+                    return;
+
+                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (!value)
+                    run_key!.DeleteValue("Twats");
+                else
+                    run_key!.SetValue("Twats", Environment.ProcessPath!);
+            }
+        }
+
+        public void toggleStartup()
+        {
+            RunsOnStartup = !RunsOnStartup;
+            this.RaisePropertyChanged(nameof(RunsOnStartup));
+        }
+
         /// <summary>
         /// gets called on application exit, used for handeling cleanup of the toast notifications, and for saving the current streamer notification configurations.
         /// </summary>
@@ -55,10 +86,12 @@ namespace TwatApp.ViewModels
             notifier.saveConfiguration("config.json");
         }
 
+
+
         /// <summary>
         /// shutsdown the entire application, and removes the app from the tray.
         /// </summary>
-        public void ExitCommand()
+        public void exitCommand()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -67,7 +100,7 @@ namespace TwatApp.ViewModels
             }
         }
 
-        public void EditorWindowCommand()
+        public void editorWindowCommand()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 desktop.MainWindow.Show();

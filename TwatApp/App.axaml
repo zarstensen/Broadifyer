@@ -35,8 +35,15 @@
             <TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="Avalonia Tray Icon ToolTip">
                 <TrayIcon.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Command="{Binding EditorWindowCommand}" Header="Edit" />
-                        <NativeMenuItem Command="{Binding ExitCommand}" Header="Exit" />
+
+                        <NativeMenuItem
+                            Header="Run On Startup"
+                            IsChecked="True"
+                            ToggleType="CheckBox" />
+                        <NativeMenuItemSeperator />
+						<NativeMenuItem Header="Option 3" ToggleType="CheckBox" IsChecked="True"/>
+                        <NativeMenuItem Command="{Binding editorWindowCommand}" Header="Edit" />
+                        <NativeMenuItem Command="{Binding exitCommand}" Header="Exit" />
                     </NativeMenu>
                 </TrayIcon.Menu>
             </TrayIcon>
