@@ -4,12 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="self"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d"
-	Name="self"
-	Background="{StaticResource Color1}">
-    <StackPanel Orientation="Horizontal">
-        <ContentControl Content="{Binding StreamersV}"/>
-    </StackPanel>
+    Background="{StaticResource Color1}"
+    mc:Ignorable="d">
+    <DockPanel HorizontalAlignment="Stretch">
+        <ContentControl
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Content="{Binding StreamersV}" />
+    </DockPanel>
 </UserControl>

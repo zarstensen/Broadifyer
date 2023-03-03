@@ -59,7 +59,7 @@ namespace TwatApp.ViewModels
     {
         public string StreamerInput { get; set; } = "";
         public ObservableCollection<StreamerVM> Streamers { get; protected set; } = new();
-        public StreamerVM? SelectedStreamer { get; set; }
+        public StreamerVM? SelectedStreamer { get => m_selected_streamer.Value; set => m_selected_streamer.Value = value; }
 
         public StreamersViewModel(TwitchNotify notifier)
         {
@@ -67,7 +67,6 @@ namespace TwatApp.ViewModels
 
             foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
                 Streamers.Add(new(streamer_info));
-
         }
 
         /// <summary>
@@ -118,14 +117,17 @@ namespace TwatApp.ViewModels
             if (m_notifier.Streamers.ContainsKey(streamer.streamer_info.Streamer.Id))
             {
                 m_notifier.removeStreamers(new() { streamer.streamer_info.Streamer });
+                
                 Streamers.Remove(streamer);
                 this.RaisePropertyChanged(nameof(Streamers));
+
                 m_notifier.saveConfiguration("config.json");
             }
         }
 
 
         protected TwitchNotify m_notifier;
+        protected React<StreamerVM?> m_selected_streamer { get; set; } = new();
 
     }
 
