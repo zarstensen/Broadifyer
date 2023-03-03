@@ -512,12 +512,6 @@ namespace TwatApp.Models
             //
             // the first time this is called, the IsLive property will be null.
             // currently, the user will not get a notification, when a streamer is polled for the first time.
-
-            if (streamer_info.Streamer.DisplayName == "zarstensen")
-            {
-                Trace.WriteLine(is_live);
-                Trace.WriteLine(category_id);
-            }
             
             bool broadcast_change;
 
@@ -738,7 +732,7 @@ namespace TwatApp.Models
             protected bool m_whitelist = true;
 
             [JsonIgnore]
-            protected bool m_enable;
+            protected bool m_enable = true;
 
             [JsonIgnore]
             protected Bitmap? m_icon_rgb = null;

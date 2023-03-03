@@ -19,6 +19,7 @@
         <Border
             Grid.Row="2"
             Background="{StaticResource Color2}"
+            ClipToBounds="True"
             CornerRadius="25">
             <Grid RowDefinitions="75,1*">
                 <!--  Streamer adder  -->
@@ -45,7 +46,7 @@
                     Grid.Row="1"
                     Background="Transparent"
                     Items="{Binding Streamers, Mode=OneWay}"
-                    SelectedItem="{Binding SelectedStreamer, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedStreamer.Value, Mode=TwoWay}"
                     SelectionMode="AlwaysSelected">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

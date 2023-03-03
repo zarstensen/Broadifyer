@@ -30,13 +30,6 @@ namespace TwatApp.ViewModels
         /// retrieve a sorted list of the current streamers.
         /// sorted according to live status, followed by streamer display name.
         /// </summary>
-        public ObservableCollection<StreamerVM> Streamers
-        {
-            get
-            {
-                return m_streamers;
-            }
-        }
         
         public TwitchNotify notifier;
 
@@ -62,44 +55,11 @@ namespace TwatApp.ViewModels
             Trace.WriteLine("BEGUN LOGGING");
             while (true)
             {
-                this.RaisePropertyChanged(nameof(Streamers));
                 //Trace.WriteLine($"STREAMER: {SelectedStreamer.Value}");
                 await Task.Delay(5500);
             }
         }
 
-        /// <summary>
-        /// attempt to add a category with the name stored in CategoryInput, and associate it with the passed streamer.
-        /// </summary>
-        /// <param name="streamer"></param>
-        public async void addCategory()
-        {
-            if (CategoryInput.Value == "")
-                return;
-
-            var found_category = await notifier.categoryFromName(CategoryInput);
-
-            if(found_category == null || SelectedStreamer.Value == null)
-            {
-                return;
-            }
-
-            var cinfo = notifier.filterCategory(found_category, SelectedStreamer.Value.streamer_info.Streamer);
-            this.RaisePropertyChanged(nameof(SelectedStreamer.Value));
-
-            await cinfo.prepareIcons();
-
-            SelectedStreamer.Value.FilteredCategories.Add(new(cinfo));
-            notifier.saveConfiguration("config.json");
-        }
-
-        public void removeCategory(CategoryViewModel category)
-        {
-            SelectedStreamer.Value.FilteredCategories.Remove(category);
-            SelectedStreamer.Value.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
-            notifier.saveConfiguration("config.json");
-        }
-
-        protected ObservableCollection<StreamerVM> m_streamers;
+       
     }
 }

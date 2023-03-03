@@ -9,10 +9,17 @@
     d:DesignWidth="800"
     Background="{StaticResource Color1}"
     mc:Ignorable="d">
-    <DockPanel HorizontalAlignment="Stretch">
+    <Grid ColumnDefinitions="1*,1*">
         <ContentControl
+            Margin="30,10,15,20"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
-            Content="{Binding StreamersV}" />
-    </DockPanel>
+            Content="{Binding StreamersView}" />
+        <ContentControl
+            Grid.Column="1"
+            Margin="15,10,30,20"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Content="{Binding CategoriesView}" />
+    </Grid>
 </UserControl>

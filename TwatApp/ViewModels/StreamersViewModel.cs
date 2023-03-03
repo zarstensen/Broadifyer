@@ -21,9 +21,9 @@ namespace TwatApp.ViewModels
         public string DisplayName { get => streamer_info.Streamer.DisplayName; }
         public string CategoryName { get => streamer_info.CurrentCategory?.Name ?? ""; }
         public Bitmap? Icon { get => IsLive ? streamer_info.RgbIcon : streamer_info.GrayIcon; }
-        public bool IsWhitelisted { get => streamer_info.WhitelistCategories; set => streamer_info.WhitelistCategories = value; }
+        public Expose<bool, IStreamerInfo> IsWhitelisted { get; set; }
 
-        public ObservableCollection<CategoryViewModel> FilteredCategories { get; set; } = new();
+        public ObservableCollection<CategoryVM> FilteredCategories { get; set; } = new();
 
         public StreamerVM(IStreamerInfo streamer_info)
         {
@@ -48,6 +48,7 @@ namespace TwatApp.ViewModels
                 FilteredCategories.Add(new(category_info));
 
             Enable = new(streamer_info, nameof(streamer_info.Enable));
+            IsWhitelisted = new(streamer_info, nameof(streamer_info.WhitelistCategories));
         }
 
         protected React<string> m_category_name = new();
@@ -59,7 +60,7 @@ namespace TwatApp.ViewModels
     {
         public string StreamerInput { get; set; } = "";
         public ObservableCollection<StreamerVM> Streamers { get; protected set; } = new();
-        public StreamerVM? SelectedStreamer { get => m_selected_streamer.Value; set => m_selected_streamer.Value = value; }
+        public React<StreamerVM?> SelectedStreamer { get; set; } = new();
 
         public StreamersViewModel(TwitchNotify notifier)
         {
@@ -74,6 +75,8 @@ namespace TwatApp.ViewModels
         /// </summary>
         public async Task addStreamer()
         {
+            Trace.WriteLine(SelectedStreamer.Value);
+
             if (StreamerInput == "" || StreamerInput.Contains(' '))
                 return;
 

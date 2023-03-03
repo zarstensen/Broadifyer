@@ -11,22 +11,23 @@ namespace TwatApp.ViewModels
 {
     public class ConfigEditorViewModel : ViewModelBase
     {
-        public ViewModelBase StreamersV {
-            get
-            {
-                Trace.WriteLine("GOT STUFF");
-                
-                return streamers_v;
-            }
-            set => this.RaiseAndSetIfChanged(ref streamers_v, value); }
+        public ViewModelBase StreamersView {
+            get => streamers_view.Value;
+        }
+
+        public CategoriesViewModel CategoriesView
+        {
+            get => categories_view.Value;
+        }
     
 
-        public ViewModelBase streamers_v;
-        //public ViewModelBase CategoriesView { get; set; }
+        public React<StreamersViewModel> streamers_view = new();
+        public React<CategoriesViewModel> categories_view = new();
     
         public ConfigEditorViewModel(TwitchNotify notifier)
         {
-            StreamersV = new StreamersViewModel(notifier);
+            streamers_view.Value = new StreamersViewModel(notifier);
+            categories_view.Value = new CategoriesViewModel(notifier, streamers_view.Value.SelectedStreamer);
         }
     
     }

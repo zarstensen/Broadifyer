@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TwatApp.Models
+namespace TwatApp.ViewModels
 {
     public class Expose<T, TClass> : ReactiveObject
     {
