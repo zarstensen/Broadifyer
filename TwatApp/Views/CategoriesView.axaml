@@ -1,10 +1,10 @@
 <UserControl
-    x:Class="TwatApp.Controls.CategorySection"
+    x:Class="TwatApp.Views.CategoriesView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Name="self"
+    Name="root"
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -18,12 +18,13 @@
                 VerticalAlignment="Bottom"
                 Classes="h2"
                 FontWeight="Normal"
-                Text="{Binding #self.Streamer.DisplayName}" />
+                Text="{Binding TargetStreamer.Value.DisplayName}" />
         </StackPanel>
 
         <!--  Streamer editor  -->
 
         <Border
+			ClipToBounds="True"
             Grid.Row="2"
             Background="{StaticResource Color2}"
             CornerRadius="25">
@@ -33,7 +34,7 @@
                     <Grid Margin="10,20" ColumnDefinitions="1*,175">
                         <TextBox
                             Classes="InputField"
-                            Text="{Binding #self.CategoryInput, Mode=TwoWay}"
+                            Text="{Binding CategoryInput, Mode=TwoWay}"
                             Watermark="Category name..." />
                         <StackPanel
                             Grid.Column="1"
@@ -43,13 +44,13 @@
                             <Button
                                 Grid.Column="1"
                                 Classes="Button1"
-                                Command="{Binding #self.AddCommand}">
+                                Command="{Binding addCategory}">
                                 ADD
                             </Button>
                             <ToggleButton
                                 Grid.Column="2"
                                 Classes="WhiteBlacklist"
-                                IsChecked="{Binding #self.WhitelistMode}">
+                                IsChecked="{Binding TargetStreamer.Value.IsWhitelisted.Value}">
                                 <StackPanel>
                                     <ContentControl Classes="checked">
                                         WHITELISTED
@@ -66,7 +67,7 @@
                 <ListBox
                     Grid.Row="1"
                     Background="Transparent"
-                    Items="{Binding #self.Streamer.FilteredCategories}">
+                    Items="{Binding TargetStreamer.Value.FilteredCategories}">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Focusable" Value="False" />
@@ -97,10 +98,10 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Center"
-                                    Background="{StaticResource Background3}"
-                                    Command="{Binding #self.RemoveCommand}"
+                                    Background="{StaticResource Color3}"
+                                    Command="{Binding #root.removeCategory}"
                                     CommandParameter="{Binding}"
-                                    Foreground="{StaticResource Background4}">
+                                    Foreground="{StaticResource Color4}">
                                     X
                                 </Button>
 
@@ -112,14 +113,14 @@
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Center"
                                     IsChecked="{Binding Enable.Value}">
-                                    <StackPanel>
+                                    <DockPanel>
                                         <ContentControl Classes="checked">
                                             ENABLED
                                         </ContentControl>
                                         <ContentControl Classes="unchecked">
                                             DISABLED
                                         </ContentControl>
-                                    </StackPanel>
+                                    </DockPanel>
                                 </ToggleButton>
                                 <!--  Separator  -->
 
@@ -128,8 +129,8 @@
                                     Grid.ColumnSpan="3"
                                     Height="2"
                                     HorizontalAlignment="Stretch"
-                                    Background="{StaticResource Background3}"
-                                    BorderBrush="{StaticResource Background3}"
+                                    Background="{StaticResource Color3}"
+                                    BorderBrush="{StaticResource Color3}"
                                     BorderThickness="0"
                                     CornerRadius="25" />
 

@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using TwatApp.Controls;
 using TwatApp.ViewModels;
 
 namespace TwatApp.Views

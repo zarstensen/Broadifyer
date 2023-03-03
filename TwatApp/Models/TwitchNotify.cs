@@ -49,6 +49,12 @@ namespace TwatApp.Models
         public int PollInterval { get; set; } = 60;
 
         /// <summary>
+        /// how many seconds should pass, before a begin broadcast event will be seen as valid.
+        /// this is used to filter out any incorrect broadcast offline events shortly after a broadcaster goes live.
+        /// </summary>
+        public double NewBroadcastTimeout { get; set; } = 30;
+
+        /// <summary>
         /// invoked whenever a user should be notified of a streamers broadcast.
         /// </summary>
         public EventHandler<IStreamerInfo>? StreamerNotify;
@@ -480,6 +486,9 @@ namespace TwatApp.Models
 
                     live_users.Add(stream.UserId);
 
+                    if (streamer_info.Streamer.DisplayName == "zarstensen")
+                        Trace.WriteLine(stream.Type);
+
                     await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
                 }
 
@@ -497,37 +506,45 @@ namespace TwatApp.Models
         // update the passed streamer_info api and call StreamerChanged and streamerNotify if necessary
         protected async Task updateStreamInfo(IStreamerInfo streamer_info, bool is_live, string? category_id)
         {
-            bool category_change = false;
 
             // check if a toast noficiation should be sent
             // this should happen if the user has just gone live, and the filtered categories are correct.
             //
             // the first time this is called, the IsLive property will be null.
             // currently, the user will not get a notification, when a streamer is polled for the first time.
+            
+            bool broadcast_change;
 
-            bool broadcast_change = streamer_info.IsLive ?? true != is_live;
-
-            if (!broadcast_change && streamer_info.CurrentCategory?.Id == category_id)
-                category_change = true;
-
-            bool should_notify;
-
-            if (streamer_info.FilteredCategories.Count == 0)
-            {
-                should_notify = is_live;
-            }
+            if ((is_live && (DateTime.Now - streamer_info.NotifiedTime).TotalSeconds > NewBroadcastTimeout) || !is_live)
+                broadcast_change = (streamer_info.IsLive ?? true) != is_live;
             else
+                broadcast_change = false;
+
+
+            bool category_change = broadcast_change && (streamer_info.CurrentCategory?.Id ?? String.Empty) != category_id;
+
+
+            bool should_notify = false;
+                        
+            if (broadcast_change || category_change)
             {
-                should_notify = !streamer_info.WhitelistCategories;
-
-                foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
+                if (streamer_info.FilteredCategories.Count == 0)
                 {
-                    if (category_info.Category.Id == category_id)
-                    {
-                        if (!category_info.Enable)
-                            should_notify = !should_notify;
+                    should_notify = is_live;
+                }
+                else
+                {
+                    should_notify = !streamer_info.WhitelistCategories;
 
-                        break;
+                    foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
+                    {
+                        if (category_info.Category.Id == category_id)
+                        {
+                            if (!category_info.Enable)
+                                should_notify = !should_notify;
+
+                            break;
+                        }
                     }
                 }
             }
@@ -557,7 +574,9 @@ namespace TwatApp.Models
                 {
                     sinfo.was_notified = true;
                     StreamerNotify?.Invoke(this, streamer_info);
+                    sinfo.notified_time = DateTime.Now;
                 }
+                
             }
             else
                 // should never be hit.
@@ -673,6 +692,9 @@ namespace TwatApp.Models
             public bool WasNotified => was_notified;
 
             [JsonIgnore]
+            public DateTime NotifiedTime => notified_time;
+
+            [JsonIgnore]
             public Streamer streamer;
 
             [JsonIgnore]
@@ -683,6 +705,8 @@ namespace TwatApp.Models
 
             [JsonIgnore]
             public bool was_notified = false;
+            [JsonIgnore]
+            public DateTime notified_time = new();
 
             public event EventHandler<StreamerChange>? StreamerUpdated;
 
@@ -708,7 +732,7 @@ namespace TwatApp.Models
             protected bool m_whitelist = true;
 
             [JsonIgnore]
-            protected bool m_enable;
+            protected bool m_enable = true;
 
             [JsonIgnore]
             protected Bitmap? m_icon_rgb = null;
