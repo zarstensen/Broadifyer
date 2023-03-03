@@ -14,6 +14,10 @@
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Controls\**" />
+    <Compile Remove="Controls\**" />
+    <EmbeddedResource Remove="Controls\**" />
+    <None Remove="Controls\**" />
     <AvaloniaResource Remove="Assets\Default.axaml" />
     <None Remove=".gitignore" />
     <None Remove="close_tab.html" />
@@ -56,8 +60,5 @@
     <Compile Update="Views\StreamersView.axaml.cs">
       <DependentUpon>StreamersView.axaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
   </ItemGroup>
 </Project>
