@@ -49,4 +49,15 @@
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\CategoriesView.axaml.cs">
+      <DependentUpon>CategoriesView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\StreamersView.axaml.cs">
+      <DependentUpon>StreamersView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
 </Project>

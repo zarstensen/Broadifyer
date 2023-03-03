@@ -12,35 +12,35 @@ using System.Windows.Input;
 using TwatApp.Models;
 using TwatApp.ViewModels;
 
-namespace TwatApp.Controls
+namespace TwatApp.Views
 {
-    public partial class StreamerSection : UserControl
+    public partial class StreamersView : UserControl
     {
         public static readonly StyledProperty<ICommand> ToggleEnableCommandProperty =
-            AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(ToggleEnableCommand));
+            AvaloniaProperty.Register<StreamersView, ICommand>(nameof(ToggleEnableCommand));
 
         public static readonly StyledProperty<ICommand> RemoveCommandProperty =
-            AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(RemoveCommand));
+            AvaloniaProperty.Register<StreamersView, ICommand>(nameof(RemoveCommand));
 
         public static readonly StyledProperty<ICommand> AddCommandProperty =
-            AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(AddCommand));
+            AvaloniaProperty.Register<StreamersView, ICommand>(nameof(AddCommand));
 
         public static readonly StyledProperty<ICommand> AddFollowedCommandProperty =
-            AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(AddFollowedCommand));
+            AvaloniaProperty.Register<StreamersView, ICommand>(nameof(AddFollowedCommand));
 
         public static readonly StyledProperty<ICommand> StreamerModifiedProperty =
-            AvaloniaProperty.Register<StreamerSection, ICommand>(nameof(StreamerModified));
+            AvaloniaProperty.Register<StreamersView, ICommand>(nameof(StreamerModified));
 
         public static readonly StyledProperty<string> StreamerInputProperty =
-            AvaloniaProperty.Register<StreamerSection, string>(nameof(StreamerInput), defaultBindingMode: BindingMode.TwoWay);
+            AvaloniaProperty.Register<StreamersView, string>(nameof(StreamerInput), defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly StyledProperty<IList<StreamerViewModel>> StreamersProperty =
-            AvaloniaProperty.Register<StreamerSection, IList<StreamerViewModel>>(nameof(Streamers));
+        public static readonly StyledProperty<IList<StreamerVM>> StreamersProperty =
+            AvaloniaProperty.Register<StreamersView, IList<StreamerVM>>(nameof(Streamers));
 
-        public static readonly StyledProperty<StreamerViewModel?> SelectedStreamerProperty =
-            AvaloniaProperty.Register<StreamerSection, StreamerViewModel?>(nameof(SelectedStreamer), defaultBindingMode: BindingMode.OneWayToSource);
+        public static readonly StyledProperty<StreamerVM?> SelectedStreamerProperty =
+            AvaloniaProperty.Register<StreamersView, StreamerVM?>(nameof(SelectedStreamer), defaultBindingMode: BindingMode.OneWayToSource);
 
-        public StreamerSection()
+        public StreamersView()
         {
             InitializeComponent();
 			SelectedStreamerProperty.Changed.Subscribe(x => Trace.WriteLine($"val: {x.NewValue}"));
@@ -86,13 +86,13 @@ namespace TwatApp.Controls
 			set => SetValue(StreamerInputProperty, value);
 		}
 
-		public IList<StreamerViewModel> Streamers
+		public IList<StreamerVM> Streamers
 		{
 			get => GetValue(StreamersProperty);
 			set => SetValue(StreamersProperty, value);
 		}
 
-        public StreamerViewModel? SelectedStreamer
+        public StreamerVM? SelectedStreamer
         {
             get => GetValue(SelectedStreamerProperty);
             set => SetValue(SelectedStreamerProperty, value);

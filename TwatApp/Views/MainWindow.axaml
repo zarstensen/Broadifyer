@@ -13,45 +13,6 @@
     MinHeight="250"
     d:DesignHeight="665"
     d:DesignWidth="950"
+    Content="{Binding View.Value}"
     Icon="/Assets/avalonia-logo.ico"
-    mc:Ignorable="d">
-
-    <Design.DataContext>
-        <vm:MainWindowViewModel />
-    </Design.DataContext>
-
-    <!--<Window.DataContext>
-        <vm:MainWindowViewModel />
-    </Window.DataContext>-->
-
-    <Grid
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        Background="{StaticResource Color1}"
-        ColumnDefinitions="1*,1*">
-        <c:StreamerSection
-            x:Name="StreamerSection"
-            Grid.Row="1"
-            Margin="30,0,30,30"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            AddCommand="{Binding addStreamer}"
-            AddFollowedCommand="{Binding addFollowedStreamers}"
-            RemoveCommand="{Binding removeStreamer}"
-            SelectedStreamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
-            StreamerInput="{Binding StreamerInput.Value}"
-            Streamers="{Binding Streamers}" />
-        <c:CategorySection
-            Grid.Column="1"
-            Margin="0,0,30,30"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            AddCommand="{Binding addCategory}"
-            CategoryInput="{Binding CategoryInput.Value, Mode=TwoWay}"
-            RemoveCommand="{Binding removeCategory}"
-            Streamer="{Binding SelectedStreamer.Value, Mode=TwoWay}"
-            WhitelistMode="{Binding SelectedStreamer.Value.IsWhitelisted}" />
-    </Grid>
-</Window>
+    mc:Ignorable="d" />

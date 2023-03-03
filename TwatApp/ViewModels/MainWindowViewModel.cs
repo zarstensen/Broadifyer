@@ -14,6 +14,8 @@ namespace TwatApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public React<ViewModelBase> View { get; set; } = new();
+
         /// <summary>
         /// property containing the string value in the streamer name input field, for the StreamerSection control.
         /// </summary>
@@ -22,13 +24,13 @@ namespace TwatApp.ViewModels
         /// <summary>
         /// property containing the currently selected streamer, in the StreamerSection streamer listbox.
         /// </summary>
-        public React<StreamerViewModel?> SelectedStreamer { get; set; } = new();
+        public React<StreamerVM?> SelectedStreamer { get; set; } = new();
 
         /// <summary>
         /// retrieve a sorted list of the current streamers.
         /// sorted according to live status, followed by streamer display name.
         /// </summary>
-        public ObservableCollection<StreamerViewModel> Streamers
+        public ObservableCollection<StreamerVM> Streamers
         {
             get
             {
@@ -45,12 +47,14 @@ namespace TwatApp.ViewModels
 
             notifier = (App.Current!.DataContext as AppViewModel)!.notifier;
 
-            m_streamers = new();
+            View.Value = new ConfigEditorViewModel(notifier);
 
-            foreach (IStreamerInfo streamer_info in notifier.currentStreamers())
-                m_streamers.Add(new(streamer_info));
+            //m_streamers = new();
 
-            new Task(async () => await logSelected()).Start();
+            //foreach (IStreamerInfo streamer_info in notifier.currentStreamers())
+            //    m_streamers.Add(new(streamer_info));
+
+            //new Task(async () => await logSelected()).Start();
         }
 
         public async Task logSelected()
@@ -62,45 +66,6 @@ namespace TwatApp.ViewModels
                 //Trace.WriteLine($"STREAMER: {SelectedStreamer.Value}");
                 await Task.Delay(5500);
             }
-        }
-
-        /// <summary>
-        /// attempt to find a streamer with the name stored in StreamerInput, and add it to the TwitchNotify streamer list.
-        /// </summary>
-        public async Task addStreamer()
-        {
-            if (StreamerInput.Value == "" || StreamerInput.Value.Contains(' '))
-                return;
-
-            var found_streamer = await notifier.streamerFromName(StreamerInput.Value);
-
-            if (found_streamer == null)
-            {
-                // do some error handling
-                return;
-            }
-            
-            await notifier.addStreamers(new() { found_streamer });
-            m_streamers.Add(new(notifier.Streamers[found_streamer.Id]));
-            this.RaisePropertyChanged(nameof(Streamers));
-            Trace.WriteLine(found_streamer);
-            notifier.saveConfiguration("config.json");
-        }
-
-        /// <summary>
-        /// adds all of the streamers the authenticated user is currently following.
-        /// </summary>
-        public async Task addFollowedStreamers()
-        {
-            List<IStreamer> followed_streamers = await notifier.followedStreamers();
-            await notifier.addStreamers(followed_streamers);
-
-            foreach (IStreamer streamer in followed_streamers)
-                m_streamers.Add(new(notifier.Streamers[streamer.Id]));
-
-            this.RaisePropertyChanged(nameof(Streamers));
-
-            notifier.saveConfiguration("config.json");
         }
 
         /// <summary>
@@ -135,19 +100,6 @@ namespace TwatApp.ViewModels
             notifier.saveConfiguration("config.json");
         }
 
-        public void removeStreamer(StreamerViewModel streamer)
-        {
-            // in case the user has rapidly clicked the remove button, and the command has been fired twice,
-            // check if the streamer has already been removed, in order to avoid an exception.
-            if (notifier.Streamers.ContainsKey(streamer.streamer_info.Streamer.Id))
-            {
-                notifier.removeStreamers(new() { streamer.streamer_info.Streamer });
-                m_streamers.Remove(streamer);
-                this.RaisePropertyChanged(nameof(Streamers));
-                notifier.saveConfiguration("config.json");
-            }
-        }
-
-        protected ObservableCollection<StreamerViewModel> m_streamers;
+        protected ObservableCollection<StreamerVM> m_streamers;
     }
 }

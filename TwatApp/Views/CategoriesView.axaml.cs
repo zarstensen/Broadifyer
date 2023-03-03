@@ -5,7 +5,7 @@ using System.Windows.Input;
 using TwatApp.Models;
 using TwatApp.ViewModels;
 
-namespace TwatApp.Controls
+namespace TwatApp.Views
 {
     public partial class CategorySection : UserControl
     {
@@ -21,8 +21,8 @@ namespace TwatApp.Controls
 		public static readonly StyledProperty<ICommand> AddCommandProperty =
     AvaloniaProperty.Register<CategorySection, ICommand>(nameof(AddCommand));
 
-        public static readonly StyledProperty<StreamerViewModel?> StreamerProperty =
-    AvaloniaProperty.Register<CategorySection, StreamerViewModel?>(nameof(Streamer));
+        public static readonly StyledProperty<StreamerVM?> StreamerProperty =
+    AvaloniaProperty.Register<CategorySection, StreamerVM?>(nameof(Streamer));
 
         public static readonly StyledProperty<string> CategoryInputProperty =
     AvaloniaProperty.Register<CategorySection, string>(nameof(CategoryInput));
@@ -50,7 +50,7 @@ namespace TwatApp.Controls
             set => SetValue(RemoveCommandProperty, value);
         }
 
-        public StreamerViewModel? Streamer
+        public StreamerVM? Streamer
 		{
 			get => GetValue(StreamerProperty);
 			set
