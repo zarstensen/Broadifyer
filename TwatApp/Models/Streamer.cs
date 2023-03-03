@@ -123,6 +123,13 @@ namespace TwatApp.Models
         /// </summary>
         [JsonIgnore]
         public bool WasNotified { get; }
+
+        /// <summary>
+        /// time of the last attempt to notify the user about a broadcaster going live.
+        /// should be used for filtering out incorrect broadcast offline events, that appear right as the broadcaster goes live.
+        /// </summary>
+        [JsonIgnore]
+        public DateTime NotifiedTime { get; }
         /// <summary>
         /// if true:
         ///     notifications will be sent, if the live and filtered categories conditions are met.
