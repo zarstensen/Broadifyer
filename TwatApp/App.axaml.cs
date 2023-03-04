@@ -22,6 +22,13 @@ namespace TwatApp
                 {
                     DataContext = new MainWindowViewModel(),
                 };
+
+                
+
+                desktop.Startup += (sender, args) =>
+                    {
+                        (desktop.MainWindow as MainWindow)!.start_minimized = args.Args.Contains("--minimized");
+                    };
             }
 
             base.OnFrameworkInitializationCompleted();

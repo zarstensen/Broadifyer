@@ -18,6 +18,7 @@
     ExtendClientAreaToDecorationsHint="True"
     Icon="/Assets/avalonia-logo.ico"
     WindowStartupLocation="CenterScreen"
+    WindowState="Minimized"
     mc:Ignorable="d">
 
     <NativeMenu.Menu>
@@ -30,9 +31,10 @@
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
-            <NativeMenuItem Header="Options">
+            <NativeMenuItem Header="Edit">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
+                        <NativeMenuItem Command="{Binding toggleRunOnStartup}" Header="{Binding RunOnStartupHeader}" />
                         <NativeMenuItem Header="Exit" />
                         <NativeMenuItem Header="-" />
                         <NativeMenuItem Header="Preferences" />

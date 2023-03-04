@@ -134,9 +134,6 @@ namespace TwatApp.Models
                 Console.WriteLine(auth_endpoint.Uri);
                 HttpRequestMessage msg = new(HttpMethod.Get, auth_endpoint.Uri);
 
-                HttpResponseMessage rmsg = await client.SendAsync(msg);
-                Trace.WriteLine(await rmsg.Content.ReadAsStringAsync());
-
                 Process.Start(new ProcessStartInfo() { FileName = auth_endpoint.Uri.ToString(), UseShellExecute = true });
 
                 HttpListener listener = new();

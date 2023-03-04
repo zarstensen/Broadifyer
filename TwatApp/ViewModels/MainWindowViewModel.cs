@@ -9,22 +9,52 @@ using System.Diagnostics;
 using ReactiveUI;
 using Avalonia.Collections;
 using System.Collections.ObjectModel;
+using Microsoft.Win32;
 
 namespace TwatApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        string StartupPath = $"\"{Environment.ProcessPath}\" --minimized";
+        public bool RunsOnStartup
+        {
+            get
+            {
+                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (run_key == null)
+                    return false;
+
+                return (string?)run_key.GetValue("Twats") == StartupPath;
+            }
+            set
+            {
+                if (RunsOnStartup == value)
+                    return;
+
+                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (!value)
+                    run_key!.DeleteValue("Twats");
+                else
+                    run_key!.SetValue("Twats", StartupPath!);
+            }
+        }
+
+
+        public string RunOnStartupHeader
+        {
+            get
+            {
+                if (RunsOnStartup)
+                    return "[x] Run On Startup";
+                else
+                    return "[  ] Run On Startup";
+            }
+        }
+
         public React<ViewModelBase> View { get; set; } = new();
 
-        /// <summary>
-        /// property containing the string value in the streamer name input field, for the StreamerSection control.
-        /// </summary>
-        public React<string> StreamerInput { get; set; } = "";
-        public React<string> CategoryInput { get; set; } = "";
-        /// <summary>
-        /// property containing the currently selected streamer, in the StreamerSection streamer listbox.
-        /// </summary>
-        public React<StreamerVM?> SelectedStreamer { get; set; } = new();
 
         /// <summary>
         /// retrieve a sorted list of the current streamers.
@@ -41,25 +71,13 @@ namespace TwatApp.ViewModels
             notifier = (App.Current!.DataContext as AppViewModel)!.notifier;
 
             View.Value = new ConfigEditorViewModel(notifier);
-
-            //m_streamers = new();
-
-            //foreach (IStreamerInfo streamer_info in notifier.currentStreamers())
-            //    m_streamers.Add(new(streamer_info));
-
-            //new Task(async () => await logSelected()).Start();
         }
 
-        public async Task logSelected()
+        public void toggleRunOnStartup()
         {
-            Trace.WriteLine("BEGUN LOGGING");
-            while (true)
-            {
-                //Trace.WriteLine($"STREAMER: {SelectedStreamer.Value}");
-                await Task.Delay(5500);
-            }
+            RunsOnStartup = !RunsOnStartup;
+            this.RaisePropertyChanged(nameof(RunOnStartupHeader));
         }
 
-       
     }
 }
