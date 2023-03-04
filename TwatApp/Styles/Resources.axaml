@@ -12,6 +12,7 @@
 
     <sys:Boolean x:Key="GridLines">true</sys:Boolean>
 
+    <Color x:Key="Color0">#1A1C21</Color>
     <Color x:Key="Color1">#212329</Color>
     <Color x:Key="Color2">#282A32</Color>
     <Color x:Key="Color3">#3D3F46</Color>
@@ -22,4 +23,8 @@
     <sys:Double x:Key="FontSize2">24</sys:Double>
     <sys:Double x:Key="FontSize3">16</sys:Double>
     <sys:Double x:Key="FontSize4">12</sys:Double>
+
+    <sys:Double x:Key="FocusWeight">0.9</sys:Double>
+
+    <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource Color2}" />
 </ResourceDictionary>

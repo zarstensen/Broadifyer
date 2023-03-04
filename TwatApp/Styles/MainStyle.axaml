@@ -32,7 +32,10 @@
         <SolidColorBrush x:Key="InputWatermark" Color="{StaticResource Color3}" />
         <SolidColorBrush x:Key="InputSelect" Color="{StaticResource Color3}" />
 
-        <SolidColorBrush x:Key="TextForeground" Color="{StaticResource Color4}" />
+        <SolidColorBrush x:Key="TextForeground" Color="{StaticResource Color5}" />
+
+        <SolidColorBrush x:Key="MenuBarForeground" Color="{StaticResource Color5}" />
+        <SolidColorBrush x:Key="MenuBarBackground" Color="{StaticResource Color3}" />
     </Styles.Resources>
 
     <!--  Button  -->
@@ -50,8 +53,8 @@
     </Style>
 
     <Style Selector="Button:pointerover /template/ ContentPresenter">
-        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource ButtonForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource ButtonForeground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
     </Style>
 
     <!--  Toggle Button  -->
@@ -67,12 +70,12 @@
     </Style>
 
     <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{Binding Source={StaticResource ButtonNoCheckBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Background" Value="{Binding Source={StaticResource ButtonNoCheckBackground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
         <Setter Property="Button.Foreground" Value="{StaticResource ButtonNoCheckForeground}" />
     </Style>
 
     <Style Selector="ToggleButton:pointerover:checked /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Background" Value="{Binding Source={StaticResource ButtonBackground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
         <Setter Property="Button.Foreground" Value="{StaticResource ButtonForeground}" />
     </Style>
 
@@ -126,17 +129,17 @@
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{Binding Source={StaticResource InputWatermark}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Foreground" Value="{Binding Source={StaticResource InputWatermark}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement, TextBox:focus /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{Binding Source={StaticResource InputBackground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Background" Value="{Binding Source={StaticResource InputBackground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
     </Style>
 
     <Style Selector="TextBox:pointerover /template/ TextPresenter#PART_TextPresenter, TextBox:focus /template/ TextPresenter#PART_TextPresenter">
-        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
-        <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter=1.1}" />
+        <Setter Property="Button.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
+        <Setter Property="TextBlock.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
+        <Setter Property="TextBox.Foreground" Value="{Binding Source={StaticResource InputForeground}, Converter={StaticResource LightConverter}, ConverterParameter={StaticResource FocusWeight}}" />
     </Style>
 
     <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
@@ -145,8 +148,6 @@
     </Style>
 
     <!--  TextFields  -->
-
-    <!--  Type 1  -->
 
     <Style Selector="TextBlock.h1, TextBlock.h2, TextBlock.h3">
         <Setter Property="FontWeight" Value="Bold" />
@@ -165,6 +166,24 @@
     <Style Selector="TextBlock.h3">
         <Setter Property="FontSize" Value="{StaticResource FontSize3}" />
         <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+
+    <!--  Menu Bar  -->
+
+    <Style Selector="CaptionButtons:normal, CaptionButtons:maximized, CaptionButtons:minimized, CaptionButtons:fullscreen">
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MenuBarForeground}" />
+    </Style>
+
+    <Style Selector="MenuItem, MenuItem:pointerover, MenuItem:pointerover:focus, MenuItem:focus-within">
+        <Setter Property="Foreground" Value="{StaticResource MenuBarForeground}" />
+    </Style>
+
+    <Style Selector="      MenuItem:pointerover ContentPresenter#PART_HeaderPresenter,      MenuItem:focus ContentPresenter#PART_HeaderPresenter,      MenuItem:focus-within ContentPresenter#PART_HeaderPresenter,      MenuItem:open ContentPresenter#PART_HeaderPresenter,      MenuItem:selected ContentPresenter#PART_HeaderPresenter">
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MenuBarForeground}" />
+    </Style>
+
+    <Style Selector="MenuFlyoutPresenter">
+        <Setter Property="Background" Value="{StaticResource MenuBarBackground}" />
     </Style>
 
 </Styles>

@@ -13,6 +13,40 @@
     MinHeight="250"
     d:DesignHeight="665"
     d:DesignWidth="950"
-    Content="{Binding View.Value}"
+    ExtendClientAreaChromeHints="PreferSystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
     Icon="/Assets/avalonia-logo.ico"
-    mc:Ignorable="d" />
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="File">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Export" />
+                        <NativeMenuItem Header="Import" />
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="Options">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Exit" />
+                        <NativeMenuItem Header="-" />
+                        <NativeMenuItem Header="Preferences" />
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+        </NativeMenu>
+    </NativeMenu.Menu>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <DockPanel Background="{StaticResource Color0}" IsHitTestVisible="False" />
+            <NativeMenuBar HorizontalAlignment="Left" />
+        </Grid>
+        <ContentControl Content="{Binding View.Value}" />
+    </DockPanel>
+</Window>
