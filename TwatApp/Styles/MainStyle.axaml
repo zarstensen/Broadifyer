@@ -15,6 +15,9 @@
                     <TextBlock Classes="h1">Text h1</TextBlock>
                     <TextBlock Classes="h2">Text h2</TextBlock>
                     <TextBlock Classes="h3">Text h3</TextBlock>
+                    <Expander Header="Expander" IsExpanded="True">
+                        <TextBlock>Expander Content</TextBlock>
+                    </Expander>
                 </StackPanel>
             </Border>
         </Border>
@@ -191,5 +194,4 @@
     <Style Selector="MenuFlyoutPresenter">
         <Setter Property="Background" Value="{StaticResource MenuBarBackground}" />
     </Style>
-
 </Styles>

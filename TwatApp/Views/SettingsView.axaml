@@ -13,27 +13,42 @@
 
     <UserControl.DataTemplates>
         <DataTemplate DataType="local:Setting">
-            <Grid ColumnDefinitions="2*,1*" RowDefinitions="1*,1*">
-                <TextBlock Classes="h2" Text="{Binding Name}" />
+            <Grid ColumnDefinitions="1*,1*" RowDefinitions="auto,1*">
+                <TextBlock
+                    Grid.Column="0"
+                    Classes="h2"
+                    Text="{Binding Name}" />
                 <TextBlock
                     Grid.Row="1"
+                    Grid.Column="0"
                     Classes="h3 dark"
                     Text="{Binding Description}"
                     TextWrapping="Wrap" />
                 <ContentControl
                     Grid.Row="1"
                     Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Top"
                     Content="{Binding Value}" />
             </Grid>
         </DataTemplate>
 
         <DataTemplate DataType="local:NumericSetting">
-            <TextBox Text="{Binding ViewValue, Mode=TwoWay}" />
+            <TextBox
+                MinWidth="150"
+                HorizontalAlignment="Right"
+                HorizontalContentAlignment="Right"
+                Text="{Binding ViewValue, Mode=TwoWay}" />
         </DataTemplate>
 
         <DataTemplate DataType="local:PathSetting">
             <StackPanel Orientation="Horizontal">
-                <TextBox IsReadOnly="True" Text="{Binding ViewValue, Mode=TwoWay}" />
+                <TextBox
+                    MinWidth="300"
+                    HorizontalAlignment="Right"
+                    IsReadOnly="True"
+                    Text="{Binding ViewValue, Mode=TwoWay}" />
                 <Button Command="{Binding folderDialouge}">
                     <TextBlock>FI</TextBlock>
                 </Button>
@@ -45,26 +60,39 @@
         </DataTemplate>
 
     </UserControl.DataTemplates>
+    <Grid Margin="0,30" RowDefinitions="30, 1*">
 
-    <StackPanel>
-        <Button Command="{Binding Exit}">Go Back!!!</Button>
-        <ContentControl Content="{Binding RunOnStartupSetting}" />
-        <ContentControl Content="{Binding PollIntervalSetting}" />
-        <Expander
-            Padding="0"
-            HorizontalContentAlignment="Left"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5*" MaxWidth="1000" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Button
+            Margin="20,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
             Background="Transparent"
-            BorderBrush="Transparent">
+            Command="{Binding Exit}">
+            <Image Source="{SvgImage /Assets/left-arrow.svg}" />
+        </Button>
 
-            <Expander.Header>
-                <TextBlock HorizontalAlignment="Left" Classes="h3">Advanced</TextBlock>
-            </Expander.Header>
 
-            <StackPanel HorizontalAlignment="Stretch">
-                <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
-                <ContentControl Content="{Binding LogDirSetting}" />
-                <ContentControl Content="{Binding UseTokenFileSetting}" />
-            </StackPanel>
-        </Expander>
-    </StackPanel>
+        <TextBlock Grid.Column="1" Classes="h2">
+            Settings
+        </TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,30"
+            HorizontalAlignment="Stretch"
+            Spacing="30">
+            <ContentControl Content="{Binding RunOnStartupSetting}" />
+            <ContentControl Content="{Binding PollIntervalSetting}" />
+            <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
+            <ContentControl Content="{Binding LogDirSetting}" />
+            <ContentControl Content="{Binding UseTokenFileSetting}" />
+        </StackPanel>
+    </Grid>
 </UserControl>
