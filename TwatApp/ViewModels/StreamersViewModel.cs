@@ -93,8 +93,7 @@ namespace TwatApp.ViewModels
             Streamers.Add(new(m_notifier.Streamers[found_streamer.Id]));
             this.RaisePropertyChanged(nameof(Streamers));
             
-            // TODO: save file should not be hardcoded
-            m_notifier.saveConfiguration("config.json");
+            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
         }
 
         /// <summary>
@@ -110,7 +109,7 @@ namespace TwatApp.ViewModels
 
             this.RaisePropertyChanged(nameof(Streamers));
 
-            m_notifier.saveConfiguration("config.json");
+            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
         }
 
         public void removeStreamer(StreamerVM streamer)
@@ -124,7 +123,7 @@ namespace TwatApp.ViewModels
                 Streamers.Remove(streamer);
                 this.RaisePropertyChanged(nameof(Streamers));
 
-                m_notifier.saveConfiguration("config.json");
+                m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
             }
         }
 

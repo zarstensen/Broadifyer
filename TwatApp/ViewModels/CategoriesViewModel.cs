@@ -28,7 +28,7 @@ namespace TwatApp.ViewModels
     {
         public React<StreamerVM?> TargetStreamer { get; set; }
         public string CategoryInput { get; set; } = "";
-
+        
         public CategoriesViewModel(TwitchNotify notifier, React<StreamerVM?> target_streamer)
         {
             TargetStreamer = target_streamer;
@@ -55,14 +55,14 @@ namespace TwatApp.ViewModels
             await cinfo.prepareIcons();
 
             TargetStreamer.Value.FilteredCategories.Add(new(cinfo));
-            m_notifier.saveConfiguration("config.json");
+            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
         }
 
         public void removeCategory(CategoryVM category)
         {
             TargetStreamer.Value.FilteredCategories.Remove(category);
             TargetStreamer.Value.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
-            m_notifier.saveConfiguration("config.json");
+            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
         }
 
         protected TwitchNotify m_notifier;

@@ -52,7 +52,7 @@ namespace TwatApp.Models
         /// how many seconds should pass, before a begin broadcast event will be seen as valid.
         /// this is used to filter out any incorrect broadcast offline events shortly after a broadcaster goes live.
         /// </summary>
-        public double NewBroadcastTimeout { get; set; } = 30;
+        public int NewBroadcastTimeout { get; set; } = 30;
 
         /// <summary>
         /// invoked whenever a user should be notified of a streamers broadcast.
@@ -456,7 +456,17 @@ namespace TwatApp.Models
             {
                 await poll();
 
-                Thread.Sleep(PollInterval * 1000);
+                // instead of sleeping for the full PollInterval, the thread sleeps for PollInterval seconds, in 1 second segments.
+                // this makes sure that if PollInterval is updated, while the thread wait for the next poll,
+                // the thread will use the new PollInterval value, instead of sleeping for the old PollInterval amount.
+
+                int seconds_slept = 0;
+
+                while (seconds_slept < PollInterval)
+                {
+                    seconds_slept++;
+                    Thread.Sleep(1000);
+                }
             }
         }
 

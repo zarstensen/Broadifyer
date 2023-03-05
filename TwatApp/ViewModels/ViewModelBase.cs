@@ -7,5 +7,6 @@ namespace TwatApp.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {
+        public AppViewModel AppVM { get => (App.Current!.DataContext as AppViewModel)!; }
     }
 }

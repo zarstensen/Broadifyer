@@ -8,7 +8,6 @@
 
     <cv:ColorLight x:Key="LightConverter" />
     <cv:ConvertGrayscale x:Key="GrayscaleConverter" />
-    <cv:EnableText x:Key="EnableTextConverter" />
 
     <sys:Boolean x:Key="GridLines">true</sys:Boolean>
 

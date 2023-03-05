@@ -33,6 +33,7 @@
         <SolidColorBrush x:Key="InputSelect" Color="{StaticResource Color3}" />
 
         <SolidColorBrush x:Key="TextForeground" Color="{StaticResource Color5}" />
+        <SolidColorBrush x:Key="DarkTextForeground" Color="{StaticResource Color4}" />
 
         <SolidColorBrush x:Key="MenuBarForeground" Color="{StaticResource Color5}" />
         <SolidColorBrush x:Key="MenuBarBackground" Color="{StaticResource Color3}" />
@@ -167,6 +168,11 @@
         <Setter Property="FontSize" Value="{StaticResource FontSize3}" />
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
+
+    <Style Selector="TextBlock.dark">
+        <Setter Property="Foreground" Value="{StaticResource DarkTextForeground}" />
+    </Style>
+
 
     <!--  Menu Bar  -->
 

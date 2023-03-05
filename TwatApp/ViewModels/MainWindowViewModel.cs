@@ -10,48 +10,12 @@ using ReactiveUI;
 using Avalonia.Collections;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
+using System.Reactive.Linq;
 
 namespace TwatApp.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        string StartupPath = $"\"{Environment.ProcessPath}\" --minimized";
-        public bool RunsOnStartup
-        {
-            get
-            {
-                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
-                if (run_key == null)
-                    return false;
-
-                return (string?)run_key.GetValue("Twats") == StartupPath;
-            }
-            set
-            {
-                if (RunsOnStartup == value)
-                    return;
-
-                RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
-                if (!value)
-                    run_key!.DeleteValue("Twats");
-                else
-                    run_key!.SetValue("Twats", StartupPath!);
-            }
-        }
-
-
-        public string RunOnStartupHeader
-        {
-            get
-            {
-                if (RunsOnStartup)
-                    return "[x] Run On Startup";
-                else
-                    return "[  ] Run On Startup";
-            }
-        }
 
         public React<ViewModelBase> View { get; set; } = new();
 
@@ -70,14 +34,24 @@ namespace TwatApp.ViewModels
 
             notifier = (App.Current!.DataContext as AppViewModel)!.notifier;
 
-            View.Value = new ConfigEditorViewModel(notifier);
+            m_config_view_model = new(notifier);
+
+            View.Value = m_config_view_model;
+
+            showSettingsView();
         }
 
-        public void toggleRunOnStartup()
+        public void showSettingsView()
         {
-            RunsOnStartup = !RunsOnStartup;
-            this.RaisePropertyChanged(nameof(RunOnStartupHeader));
+            SettingsViewModel settings_view_model = new SettingsViewModel(notifier);
+            View.Value = settings_view_model;
+
+            settings_view_model.Exit.Subscribe(
+                x => View.Value = m_config_view_model
+                );
         }
+
+        protected ConfigEditorViewModel m_config_view_model;
 
     }
 }

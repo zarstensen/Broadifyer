@@ -16,7 +16,9 @@ namespace TwatApp
         {
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
-            Stream log_file = File.Create($"C:/Users/Karsten/Downloads/log-{DateTime.Now.ToString("s").Replace(':', '-')}.txt");
+            Directory.CreateDirectory("logs");
+
+            Stream log_file = File.Create($"logs/log-{DateTime.Now.ToString("s").Replace(':', '-')}.txt");
             Trace.Listeners.Add(new TextWriterTraceListener(log_file));
             Trace.AutoFlush = true;
             Trace.Indent();

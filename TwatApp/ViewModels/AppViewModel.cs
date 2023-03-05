@@ -18,17 +18,90 @@ namespace TwatApp.ViewModels
     
     public class AppViewModel : ViewModelBase
     {
+
+        public class Settings
+        {
+            public Settings(TwitchNotify notifier)
+            {
+                m_notifier = notifier;
+            }
+
+            [JsonIgnore]
+            string StartupPath = $"\"{Environment.ProcessPath}\" --minimized";
+
+            public bool RunsOnStartup
+            {
+                get
+                {
+                    RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                    if (run_key == null)
+                        return false;
+
+                    return (string?)run_key.GetValue("Twats") == StartupPath;
+                }
+                set
+                {
+                    if (RunsOnStartup == value)
+                        return;
+
+                    RegistryKey? run_key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                    if (!value)
+                        run_key!.DeleteValue("Twats");
+                    else
+                        run_key!.SetValue("Twats", StartupPath!);
+                }
+            }
+
+            public string ConfigFileName {
+                get => m_config_file_name;
+                set
+                {
+                    if (File.Exists(m_config_file_name) && m_config_file_name != value)
+                        File.Copy(m_config_file_name, value, true);
+
+                    m_config_file_name = value;
+                }
+            }
+            public bool UseTokenFile { get => m_use_token_file;
+                set
+                {
+                    if (!value && File.Exists(TokenFile))
+                        File.Delete(TokenFile);
+
+                    m_use_token_file = value;
+                }
+            }
+
+            [JsonIgnore]
+            public string TokenFile { get; } = "token.txt";
+            public int PollInterval { get => m_notifier.PollInterval; set => m_notifier.PollInterval = value; }
+            public int NewBroadcastTimeout { get => m_notifier.NewBroadcastTimeout; set => m_notifier.NewBroadcastTimeout = value; }
+
+            protected TwitchNotify m_notifier;
+            protected bool m_use_token_file = false;
+            protected string m_config_file_name = "config.json";
+        }
+
+        public Settings settings { get; set; }
+
         public AppViewModel()
         {
             // this code should not be called, if in design mode, as neither a notification nor a twitch api call will be made, during design mode.
             if (Design.IsDesignMode)
                 return;
 
+            settings = new(notifier);
+
+            if(File.Exists("settings.json"))
+                JsonConvert.PopulateObject(File.ReadAllText("settings.json"), settings);
+
             new Task(async () =>
             {
-                await notifier.authUser("token.txt", false);
-                await notifier.loadConfiguration("config.json");
-                notifier.PollInterval = 1;
+                await notifier.authUser(settings.UseTokenFile ? settings.TokenFile : null, false);
+                await notifier.loadConfiguration(settings.ConfigFileName);
+                notifier.PollInterval = settings.PollInterval;
                 notifier.StreamerNotify += notifyUser;
                 notifier.startNotify();
             }).Start();
@@ -53,8 +126,9 @@ namespace TwatApp.ViewModels
         {
             ToastNotificationManagerCompat.History.Clear();
             ToastNotificationManagerCompat.Uninstall();
-            notifier.saveConfiguration("config.json");
+            notifier.saveConfiguration(settings.ConfigFileName);
             notifier.stopNotify();
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
 
 
