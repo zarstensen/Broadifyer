@@ -109,7 +109,6 @@
                 <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
                 <ContentControl Content="{Binding ConfigFileSetting}" />
                 <ContentControl Content="{Binding UseTokenFileSetting}" />
-                <Button Command="{Binding restoreDefaults}">Restore Defaults</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

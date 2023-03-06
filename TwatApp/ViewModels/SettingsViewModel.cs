@@ -199,11 +199,6 @@ namespace TwatApp.ViewModels
             });
         }
 
-        public void restoreDefaults()
-        {
-            AppVM.settings = new AppViewModel.Settings(m_notifier);
-        }
-
         protected TwitchNotify m_notifier;
     }
 }

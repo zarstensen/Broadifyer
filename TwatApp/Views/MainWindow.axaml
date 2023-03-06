@@ -34,7 +34,6 @@
             <NativeMenuItem Header="Edit">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Command="{Binding toggleRunOnStartup}" Header="{Binding RunOnStartupHeader}" />
                         <NativeMenuItem Header="Exit" />
                         <NativeMenuItem Header="-" />
                         <NativeMenuItem Command="{Binding showSettingsView}" Header="Preferences" />
