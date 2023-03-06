@@ -27,6 +27,7 @@
                 <ContentControl
                     Grid.Row="1"
                     Grid.Column="1"
+                    MinWidth="150"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Top"
@@ -42,11 +43,13 @@
                 Text="{Binding ViewValue, Mode=TwoWay}" />
         </DataTemplate>
 
-        <DataTemplate DataType="local:PathSetting">
-            <StackPanel Orientation="Horizontal">
+        <DataTemplate DataType="local:FileSetting">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button>FI</Button>
                 <TextBox
-                    MinWidth="300"
+                    MinWidth="150"
                     HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Right"
                     IsReadOnly="True"
                     Text="{Binding ViewValue, Mode=TwoWay}" />
                 <Button Background="Transparent" Command="{Binding folderDialouge}">
@@ -60,6 +63,7 @@
         </DataTemplate>
 
     </UserControl.DataTemplates>
+
     <Grid Margin="0,30" RowDefinitions="30, 1*">
 
         <Grid.ColumnDefinitions>
@@ -77,22 +81,31 @@
             <Image Source="{SvgImage /Assets/left-arrow.svg}" />
         </Button>
 
-
-        <TextBlock Grid.Column="1" Classes="h2">
+        <TextBlock
+            Grid.Column="1"
+            Padding="10,0"
+            Classes="h2">
             Settings
         </TextBlock>
 
-        <StackPanel
+        <ScrollViewer
             Grid.Row="1"
             Grid.Column="1"
-            Margin="0,30"
+            Padding="10"
             HorizontalAlignment="Stretch"
-            Spacing="30">
-            <ContentControl Content="{Binding RunOnStartupSetting}" />
-            <ContentControl Content="{Binding PollIntervalSetting}" />
-            <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
-            <ContentControl Content="{Binding LogDirSetting}" />
-            <ContentControl Content="{Binding UseTokenFileSetting}" />
-        </StackPanel>
+            VerticalAlignment="Stretch">
+            <StackPanel
+                Margin="0,30"
+                HorizontalAlignment="Stretch"
+                Spacing="30">
+
+                <ContentControl Content="{Binding RunOnStartupSetting}" />
+                <ContentControl Content="{Binding PollIntervalSetting}" />
+                <ContentControl Content="{Binding PollIntervalSetting}" />
+                <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
+                <ContentControl Content="{Binding ConfigFileSetting}" />
+                <ContentControl Content="{Binding UseTokenFileSetting}" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
