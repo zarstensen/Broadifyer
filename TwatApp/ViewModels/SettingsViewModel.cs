@@ -156,7 +156,6 @@ namespace TwatApp.ViewModels
         Setting RunOnStartupSetting { get; set; }
         Setting PollIntervalSetting { get; set; }
         Setting BroadcastTimeoutSetting { get; set; }
-        Setting LogDirSetting { get; set; }
         Setting ConfigFileSetting { get; set; }
         Setting UseTokenFileSetting { get; set; }
 
@@ -184,7 +183,7 @@ namespace TwatApp.ViewModels
 
             ConfigFileSetting = new("Config File",
                 "Name of the config file, used to store the current streamer configurations.",
-                new PathSetting(AppVM.settings.ConfigFileName));
+                new FileSetting(AppVM.settings.ConfigFileName));
 
             UseTokenFileSetting = new("Use Token File",
                 "Store the twitch api locally, in order to avoid opening a browser window, every time the app is started.\nIncreases risk of abuse from 3rd party applications.",
