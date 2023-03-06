@@ -155,6 +155,7 @@ namespace TwatApp.ViewModels
     {
         Setting RunOnStartupSetting { get; set; }
         Setting PollIntervalSetting { get; set; }
+        Setting UrgentNotificationsSetting { get; set; }
         Setting BroadcastTimeoutSetting { get; set; }
         Setting ConfigFileSetting { get; set; }
         Setting UseTokenFileSetting { get; set; }
@@ -168,12 +169,16 @@ namespace TwatApp.ViewModels
             // common settings
 
             RunOnStartupSetting = new("Run On Startup",
-                "start the application in a minimized state, every time the computer boots",
+                "Start the application in a minimized state, every time the computer boots",
                 new ToggleSetting(AppVM.settings.RunsOnStartup));
 
             PollIntervalSetting = new("Poll Interval",
                 "How many seconds to wait, before checking if the broadcaster is live.",
                 new NumericSetting(AppVM.settings.PollInterval));
+
+            UrgentNotificationsSetting = new("Use Urgent Notifications",
+                "Notifications will be marked as urgent, which will allow the notification to appear, whilst using an application in fullscreen mode.",
+                new ToggleSetting(AppVM.settings.UseUrgentNotifications));
 
             // advanced settings
 
@@ -192,6 +197,7 @@ namespace TwatApp.ViewModels
             Exit = ReactiveCommand.Create(() => {
                 AppVM.settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
                 AppVM.settings.PollInterval = (int)PollIntervalSetting.Data;
+                AppVM.settings.UseUrgentNotifications = (bool) UrgentNotificationsSetting.Data;
                 AppVM.settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
                 AppVM.settings.ConfigFileName = (string) ConfigFileSetting.Data;
                 AppVM.settings.UseTokenFile = (bool) UseTokenFileSetting.Data;

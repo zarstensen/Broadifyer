@@ -10,8 +10,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Data.Xml.Dom;
 using TwatApp.Models;
 using TwitchLib.Api.Helix;
+using Windows.UI.Notifications;
 
 namespace TwatApp.ViewModels
 {
@@ -79,6 +81,7 @@ namespace TwatApp.ViewModels
             public int PollInterval { get => m_notifier.PollInterval; set => m_notifier.PollInterval = value; }
             public int NewBroadcastTimeout { get => m_notifier.NewBroadcastTimeout; set => m_notifier.NewBroadcastTimeout = value; }
 
+            public bool UseUrgentNotifications { get; set; } = false;
             public void save()
             {
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(this, Formatting.Indented));
@@ -162,12 +165,26 @@ namespace TwatApp.ViewModels
 
         public void notifyUser(object? sender, IStreamerInfo streamer_info)
         {
-            new ToastContentBuilder().
-                AddText($"{streamer_info.Streamer.DisplayName} Just started streaming {streamer_info.CurrentCategory?.Name ?? ""}!").
-                AddAppLogoOverride(new(streamer_info.Streamer.IconFileOnline), ToastGenericAppLogoCrop.Circle).
-                AddAttributionText("Click to go to stream").
-                AddArgument("streamer", streamer_info.Streamer.LoginName).
-                Show();
+            var notifier = ToastNotificationManagerCompat.CreateToastNotifier();
+
+            XmlDocument doc = new();
+            doc.LoadXml(File.ReadAllText($"./Assets/Notification.xml"));
+
+            XmlElement toast = (XmlElement)doc.SelectSingleNode("/toast");
+
+            toast.SetAttribute("launch", $"streamer={streamer_info.Streamer.LoginName}");
+            string scenario = settings.UseUrgentNotifications ? "urgent" : "default";
+            toast.SetAttribute("scenario", scenario);
+
+            XmlElement content = (XmlElement)doc.SelectSingleNode("/toast/visual/binding/text");
+
+            content.InnerText = $"{streamer_info.Streamer.DisplayName} Just started streaming {streamer_info.CurrentCategory?.Name ?? ""}!";
+
+            XmlElement icon = (XmlElement)doc.SelectSingleNode("/toast/visual/binding/image");
+
+            icon.SetAttribute("src", streamer_info.Streamer.IconFileOnline);
+
+            notifier.Show(new ToastNotification(doc));
         }
 
         public TwitchNotify notifier = new("mjnfz52170tvwmq4nk1vldg0hufjfv");

@@ -106,6 +106,7 @@
 
                 <ContentControl Content="{Binding RunOnStartupSetting}" />
                 <ContentControl Content="{Binding PollIntervalSetting}" />
+                <ContentControl Content="{Binding UrgentNotificationsSetting}" />
                 <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
                 <ContentControl Content="{Binding ConfigFileSetting}" />
                 <ContentControl Content="{Binding UseTokenFileSetting}" />

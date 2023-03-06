@@ -19,11 +19,16 @@
     <EmbeddedResource Remove="Controls\**" />
     <None Remove="Controls\**" />
     <AvaloniaResource Remove="Assets\Default.axaml" />
+    <AvaloniaResource Remove="Assets\Notification.xml" />
     <None Remove=".gitignore" />
+    <None Remove="Assets\Notification.xml" />
     <None Remove="close_tab.html" />
     <None Remove="parse_token.html" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Notification.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="close_tab.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -48,7 +53,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Svg.Skia" Version="0.5.18" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Update="Assets\Default.axaml">

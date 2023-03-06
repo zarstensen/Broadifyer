@@ -15,6 +15,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using OpenFileDialog = Avalonia.Controls.OpenFileDialog;
 using Newtonsoft.Json;
 using SaveFileDialog = Avalonia.Controls.SaveFileDialog;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 
 namespace TwatApp.ViewModels
 {
@@ -105,7 +107,6 @@ namespace TwatApp.ViewModels
                 {
                     Trace.WriteLine(ex);
                 }
-
             }
         }
 
