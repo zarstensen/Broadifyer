@@ -195,7 +195,13 @@ namespace TwatApp.ViewModels
                 AppVM.settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
                 AppVM.settings.ConfigFileName = (string) ConfigFileSetting.Data;
                 AppVM.settings.UseTokenFile = (bool) UseTokenFileSetting.Data;
+                AppVM.settings.save();
             });
+        }
+
+        public void restoreDefaults()
+        {
+            AppVM.settings = new AppViewModel.Settings(m_notifier);
         }
 
         protected TwitchNotify m_notifier;

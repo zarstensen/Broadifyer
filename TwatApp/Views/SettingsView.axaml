@@ -45,16 +45,21 @@
 
         <DataTemplate DataType="local:FileSetting">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button>FI</Button>
+                <Button
+                    Height="30"
+                    Padding="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Background="Transparent"
+                    Command="{Binding fileDialouge}">
+                    <Image Source="{SvgImage /Assets/document.svg}" />
+                </Button>
                 <TextBox
                     MinWidth="150"
                     HorizontalAlignment="Right"
                     HorizontalContentAlignment="Right"
                     IsReadOnly="True"
                     Text="{Binding ViewValue, Mode=TwoWay}" />
-                <Button Background="Transparent" Command="{Binding folderDialouge}">
-                    <Image Source="{SvgImage /Assets/document.svg}" />
-                </Button>
             </StackPanel>
         </DataTemplate>
 
@@ -101,10 +106,10 @@
 
                 <ContentControl Content="{Binding RunOnStartupSetting}" />
                 <ContentControl Content="{Binding PollIntervalSetting}" />
-                <ContentControl Content="{Binding PollIntervalSetting}" />
                 <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
                 <ContentControl Content="{Binding ConfigFileSetting}" />
                 <ContentControl Content="{Binding UseTokenFileSetting}" />
+                <Button Command="{Binding restoreDefaults}">Restore Defaults</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

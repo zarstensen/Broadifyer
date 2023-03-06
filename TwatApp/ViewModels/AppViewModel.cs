@@ -79,6 +79,11 @@ namespace TwatApp.ViewModels
             public int PollInterval { get => m_notifier.PollInterval; set => m_notifier.PollInterval = value; }
             public int NewBroadcastTimeout { get => m_notifier.NewBroadcastTimeout; set => m_notifier.NewBroadcastTimeout = value; }
 
+            public void save()
+            {
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(this, Formatting.Indented));
+            }
+
             protected TwitchNotify m_notifier;
             protected bool m_use_token_file = false;
             protected string m_config_file_name = "config.json";
@@ -128,7 +133,7 @@ namespace TwatApp.ViewModels
             ToastNotificationManagerCompat.Uninstall();
             notifier.saveConfiguration(settings.ConfigFileName);
             notifier.stopNotify();
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings, Formatting.Indented));
+            settings.save();
         }
 
 
