@@ -49,8 +49,8 @@
                     HorizontalAlignment="Right"
                     IsReadOnly="True"
                     Text="{Binding ViewValue, Mode=TwoWay}" />
-                <Button Command="{Binding folderDialouge}">
-                    <TextBlock>FI</TextBlock>
+                <Button Background="Transparent" Command="{Binding folderDialouge}">
+                    <Image Source="{SvgImage /Assets/document.svg}" />
                 </Button>
             </StackPanel>
         </DataTemplate>
