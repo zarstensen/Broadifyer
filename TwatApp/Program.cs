@@ -1,7 +1,5 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
-using System;
 using System.Diagnostics;
 
 namespace TwatApp
@@ -25,8 +23,15 @@ namespace TwatApp
 
             Trace.WriteLine(string.Join('\n', args));
 
-            BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+            try
+            {
+                BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args);
+            }
+            catch(Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

@@ -102,14 +102,16 @@ namespace TwatApp.ViewModels
             if(File.Exists("settings.json"))
                 JsonConvert.PopulateObject(File.ReadAllText("settings.json"), settings);
 
-            new Task(async () =>
+            var initialize_notifier_task = new Task(async () =>
             {
                 await notifier.authUser(settings.UseTokenFile ? settings.TokenFile : null, false);
                 await notifier.loadConfiguration(settings.ConfigFileName);
                 notifier.PollInterval = settings.PollInterval;
                 notifier.StreamerNotify += notifyUser;
                 notifier.startNotify();
-            }).Start();
+            });
+
+            initialize_notifier_task.Start();
 
             ToastNotificationManagerCompat.OnActivated += toast_args =>
             {
@@ -122,6 +124,8 @@ namespace TwatApp.ViewModels
             {
                 desktop.Exit += (s, e) => onExit();
             }
+
+            initialize_notifier_task.Wait();
         }
 
         /// <summary>

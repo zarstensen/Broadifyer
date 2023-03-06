@@ -23,7 +23,7 @@ namespace TwatApp.ViewModels
 
         public React<StreamersViewModel> streamers_view = new();
         public React<CategoriesViewModel> categories_view = new();
-    
+
         public ConfigEditorViewModel(TwitchNotify notifier)
         {
             streamers_view.Value = new StreamersViewModel(notifier);

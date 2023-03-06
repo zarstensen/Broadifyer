@@ -411,6 +411,78 @@ namespace TwatApp.Models
             return m_streamers.Values.ToList();
         }
 
+        public async Task reloadCaches(IList<IStreamerInfo> streamers)
+        {
+            // update icon uris and user names
+
+            var new_info = await streamersFromIds(streamers.Select(x => x.Streamer.Id).ToList());
+
+            foreach (IStreamer new_streamer_info in new_info)
+            {
+                if (m_streamers.ContainsKey(new_streamer_info.Id))
+                {
+                    Streamer? streamer = m_streamers[new_streamer_info.Id].Streamer as Streamer;
+                    streamer.icon_uri = new_streamer_info.IconUri;
+                    streamer.name = new_streamer_info.DisplayName;
+                }
+                else
+                    Trace.WriteLine($"[Warning]: {new_streamer_info.Id} is not in the streamers dictionary");
+            }
+
+            // in order to avoid reloading a categories cache multiple times,
+            // each already realoded category is kept track of in this hash set.
+            HashSet<ICategory> reload_categories = new();
+
+            // redownload image icons and schedule the filtered categories for a reload
+            foreach(IStreamerInfo streamer_info in streamers)
+            {
+                if (streamer_info is StreamerInfo sinfo)
+                {
+                    File.Delete(sinfo.Streamer.IconFileOffline);
+                    File.Delete(sinfo.Streamer.IconFileOnline);
+
+                    await sinfo.prepareIcons();
+
+                    // register the filtered categories, to later be reloaded further down.
+
+                    foreach(ICategoryInfo category_info in sinfo.FilteredCategories.Values)
+                    {
+                        
+                        if (reload_categories.Contains(category_info.Category))
+                            continue;
+                        
+                        reload_categories.Add(category_info.Category);
+                    }
+                }
+                else
+                    throw new ArgumentException("streamers must contain elements of type StreamerInfo which implement IStreamerInfo");
+            }
+
+            List<string> reload_categories_ids = reload_categories.Select(x => x.Id).ToList();
+
+            var new_cat_info = (await categoriesFromIds(reload_categories_ids)).ToDictionary(x => x.Id, x => x);
+
+            // reload categories
+            foreach (IStreamerInfo streamer_info in streamers)
+            {
+                foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
+                {
+                    var category = category_info.Category as Category;
+
+                    category.name = new_cat_info[category.Id].Name;
+                    category.icon_uri = new_cat_info[category.Id].IconUri;
+
+                    File.Delete(category.IconFile);
+                    await category_info.prepareIcons();
+                }
+            }
+        }
+
+        public async Task reloadAllCache()
+        {
+            await reloadCaches(m_streamers.Values.ToList());
+        }
+
         #endregion public
 
         #region protected fields
@@ -598,18 +670,23 @@ namespace TwatApp.Models
         private class Streamer : IStreamer
         {
             public string Id => m_id;
-            public string DisplayName => m_name;
+            public string DisplayName => name;
             public string LoginName { get => DisplayName.ToLower(); }
 
-            public string IconUri => m_icon_uri;
+            public string IconUri => icon_uri;
             public string IconFileOnline => Path.GetFullPath($"icons/streamers/{Id}.jpg");
             public string IconFileOffline => Path.GetFullPath($"icons/streamers/{Id}-offline.jpg");
+
+            [JsonIgnore]
+            public string name;
+            [JsonIgnore]
+            public string icon_uri;
 
             public Streamer(string id, string displayname, string iconuri)
             {
                 m_id = id;
-                m_name = displayname;
-                m_icon_uri = iconuri;
+                name = displayname;
+                icon_uri = iconuri;
             }
 
             public async Task prepareIcon()
@@ -632,10 +709,7 @@ namespace TwatApp.Models
                 gray.Save(full_icon_offline_path);
 
             }
-
-            protected string m_name;
             protected string m_id;
-            protected string m_icon_uri;
             protected static HttpClient s_http_client = new();
 
             protected Bitmap grayFromRgb(Bitmap source)
@@ -750,24 +824,26 @@ namespace TwatApp.Models
 
         public class Category : ICategory
         {
-            public string Name => m_name;
+            public string Name => name;
 
             public string Id => m_id;
 
             public string IconFile => Path.GetFullPath($"icons/categories/{Id}.png");
 
-            public string IconUri => m_icon_uri.Replace("{width}", "300").Replace("{height}", "400");
+            public string IconUri => icon_uri.Replace("{width}", "300").Replace("{height}", "400");
 
+            [JsonIgnore]
+            public string name;
+            [JsonIgnore]
+            public string icon_uri;
+            
             public Category(string id, string name, string iconuri)
             {
                 m_id = id;
-                m_name = name;
-                m_icon_uri = iconuri;
+                this.name = name;
+                icon_uri = iconuri;
             }
-
-            protected string m_name;
             protected string m_id;
-            protected string m_icon_uri;
         }
 
         public class CategoryInfo : ICategoryInfo
