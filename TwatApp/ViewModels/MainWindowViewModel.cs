@@ -17,6 +17,12 @@ using Newtonsoft.Json;
 using SaveFileDialog = Avalonia.Controls.SaveFileDialog;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
+using System.Reflection;
+using System.Threading;
+using TwitchLib.Api.Helix.Models.Bits;
+using System.Reflection;
+using System.Diagnostics;
+using System.Windows.Navigation;
 
 namespace TwatApp.ViewModels
 {
@@ -32,6 +38,15 @@ namespace TwatApp.ViewModels
         /// </summary>
         
         public TwitchNotify notifier;
+        public string VersionNumber { get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string version = fileVersionInfo.ProductVersion;
+
+                return $"Version: {version}";
+            }
+        }
 
         public MainWindowViewModel()
         {

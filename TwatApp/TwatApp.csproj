@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.20348.0</TargetFramework>
@@ -11,6 +11,9 @@
     <ImplicitUsings>Enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -21,6 +24,7 @@
     <AvaloniaResource Remove="Assets\Default.axaml" />
     <AvaloniaResource Remove="Assets\Notification.xml" />
     <None Remove=".gitignore" />
+    <None Remove="Assets\information-circle-outline.svg" />
     <None Remove="Assets\Notification.xml" />
     <None Remove="close_tab.html" />
     <None Remove="parse_token.html" />
