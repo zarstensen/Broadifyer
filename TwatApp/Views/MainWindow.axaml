@@ -53,16 +53,22 @@
 
         <Grid>
             <ContentControl Content="{Binding View.Value}" />
-            <Border
+            <ContentControl
+                Height="20"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
-                Background="Red"
-                Classes="expand">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Image Source="{SvgImage /Assets/information-circle-outline.svg}" />
-                    <TextBlock>Some Random Information</TextBlock>
-                </StackPanel>
-            </Border>
+                ClipToBounds="True">
+                <Border
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Red"
+                    Classes="expand">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Image Source="{SvgImage /Assets/information-circle-outline.svg}" />
+                        <TextBlock>Some Random Information</TextBlock>
+                    </StackPanel>
+                </Border>
+            </ContentControl>
             <TextBlock
                 Margin="5"
                 HorizontalAlignment="Left"

@@ -201,15 +201,15 @@
     <!--  expansion animation  -->
 
     <Style Selector="Border.expand">
-        <Setter Property="Height" Value="20" />
+        <Setter Property="Height" Value="{Binding $parent.Height}" />
 
         <Style.Animations>
-            <Animation Duration="0:0:0.25">
+            <Animation Duration="0:0:10">
                 <KeyFrame Cue="0%">
-                    <Setter Property="Height" Value="0" />
+                    <Setter Property="TranslateTransform.Y" Value="{Binding -$parent.Height}" />
                 </KeyFrame>
                 <KeyFrame Cue="100%">
-                    <Setter Property="Height" Value="200" />
+                    <Setter Property="TranslateTransform.Y" Value="0" />
                 </KeyFrame>
             </Animation>
         </Style.Animations>
