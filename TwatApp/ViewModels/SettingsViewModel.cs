@@ -195,6 +195,10 @@ namespace TwatApp.ViewModels
                 new ToggleSetting(AppVM.settings.UseTokenFile));
 
             Exit = ReactiveCommand.Create(() => {
+
+                if(AppVM.settings.ConfigFileName != (string)ConfigFileSetting.Data || AppVM.settings.UseTokenFile != (bool)UseTokenFileSetting.Data)
+                    WindowVM?.showInfo("Changed will take effect once the app has been restarted.", 5000);
+
                 AppVM.settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
                 AppVM.settings.PollInterval = (int)PollIntervalSetting.Data;
                 AppVM.settings.UseUrgentNotifications = (bool) UrgentNotificationsSetting.Data;
