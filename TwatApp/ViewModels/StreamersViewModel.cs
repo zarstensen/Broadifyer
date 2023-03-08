@@ -77,8 +77,17 @@ namespace TwatApp.ViewModels
         {
             Trace.WriteLine(SelectedStreamer.Value);
 
-            if (StreamerInput == "" || StreamerInput.Contains(' '))
+            if (StreamerInput == "")
+            {
+                await WindowVM.showInfo($"Streamer name cannot be empty.", 5000);
                 return;
+            }
+
+            if (StreamerInput.Contains(' '))
+            {
+                await WindowVM.showInfo("Streamer name must not contain any whitespace.", 5000);
+                return;
+            }
 
             var found_streamer = await m_notifier.streamerFromName(StreamerInput);
 

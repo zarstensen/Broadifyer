@@ -42,7 +42,10 @@ namespace TwatApp.ViewModels
         public async void addCategory()
         {
             if (CategoryInput == "")
+            {
+                await WindowVM.showInfo($"Category name cannot be empty.", 5000);
                 return;
+            }
 
             var found_category = await m_notifier.categoryFromName(CategoryInput);
 
