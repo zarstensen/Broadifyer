@@ -29,7 +29,7 @@
                         <NativeMenuItem Command="{Binding exportConfig}" Header="Export" />
                         <NativeMenuItem Command="{Binding importConfig}" Header="Import" />
                         <NativeMenuItem Header="-" />
-                        <NativeMenuItem Command="{Binding exitCommand}" Header="Exit" />
+                        <NativeMenuItem Command="{Binding AppVM.exitCommand}" Header="Exit" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
