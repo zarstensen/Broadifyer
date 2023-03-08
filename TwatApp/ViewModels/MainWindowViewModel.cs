@@ -31,12 +31,22 @@ namespace TwatApp.ViewModels
 
         public React<ViewModelBase> View { get; set; } = new();
 
+        public React<bool> ShowInfo { get; set; } = false;
+        public React<string?> InfoText { get; set; } = "";
+
+        public async Task showInfo(string info, int show_time)
+        {
+            InfoText.Value = info;
+            ShowInfo.Value = true;
+            await Task.Delay(show_time);
+            ShowInfo.Value = false;
+        }
 
         /// <summary>
         /// retrieve a sorted list of the current streamers.
         /// sorted according to live status, followed by streamer display name.
         /// </summary>
-        
+
         public TwitchNotify notifier;
         public string VersionNumber { get
             {

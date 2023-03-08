@@ -8,6 +8,7 @@
 
     <cv:ColorLight x:Key="LightConverter" />
     <cv:ConvertGrayscale x:Key="GrayscaleConverter" />
+    <cv:Negator x:Key="NegatorConverter" />
 
     <sys:Boolean x:Key="GridLines">true</sys:Boolean>
 
@@ -26,4 +27,5 @@
     <sys:Double x:Key="FocusWeight">0.9</sys:Double>
 
     <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{StaticResource Color2}" />
+    <SolidColorBrush x:Key="InfoBarBackground" Color="Black" />
 </ResourceDictionary>

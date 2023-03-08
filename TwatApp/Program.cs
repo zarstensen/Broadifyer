@@ -23,15 +23,20 @@ namespace TwatApp
 
             Trace.WriteLine(string.Join('\n', args));
 
+#if !DEBUG
             try
             {
+#endif
                 BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
-            }
+#if !DEBUG
+        }
             catch(Exception e)
             {
                 Trace.WriteLine(e);
+                throw e;
             }
+#endif
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

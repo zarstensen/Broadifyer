@@ -54,18 +54,24 @@
         <Grid>
             <ContentControl Content="{Binding View.Value}" />
             <ContentControl
-                Height="20"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 ClipToBounds="True">
                 <Border
+                    Height="25"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="Red"
-                    Classes="expand">
+                    Background="{StaticResource InfoBarBackground}"
+                    Classes.expand="{Binding ShowInfo.Value}"
+                    Classes.minimize="{Binding !ShowInfo.Value}">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Image Source="{SvgImage /Assets/information-circle-outline.svg}" />
-                        <TextBlock>Some Random Information</TextBlock>
+                        <Image
+                            Margin="0,2"
+                            VerticalAlignment="Center"
+                            Source="{SvgImage /Assets/information-circle-outline.svg}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Text="{Binding InfoText.Value}" />
                     </StackPanel>
                 </Border>
             </ContentControl>

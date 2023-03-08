@@ -84,7 +84,7 @@ namespace TwatApp.ViewModels
 
             if (found_streamer == null)
             {
-                // TODO: do some error handling
+                await WindowVM.showInfo($"Could not find a streamer named {StreamerInput}!", 5000);
                 return;
             }
 

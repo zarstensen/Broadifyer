@@ -48,6 +48,7 @@ namespace TwatApp.ViewModels
 
             if (found_category == null || TargetStreamer.Value == null)
             {
+                await WindowVM.showInfo($"Could not find a category named {CategoryInput}!", 5000);
                 return;
             }
 
