@@ -173,11 +173,11 @@ namespace TwatApp.ViewModels
                 new ToggleSetting(AppVM.settings.RunsOnStartup));
 
             PollIntervalSetting = new("Poll Interval",
-                "How many seconds to wait, before checking if the broadcaster is live.",
+                "How often the program checks if a streamer has gone live.",
                 new NumericSetting(AppVM.settings.PollInterval));
 
-            UrgentNotificationsSetting = new("Use Urgent Notifications",
-                "Notifications will be marked as urgent, which will allow the notification to appear, whilst using an application in fullscreen mode.",
+            UrgentNotificationsSetting = new("Use Important Notifications",
+                "Notifications will be marked as important, which will allow the notification to appear, whilst using an application in fullscreen mode.",
                 new ToggleSetting(AppVM.settings.UseUrgentNotifications));
 
             // advanced settings
@@ -191,7 +191,7 @@ namespace TwatApp.ViewModels
                 new FileSetting(AppVM.settings.ConfigFileName));
 
             UseTokenFileSetting = new("Use Token File",
-                "Store the twitch api locally, in order to avoid opening a browser window, every time the app is started.\nIncreases risk of abuse from 3rd party applications.",
+                "Store the twitch api locally, in order to avoid opening a browser tab, every time the app is started. see README for further info.",
                 new ToggleSetting(AppVM.settings.UseTokenFile));
 
             Exit = ReactiveCommand.Create(() => {
