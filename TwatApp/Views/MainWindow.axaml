@@ -80,7 +80,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 Classes="h3 dark"
-                Text="{Binding VersionNumber}" />
+                Text="{Binding AppVM.VersionString}" />
         </Grid>
     </DockPanel>
 </Window>

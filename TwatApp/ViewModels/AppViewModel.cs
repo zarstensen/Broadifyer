@@ -14,14 +14,11 @@ using Windows.Data.Xml.Dom;
 using TwatApp.Models;
 using TwitchLib.Api.Helix;
 using Windows.UI.Notifications;
+using System.Reflection;
 
 namespace TwatApp.ViewModels
 {
-    
-    public class AppViewModel : ViewModelBase
-    {
-
-        public class Settings
+    public class Settings
         {
             public Settings(TwitchNotify notifier)
             {
@@ -91,11 +88,37 @@ namespace TwatApp.ViewModels
             protected bool m_use_token_file = false;
             protected string m_config_file_name = "config.json";
         }
-
+    
+    public class AppViewModel : ViewModelBase
+    {
         public Settings settings { get; set; }
 
+        public string VersionString
+        {
+            get
+            {
+                string location;
+
+                Assembly assembly = Assembly.GetExecutingAssembly();
+
+                if (assembly.Location != string.Empty)
+                    location = assembly.Location;
+                else
+                    location = Environment.ProcessPath;
+
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(location);
+                string version = fileVersionInfo.ProductVersion;
+
+                return $"Version: {version}";
+            }
+        }
+
+        public string ToolTipText { get; set; }
+        
         public AppViewModel()
         {
+            ToolTipText = $"Twat\n{VersionString}"; 
+
             // this code should not be called, if in design mode, as neither a notification nor a twitch api call will be made, during design mode.
             if (Design.IsDesignMode)
                 return;
@@ -142,8 +165,6 @@ namespace TwatApp.ViewModels
             notifier.stopNotify();
             settings.save();
         }
-
-
 
         /// <summary>
         /// shutsdown the entire application, and removes the app from the tray.
