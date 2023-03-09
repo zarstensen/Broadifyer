@@ -69,7 +69,7 @@
 
     </UserControl.DataTemplates>
 
-    <Grid Margin="0,30" RowDefinitions="30, 1*">
+    <Grid Margin="0,30,0,0" RowDefinitions="30, 1*">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
