@@ -565,9 +565,6 @@ namespace TwatApp.Models
 
                     live_users.Add(stream.UserId);
 
-                    if (streamer_info.Streamer.DisplayName == "zarstensen")
-                        Trace.WriteLine(stream.Type);
-
                     await updateStreamInfo(streamer_info, stream.Type == "live", stream.GameId);
                 }
 
@@ -600,7 +597,7 @@ namespace TwatApp.Models
                 broadcast_change = false;
 
 
-            bool category_change = broadcast_change && (streamer_info.CurrentCategory?.Id ?? String.Empty) != category_id;
+            bool category_change = is_live && (streamer_info.CurrentCategory?.Id ?? String.Empty) != category_id;
 
 
             bool should_notify = false;
@@ -611,7 +608,7 @@ namespace TwatApp.Models
                 {
                     should_notify = is_live;
                 }
-                else
+                else if(is_live)
                 {
                     should_notify = !streamer_info.WhitelistCategories;
 
@@ -619,7 +616,7 @@ namespace TwatApp.Models
                     {
                         if (category_info.Category.Id == category_id)
                         {
-                            if (!category_info.Enable)
+                            if (category_info.Enable)
                                 should_notify = !should_notify;
 
                             break;

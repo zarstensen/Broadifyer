@@ -75,8 +75,6 @@ namespace TwatApp.ViewModels
         /// </summary>
         public async Task addStreamer()
         {
-            Trace.WriteLine(SelectedStreamer.Value);
-
             if (StreamerInput == "")
             {
                 await WindowVM.showInfo($"Streamer name cannot be empty.", 5000);

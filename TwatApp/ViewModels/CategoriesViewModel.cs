@@ -69,6 +69,8 @@ namespace TwatApp.ViewModels
             m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
         }
 
+        public void WhiteBlacklistChanged() => m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+
         protected TwitchNotify m_notifier;
     }
 }

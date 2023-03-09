@@ -52,6 +52,7 @@
                             <ToggleButton
                                 Grid.Column="2"
                                 Classes="WhiteBlacklist"
+                                Command="{Binding WhiteBlacklistChanged}"
                                 IsChecked="{Binding TargetStreamer.Value.IsWhitelisted.Value}"
                                 IsEnabled="{Binding !!TargetStreamer.Value}">
                                 <StackPanel>
