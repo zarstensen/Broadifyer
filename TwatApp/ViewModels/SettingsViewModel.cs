@@ -197,7 +197,7 @@ namespace TwatApp.ViewModels
             Exit = ReactiveCommand.Create(() => {
 
                 if(AppVM.settings.ConfigFileName != (string)ConfigFileSetting.Data || AppVM.settings.UseTokenFile != (bool)UseTokenFileSetting.Data)
-                    WindowVM?.showInfo("Changed will take effect once the app has been restarted.", 5000);
+                    WindowVM?.showInfo("Changes will take effect once the app has been restarted.", 5000);
 
                 AppVM.settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
                 AppVM.settings.PollInterval = (int)PollIntervalSetting.Data;
