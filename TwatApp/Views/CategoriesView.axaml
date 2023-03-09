@@ -24,9 +24,9 @@
         <!--  Streamer editor  -->
 
         <Border
-			ClipToBounds="True"
             Grid.Row="2"
             Background="{StaticResource Color2}"
+            ClipToBounds="True"
             CornerRadius="25">
             <Grid RowDefinitions="75,1*">
                 <!--  Category adder  -->
@@ -44,19 +44,24 @@
                             <Button
                                 Grid.Column="1"
                                 Classes="Button1"
-                                Command="{Binding addCategory}">
+                                Command="{Binding addCategory}"
+                                IsEnabled="{Binding !!TargetStreamer.Value}">
                                 ADD
                             </Button>
                             <ToggleButton
                                 Grid.Column="2"
                                 Classes="WhiteBlacklist"
-                                IsChecked="{Binding TargetStreamer.Value.IsWhitelisted.Value}">
+                                IsChecked="{Binding TargetStreamer.Value.IsWhitelisted.Value}"
+                                IsEnabled="{Binding !!TargetStreamer.Value}">
                                 <StackPanel>
                                     <ContentControl Classes="checked">
                                         WHITELISTED
                                     </ContentControl>
                                     <ContentControl Classes="unchecked">
                                         BLACKLISTED
+                                    </ContentControl>
+                                    <ContentControl Classes="disabled">
+                                        NO STREAMER
                                     </ContentControl>
                                 </StackPanel>
                             </ToggleButton>
