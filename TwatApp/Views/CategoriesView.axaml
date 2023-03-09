@@ -48,7 +48,7 @@
                                 IsEnabled="{Binding !!TargetStreamer.Value}">
                                 ADD
                             </Button>
-							<!--A-->
+							
                             <ToggleButton
                                 Grid.Column="2"
                                 Classes="WhiteBlacklist"
