@@ -88,12 +88,14 @@
 
     <!--  Content control inside toggle button  -->
 
-    <Style Selector="ToggleButton:checked ContentControl.checked, ToggleButton:unchecked ContentControl.unchecked, ToggleButton ContentControl.checked">
+    <Style Selector="ToggleButton:checked ContentControl.checked, ToggleButton:unchecked ContentControl.unchecked, ToggleButton:disabled ContentControl.disabled, ToggleButton:checked ContentControl.disabled">
         <Setter Property="IsVisible" Value="True" />
+        <Setter Property="IsEnabled" Value="True" />
     </Style>
 
-    <Style Selector="ToggleButton:unchecked ContentControl.checked, ToggleButton:checked ContentControl.unchecked">
+    <Style Selector="ToggleButton:unchecked ContentControl.checked, ToggleButton:checked ContentControl.unchecked, ToggleButton:checked ContentControl.disabled, ToggleButton:unchecked ContentControl.disabled, ToggleButton:disabled ContentControl.checked, ToggleButton:disabled ContentControl.unchecked">
         <Setter Property="IsVisible" Value="False" />
+        <Setter Property="IsEnabled" Value="False" />
     </Style>
 
     <!--  white/blacklist toggle button  -->
