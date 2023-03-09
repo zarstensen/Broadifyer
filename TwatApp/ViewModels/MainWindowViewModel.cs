@@ -50,8 +50,16 @@ namespace TwatApp.ViewModels
         public TwitchNotify notifier;
         public string VersionNumber { get
             {
+                string location;
+
                 Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+                if (assembly.Location != string.Empty)
+                    location = assembly.Location;
+                else
+                    location = Environment.ProcessPath;
+
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(location);
                 string version = fileVersionInfo.ProductVersion;
 
                 return $"Version: {version}";
@@ -60,6 +68,7 @@ namespace TwatApp.ViewModels
 
         public MainWindowViewModel()
         {
+            Trace.WriteLine(VersionNumber);
             // the TwitchNotify instance is retrieved from the app, as this instance needs to be active, even when this window is closed,
             // so its lifetime is therefore not tied to this windows lifetime.
 
