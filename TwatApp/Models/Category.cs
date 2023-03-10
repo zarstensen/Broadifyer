@@ -30,6 +30,10 @@ namespace TwatApp.Models
         [JsonIgnore]
         public string IconFile { get; }
 
+        /// <summary>
+        /// checks if two ICategory instances have the same id.
+        /// ignores name and iconuri property, as these might become outdated, as the broadcaster changes their profile info
+        /// </summary>
         bool IEqualityComparer<ICategory>.Equals(ICategory? x, ICategory? y)
         {
             if (x == null || y == null)
@@ -38,6 +42,10 @@ namespace TwatApp.Models
             return x.Id == y.Id;
         }
 
+        /// <summary>
+        /// returns hash of the category id, and ignores the name and iconuri.
+        /// reason for this: see Equals method.
+        /// </summary>
         int IEqualityComparer<ICategory>.GetHashCode(ICategory obj)
         {
             return obj.Id.GetHashCode();
@@ -46,7 +54,7 @@ namespace TwatApp.Models
     }
 
     /// <summary>
-    /// stores various (a single field) data.
+    /// stores various data.
     /// there can be multiple ICategoryInfo instances for a single ICategory instance,
     /// as these hold streamer dependent information and not category dependent information.
     /// </summary>

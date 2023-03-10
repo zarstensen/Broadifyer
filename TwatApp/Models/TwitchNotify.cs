@@ -420,6 +420,9 @@ namespace TwatApp.Models
             return m_streamers.Values.ToList();
         }
 
+        /// <summary>
+        /// updates the passed streamers name, icons, and their categories names and icons
+        /// </summary>
         public async Task reloadCaches(IList<IStreamerInfo> streamers)
         {
             // update icon uris and user names
@@ -455,8 +458,7 @@ namespace TwatApp.Models
                     // register the filtered categories, to later be reloaded further down.
 
                     foreach(ICategoryInfo category_info in sinfo.FilteredCategories.Values)
-                    {
-                        
+                    {     
                         if (reload_categories.Contains(category_info.Category))
                             continue;
                         
@@ -487,6 +489,10 @@ namespace TwatApp.Models
             }
         }
 
+        /// <summary>
+        /// calls reloadCaches on all the registered streamers.
+        /// </summary>
+        /// <returns></returns>
         public async Task reloadAllCache()
         {
             await reloadCaches(m_streamers.Values.ToList());
@@ -497,12 +503,14 @@ namespace TwatApp.Models
         #region protected fields
 
         protected TwitchAPI m_twitch_api = new();
-        protected string? m_user_id;
-        protected HttpClient m_http_client = new();
         protected Dictionary<string, IStreamerInfo> m_streamers = new();
+        protected Dictionary<string, ICategory> m_cached_categories = new();
+        
+        // id of the user twitch account.
+        protected string? m_user_id;
+        
         protected bool m_polling = false;
         protected Thread? m_poll_thread = null;
-        protected Dictionary<string, ICategory> m_cached_categories = new();
 
         #endregion protected fields
 
@@ -551,14 +559,15 @@ namespace TwatApp.Models
             }
         }
 
+        // polls all the registered streamers broadcast status and category
         protected async Task poll()
         {
             try
             {
-                // if there are no registered live streamers, simply do nothing and wait for the poll interval,
 
                 List<string> ids = currentStreamers().Where(info => info.Enable).Select(info => info.Streamer.Id).ToList();
 
+                // if there are no registered live streamers, simply do nothing and wait for the poll interval,
                 if (ids.Count == 0)
                     return;
                 
@@ -652,6 +661,7 @@ namespace TwatApp.Models
 
                 if (broadcast_change)
                     sinfo.notifyUpdate(StreamerChange.Broadcast);
+
                 else if (category_change)
                     sinfo.notifyUpdate(StreamerChange.Category);
 
@@ -673,6 +683,7 @@ namespace TwatApp.Models
 
         #region interface implementations
 
+        
         private class Streamer : IStreamer
         {
             public string Id => m_id;
@@ -754,14 +765,6 @@ namespace TwatApp.Models
 
         private class StreamerInfo : IStreamerInfo
         {
-            public StreamerInfo(Streamer streamer, Dictionary<string, CategoryInfo>? filteredcategories = null, bool whitelist = true, bool enable = true)
-            {
-                this.streamer = streamer;
-                m_categories = filteredcategories?.ToDictionary(x => x.Key, x => (ICategoryInfo)x.Value) ?? new();
-                m_whitelist = whitelist;
-                m_enable = enable;
-            }
-
             public IStreamer Streamer => streamer;
 
             public Dictionary<string, ICategoryInfo> FilteredCategories => m_categories;
@@ -796,6 +799,14 @@ namespace TwatApp.Models
             public DateTime notified_time = new();
 
             public event EventHandler<StreamerChange>? StreamerUpdated;
+
+            public StreamerInfo(Streamer streamer, Dictionary<string, CategoryInfo>? filteredcategories = null, bool whitelist = true, bool enable = true)
+            {
+                this.streamer = streamer;
+                m_categories = filteredcategories?.ToDictionary(x => x.Key, x => (ICategoryInfo)x.Value) ?? new();
+                m_whitelist = whitelist;
+                m_enable = enable;
+            }
 
             public async Task prepareIcons()
             {
@@ -836,6 +847,8 @@ namespace TwatApp.Models
 
             public string IconFile => Path.GetFullPath($"icons/categories/{Id}.png");
 
+            // the icon uri contains a {width} and {height} in the url, instead of a resolution.
+            // here the resolution of a category icon is set to 300 X 400.
             public string IconUri => icon_uri.Replace("{width}", "300").Replace("{height}", "400");
 
             [JsonIgnore]
@@ -854,17 +867,18 @@ namespace TwatApp.Models
 
         public class CategoryInfo : ICategoryInfo
         {
+            public ICategory Category => m_category;
+
+            public bool Enable { get => m_enable; set => m_enable = value; }
+
+            public Bitmap? Icon => m_icon;
+
             public CategoryInfo(Category category, bool enable = true)
             {
                 m_category = category;
                 m_enable = enable;
             }
 
-            public ICategory Category => m_category;
-
-            public bool Enable { get => m_enable; set => m_enable = value; }
-
-            public Bitmap? Icon => m_icon;
 
             public async Task prepareIcons()
             {

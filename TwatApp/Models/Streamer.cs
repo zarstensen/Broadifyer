@@ -44,6 +44,9 @@ namespace TwatApp.Models
         /// </summary>
         public string IconUri { get; }
 
+        /// <summary>
+        /// Compares by DisplayName property.
+        /// </summary>
         int IComparable<IStreamer>.CompareTo(IStreamer? other)
         {
             if(other == null)
@@ -52,6 +55,9 @@ namespace TwatApp.Models
             return DisplayName.CompareTo(other.DisplayName);
         }
 
+        /// <summary>
+        /// only the id is compared
+        /// </summary>
         bool IEqualityComparer<IStreamer>.Equals(IStreamer? x, IStreamer? y)
         {
             if (x == null || y == null)
@@ -60,12 +66,19 @@ namespace TwatApp.Models
             return x.Id == y.Id;
         }
 
+        /// <summary>
+        /// id of hash is returned
+        /// </summary>
         int IEqualityComparer<IStreamer>.GetHashCode(IStreamer obj)
         {
             return obj.Id.GetHashCode();
         }
     }
 
+    /// <summary>
+    /// enum passed in a StreamerChanged event.
+    /// specifies if the broadcast status (went online or offline) or if the broadcast category changed.
+    /// </summary>
     public enum StreamerChange
     {
         Broadcast,
@@ -83,9 +96,17 @@ namespace TwatApp.Models
         /// </summary>
         public IStreamer Streamer { get; }
         
+        /// <summary>
+        /// grayscale version of RgbIcon.
+        /// is only guaranteed to be avaliable, if RgbIcon is not null.
+        /// </summary>
         [JsonIgnore]
         public Bitmap? GrayIcon { get; }
         
+        /// <summary>
+        /// the streamer icon stored at IconURI in full RGB colors.
+        /// is only guaranteed to be a valid instance if prepareIcons has been called.
+        /// </summary>
         [JsonIgnore]
         public Bitmap? RgbIcon { get; }
         /// <summary>
@@ -150,6 +171,17 @@ namespace TwatApp.Models
         /// </summary>
         public event EventHandler<StreamerChange>? StreamerUpdated;
 
+        /// <summary>
+        /// 
+        /// Compares two IStreamerInfo instances.
+        /// 
+        /// priority:
+        /// is live -> DisplayName
+        /// 
+        /// meaning live streamers will appear first in a sorted list of IStreamerInfo instances,
+        /// afterwhich they are sorted by their DisplayName.
+        /// 
+        /// </summary>
         int IComparable<IStreamerInfo>.CompareTo(IStreamerInfo? other)
         {
             if (other == null)
