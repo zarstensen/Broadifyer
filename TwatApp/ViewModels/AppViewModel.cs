@@ -74,7 +74,7 @@ namespace TwatApp.ViewModels
             }
 
             [JsonIgnore]
-            public string TokenFile { get; } = "token.txt";
+            public string? TokenFile { get => UseTokenFile ? "token.txt" : null; }
             public int PollInterval { get => m_notifier.PollInterval; set => m_notifier.PollInterval = value; }
             public int NewBroadcastTimeout { get => m_notifier.NewBroadcastTimeout; set => m_notifier.NewBroadcastTimeout = value; }
 
@@ -130,7 +130,20 @@ namespace TwatApp.ViewModels
 
             var initialize_notifier_task = new Task(async () =>
             {
-                await notifier.authUser(settings.UseTokenFile ? settings.TokenFile : null, false);
+                // attempt to authorize
+                // if a BadScopeException is thrown, the credentials in the token file are outdated or invalid.
+                // therefore a new authorization token is recieved, by deleting the current token file, and calling authUser again.
+                try
+                {
+                    await notifier.authUser(settings.TokenFile, false);
+                }
+                catch(TwitchLib.Api.Core.Exceptions.BadScopeException e)
+                {
+                    Trace.WriteLine(e);
+                    File.Delete(settings.TokenFile);
+                    await notifier.authUser(settings.TokenFile, false);
+                }
+
                 await notifier.loadConfiguration(settings.ConfigFileName);
                 notifier.PollInterval = settings.PollInterval;
                 notifier.StreamerNotify += notifyUser;

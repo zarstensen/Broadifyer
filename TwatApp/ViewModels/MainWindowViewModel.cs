@@ -63,6 +63,15 @@ namespace TwatApp.ViewModels
             View.Value = m_config_view_model;
         }
 
+        /// <summary>
+        /// Allows the user to change their associated twitch account, by re authorizing with a force verify flag.
+        /// </summary>
+        public async Task changeAccount()
+        {
+            if (!await notifier.authUser(AppVM.settings.TokenFile, true))
+                await showInfo("Failed to change account.", 5000);
+        }
+
         public void showSettingsView()
         {
             SettingsViewModel settings_view_model = new SettingsViewModel(notifier);

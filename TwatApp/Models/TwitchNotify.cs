@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -108,17 +109,16 @@ namespace TwatApp.Models
         /// <returns></returns>
         public async Task<bool> authUser(string? token_file_dir, bool force_verify)
         {
-            string token = "";
+            // start by attempting to load the token from a token file.
 
-            if (File.Exists(token_file_dir))
+            string? token = null;
+
+            if (File.Exists(token_file_dir) && !force_verify)
                 token = File.ReadAllText(token_file_dir);
 
-            // TODO: expand check if token is valid
-
-            if (token.Length < 10)
+            if (token == null)
             {
-                HttpClient client = new();
-
+                // open the authorization url in a browser, and start a httplistener, listening on the redurect uri.
                 UriBuilder auth_endpoint = new("https://id.twitch.tv/oauth2/authorize");
 
                 var query = HttpUtility.ParseQueryString("");
@@ -127,12 +127,9 @@ namespace TwatApp.Models
                 query["scope"] = "user:read:follows channel:moderate";
                 query["response_type"] = "token";
                 query["redirect_uri"] = "http://localhost:3000/";
-                query["force_verify"] = force_verify.ToString();
+                query["force_verify"] = force_verify.ToString().ToLower();
 
                 auth_endpoint.Query = query.ToString();
-
-                Console.WriteLine(auth_endpoint.Uri);
-                HttpRequestMessage msg = new(HttpMethod.Get, auth_endpoint.Uri);
 
                 Process.Start(new ProcessStartInfo() { FileName = auth_endpoint.Uri.ToString(), UseShellExecute = true });
 
@@ -142,11 +139,15 @@ namespace TwatApp.Models
 
                 while (true)
                 {
-                    var context = listener.GetContext();
+                    var context = await listener.GetContextAsync();
 
                     var req = context.Request;
                     var res = context.Response;
                     res.ContentType = "text/html";
+
+                    // the first time the redirect is recieved, the token will be stored in the fragment identifier section of the url.
+                    // this value can only be recieved client side, so another webpage is sent, which parses the token, and places it in the url, as a readable value.
+                    // finally the token is recieved, and the listener is stopped.
 
                     if (req.QueryString["error"] != null)
                     {
@@ -154,25 +155,33 @@ namespace TwatApp.Models
                     }
                     else if (req.QueryString.Count == 0)
                     {
-                        var resp = File.ReadAllBytes("parse_token.html");
-                        res.OutputStream.Write(resp);
+                        var resp = await File.ReadAllBytesAsync("parse_token.html");
+                        await res.OutputStream.WriteAsync(resp);
+                        await res.OutputStream.FlushAsync();
 
                         res.Close();
                     }
                     else
                     {
                         token = req.QueryString["access_token"]!;
-                        var resp = File.ReadAllBytes("close_tab.html");
-                        res.OutputStream.Write(resp);
+                        var resp = await File.ReadAllBytesAsync("close_tab.html");
+                        await res.OutputStream.WriteAsync(resp);
+                        await res.OutputStream.FlushAsync();
 
                         res.Close();
                         break;
                     }
                 }
 
+                listener.Stop();
+
                 if (token_file_dir != null)
-                    File.WriteAllText(token_file_dir, token);
+                    await File.WriteAllTextAsync(token_file_dir, token);
             }
+
+            if (token == null)
+                // this should never be hit
+                return false;
 
             m_twitch_api.Settings.AccessToken = token;
 
