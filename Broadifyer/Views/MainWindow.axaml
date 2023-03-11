@@ -1,0 +1,87 @@
+<Window
+    x:Class="BroadifyerApp.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="using:BroadifyerApp.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:BroadifyerApp.ViewModels"
+    Title="BroadifyerApp"
+    Width="950"
+    Height="665"
+    MinWidth="770"
+    MinHeight="250"
+    d:DesignHeight="665"
+    d:DesignWidth="950"
+    ExtendClientAreaChromeHints="PreferSystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
+    Icon="/Assets/icon.ico"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Minimized"
+    mc:Ignorable="d">
+
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="File">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Command="{Binding exportConfig}" Header="Export" />
+                        <NativeMenuItem Command="{Binding importConfig}" Header="Import" />
+                        <NativeMenuItem Header="-" />
+                        <NativeMenuItem Command="{Binding AppVM.exitCommand}" Header="Exit" />
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="Edit">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Command="{Binding changeAccount}" Header="Change account" />
+                        <NativeMenuItem Command="{Binding reloadCache}" Header="Refresh" />
+                        <NativeMenuItem Header="-" />
+                        <NativeMenuItem Command="{Binding showSettingsView}" Header="Preferences" />
+                    </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
+        </NativeMenu>
+    </NativeMenu.Menu>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <DockPanel Background="{StaticResource Color0}" IsHitTestVisible="False" />
+            <NativeMenuBar HorizontalAlignment="Left" />
+        </Grid>
+
+        <Grid>
+            <ContentControl Content="{Binding View.Value}" />
+            <ContentControl
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                ClipToBounds="True">
+                <Border
+                    Height="25"
+                    HorizontalAlignment="Stretch"
+                    Background="{StaticResource InfoBarBackground}"
+                    Classes.expand="{Binding ShowInfo.Value}"
+                    Classes.minimize="{Binding !ShowInfo.Value}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Image
+                            Margin="0,2"
+                            VerticalAlignment="Center"
+                            Source="{SvgImage /Assets/information-circle-outline.svg}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Text="{Binding InfoText.Value}" />
+                    </StackPanel>
+                </Border>
+            </ContentControl>
+            <TextBlock
+                Margin="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Classes="h3 dark"
+                Text="{Binding AppVM.VersionString}" />
+        </Grid>
+    </DockPanel>
+</Window>

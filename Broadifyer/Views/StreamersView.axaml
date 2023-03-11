@@ -1,0 +1,159 @@
+<UserControl
+    x:Class="BroadifyerApp.Views.StreamersView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="root"
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <Grid RowDefinitions="50,1*">
+        <TextBlock Classes="h1">
+            Streamers
+        </TextBlock>
+
+        <!--  Streamer editor  -->
+
+        <Border
+            Grid.Row="2"
+            Background="{StaticResource Color2}"
+            ClipToBounds="True"
+            CornerRadius="25">
+            <Grid RowDefinitions="75,1*">
+                <!--  Streamer adder  -->
+                <Border Background="{StaticResource Color3}" CornerRadius="25,25,0,0">
+                    <Grid Margin="10,20" ColumnDefinitions="1*,175">
+                        <TextBox Text="{Binding StreamerInput}" Watermark="Streamer name..." />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="11,0,0,0"
+                            Orientation="Horizontal"
+                            Spacing="11">
+                            <Button Grid.Column="1" Command="{Binding addStreamer}">
+                                ADD
+                            </Button>
+                            <Button Grid.Column="2" Command="{Binding addFollowedStreamers}">
+                                ADD FOLLOWED
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <!--  Streamer List  -->
+                <ListBox
+                    x:Name="StreamerList"
+                    Grid.Row="1"
+                    Background="Transparent"
+                    Items="{Binding Streamers, Mode=OneWay}"
+                    SelectedItem="{Binding SelectedStreamer.Value, Mode=TwoWay}"
+                    SelectionMode="AlwaysSelected">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="60,1*" RowDefinitions="1*,10">
+
+                                <!--  Icon Image  -->
+
+                                <Image
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Source="{Binding Icon}">
+                                    <Image.Clip>
+                                        <EllipseGeometry Rect="0,0,60,60" />
+                                    </Image.Clip>
+                                </Image>
+
+                                <!--  LIVE indicator  -->
+
+                                <Border
+                                    Width="40"
+                                    Height="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    Background="Red"
+                                    BorderBrush="{StaticResource Color1}"
+                                    BorderThickness="1"
+                                    CornerRadius="2"
+                                    IsVisible="{Binding IsLive}">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="{StaticResource FontSize4}"
+                                        FontWeight="Bold"
+                                        Foreground="White">
+                                        LIVE
+                                    </TextBlock>
+                                </Border>
+
+                                <Grid
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    ColumnDefinitions="1*,120"
+                                    RowDefinitions="1*,1*">
+                                    <!--  Streamer info  -->
+                                    <TextBlock
+                                        Grid.ColumnSpan="2"
+                                        VerticalAlignment="Center"
+                                        Classes="h2"
+                                        Text="{Binding DisplayName}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        VerticalAlignment="Center"
+                                        Classes="h3"
+                                        Text="{Binding CategoryName}" />
+
+                                    <!--  Buttons  -->
+                                    <Button
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Background="{StaticResource Color3}"
+                                        Command="{Binding #root.DataContext.removeStreamer}"
+                                        CommandParameter="{Binding}"
+                                        Foreground="{StaticResource Color4}">
+                                        <!--  TODO: should maybe not be text but an icon or something?  -->
+                                        X
+                                    </Button>
+                                    <ToggleButton
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        CommandParameter="{Binding}"
+                                        IsChecked="{Binding Enable.Value}">
+                                        <StackPanel>
+                                            <ContentControl Classes="checked">
+                                                ENABLED
+                                            </ContentControl>
+                                            <ContentControl Classes="unchecked">
+                                                DISABLED
+                                            </ContentControl>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                </Grid>
+
+                                <!--  Separator  -->
+
+                                <Border
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Height="2"
+                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource Color3}"
+                                    BorderBrush="{StaticResource Color4}"
+                                    BorderThickness="0"
+                                    CornerRadius="25" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,151 @@
+<UserControl
+    x:Class="BroadifyerApp.Views.CategoriesView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="root"
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+    <Grid RowDefinitions="50,1*">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Classes="h1">
+                Categories
+            </TextBlock>
+            <TextBlock
+                Margin="5"
+                VerticalAlignment="Bottom"
+                Classes="h2"
+                FontWeight="Normal"
+                Text="{Binding TargetStreamer.Value.DisplayName}" />
+        </StackPanel>
+
+        <!--  Streamer editor  -->
+
+        <Border
+            Grid.Row="2"
+            Background="{StaticResource Color2}"
+            ClipToBounds="True"
+            CornerRadius="25">
+            <Grid RowDefinitions="75,1*">
+                <!--  Category adder  -->
+                <Border Background="{StaticResource Color3}" CornerRadius="25,25,0,0">
+                    <Grid Margin="10,20" ColumnDefinitions="1*,175">
+                        <TextBox
+                            Classes="InputField"
+                            Text="{Binding CategoryInput, Mode=TwoWay}"
+                            Watermark="Category name..." />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="11,0,0,0"
+                            Orientation="Horizontal"
+                            Spacing="11">
+                            <Button
+                                Grid.Column="1"
+                                Classes="Button1"
+                                Command="{Binding addCategory}"
+                                IsEnabled="{Binding !!TargetStreamer.Value}">
+                                ADD
+                            </Button>
+
+                            <ToggleButton
+                                Grid.Column="2"
+                                Classes="WhiteBlacklist"
+                                Command="{Binding WhiteBlacklistChanged}"
+                                IsChecked="{Binding TargetStreamer.Value.IsWhitelisted.Value}"
+                                IsEnabled="{Binding !!TargetStreamer.Value}">
+                                <StackPanel>
+                                    <ContentControl Classes="checked">
+                                        WHITELISTED
+                                    </ContentControl>
+                                    <ContentControl Classes="unchecked">
+                                        BLACKLISTED
+                                    </ContentControl>
+                                    <ContentControl Classes="disabled">
+                                        NO STREAMER
+                                    </ContentControl>
+                                </StackPanel>
+                            </ToggleButton>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <!--  Category List  -->
+                <ListBox
+                    Grid.Row="1"
+                    Background="Transparent"
+                    Items="{Binding TargetStreamer.Value.FilteredCategories}">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Focusable" Value="False" />
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="60,1*, 120" RowDefinitions="1*,1*,10">
+                                <Image
+                                    Grid.RowSpan="2"
+                                    Height="60"
+                                    Source="{Binding Icon}" />
+                                <!--  Category name  -->
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="10,0"
+                                    Classes="h2"
+                                    Text="{Binding Name}" />
+
+                                <!--  Buttons  -->
+
+                                <Button
+                                    Grid.Column="2"
+                                    Width="25"
+                                    Height="25"
+                                    Padding="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    Background="{StaticResource Color3}"
+                                    Command="{Binding #root.removeCategory}"
+                                    CommandParameter="{Binding}"
+                                    Foreground="{StaticResource Color4}">
+                                    X
+                                </Button>
+
+                                <ToggleButton
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Margin="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    IsChecked="{Binding Enable.Value}">
+                                    <DockPanel>
+                                        <ContentControl Classes="checked">
+                                            ENABLED
+                                        </ContentControl>
+                                        <ContentControl Classes="unchecked">
+                                            DISABLED
+                                        </ContentControl>
+                                    </DockPanel>
+                                </ToggleButton>
+                                <!--  Separator  -->
+
+                                <Border
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="3"
+                                    Height="2"
+                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource Color3}"
+                                    BorderBrush="{StaticResource Color3}"
+                                    BorderThickness="0"
+                                    CornerRadius="25" />
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
