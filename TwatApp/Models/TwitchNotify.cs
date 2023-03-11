@@ -66,12 +66,14 @@ namespace TwatApp.Models
         public ReadOnlyDictionary<string, IStreamerInfo> Streamers { get => new(m_streamers); }
 
         /// <summary>
-        /// construct TwitchNotify instance with the passed twitch client id.
+        /// construct TwitchNotify instance with the passed twitch client id and redirect uri.
         /// this id will be used when making calls to the twitch api.
+        /// the auth flow will use the passed redirect_uri, when retrieving an implicit grant token.
         /// </summary>
-        public TwitchNotify(string client_id)
+        public TwitchNotify(string client_id, string redirect_uri)
         {
             m_twitch_api.Settings.ClientId = client_id;
+            m_redirect_uri = redirect_uri;
         }
 
         /// <summary>
@@ -126,7 +128,7 @@ namespace TwatApp.Models
                 query["client_id"] = m_twitch_api.Settings.ClientId;
                 query["scope"] = "user:read:follows channel:moderate";
                 query["response_type"] = "token";
-                query["redirect_uri"] = "http://localhost:3000/";
+                query["redirect_uri"] = m_redirect_uri;
                 query["force_verify"] = force_verify.ToString().ToLower();
 
                 auth_endpoint.Query = query.ToString();
@@ -508,6 +510,7 @@ namespace TwatApp.Models
         
         // id of the user twitch account.
         protected string? m_user_id;
+        protected string m_redirect_uri;
         
         protected bool m_polling = false;
         protected Thread? m_poll_thread = null;

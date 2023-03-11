@@ -58,9 +58,7 @@ namespace TwatApp.ViewModels
 
     public class NumericSetting : SettingValue<int, string>
     {
-        public NumericSetting(int init_value) : base(init_value)
-        {
-        }
+        public NumericSetting(int init_value) : base(init_value) {}
 
         public override string GetSetting(int data)
         {
@@ -74,6 +72,13 @@ namespace TwatApp.ViewModels
 
             return res;
         }
+    }
+
+    public class StringSetting : SettingValue<string, string>
+    {
+        public StringSetting(string init_value) : base(init_value) {}
+        public override string GetSetting(string data) => data;
+        public override string SetSetting(string view_data) => view_data;
     }
 
     public class PathSetting : SettingValue<string, string>
@@ -159,6 +164,8 @@ namespace TwatApp.ViewModels
         Setting BroadcastTimeoutSetting { get; set; }
         Setting ConfigFileSetting { get; set; }
         Setting UseTokenFileSetting { get; set; }
+        Setting ClientIDSetting { get; set; }
+        Setting RedirectURISetting { get; set; }
 
         public ReactiveCommand<Unit, Unit> Exit { get; set; }
 
@@ -194,9 +201,20 @@ namespace TwatApp.ViewModels
                 "Store the twitch api locally, in order to avoid opening a browser tab, every time the app is started. see README for further info.",
                 new ToggleSetting(AppVM.settings.UseTokenFile));
 
+            ClientIDSetting = new Setting("Client ID",
+                "The twitch api client id, that is used when polling the twitch api.",
+                new StringSetting(AppVM.settings.SetupSettings.ClientID));
+
+            RedirectURISetting = new Setting("Redirect URI / URL",
+                "The redirect uri / url, that will be used when going through the implicit grant auth flow.",
+                new StringSetting(AppVM.settings.SetupSettings.RedirectURI));
+
             Exit = ReactiveCommand.Create(() => {
 
-                if(AppVM.settings.ConfigFileName != (string)ConfigFileSetting.Data || AppVM.settings.UseTokenFile != (bool)UseTokenFileSetting.Data)
+                if(AppVM.settings.ConfigFileName != (string)ConfigFileSetting.Data
+                || AppVM.settings.UseTokenFile != (bool)UseTokenFileSetting.Data
+                || AppVM.settings.SetupSettings.ClientID != (string) ClientIDSetting.Data
+                || AppVM.settings.SetupSettings.RedirectURI != (string) RedirectURISetting.Data)
                     WindowVM?.showInfo("Changes will take effect once the app has been restarted.", 5000);
 
                 AppVM.settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
@@ -205,6 +223,8 @@ namespace TwatApp.ViewModels
                 AppVM.settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
                 AppVM.settings.ConfigFileName = (string) ConfigFileSetting.Data;
                 AppVM.settings.UseTokenFile = (bool) UseTokenFileSetting.Data;
+                AppVM.settings.SetupSettings.ClientID = (string) ClientIDSetting.Data;
+                AppVM.settings.SetupSettings.RedirectURI = (string) RedirectURISetting.Data;
                 AppVM.settings.save();
             });
         }

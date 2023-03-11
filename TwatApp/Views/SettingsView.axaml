@@ -43,6 +43,14 @@
                 Text="{Binding ViewValue, Mode=TwoWay}" />
         </DataTemplate>
 
+        <DataTemplate DataType="local:StringSetting">
+            <TextBox
+                MinWidth="200"
+                HorizontalAlignment="Right"
+                HorizontalContentAlignment="Right"
+                Text="{Binding ViewValue, Mode=TwoWay}" />
+        </DataTemplate>
+
         <DataTemplate DataType="local:FileSetting">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
@@ -110,6 +118,8 @@
                 <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
                 <ContentControl Content="{Binding ConfigFileSetting}" />
                 <ContentControl Content="{Binding UseTokenFileSetting}" />
+                <ContentControl Content="{Binding ClientIDSetting}" />
+                <ContentControl Content="{Binding RedirectURISetting}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
