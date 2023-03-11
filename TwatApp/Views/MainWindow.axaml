@@ -16,7 +16,7 @@
     ExtendClientAreaChromeHints="PreferSystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     ExtendClientAreaToDecorationsHint="True"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/icon.ico"
     WindowStartupLocation="CenterScreen"
     WindowState="Minimized"
     mc:Ignorable="d">

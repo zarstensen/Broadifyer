@@ -31,7 +31,7 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="{Binding ToolTipText}">
+            <TrayIcon Icon="/Assets/icon.ico" ToolTipText="{Binding ToolTipText}">
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Command="{Binding editorWindowCommand}" Header="Edit" />
