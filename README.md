@@ -2,10 +2,10 @@
 
 <div align="center">
   <h1 align="center">Broadifyer</h1>
-  <img src=assets/logo.png alt="Logo" width="80" height="80"/>
+  <img src=assets/icon.png alt="Icon" width="160" height="160"/>
 </div>
 
-[![MIT License][license-shield]][./LICENSE.txt]
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Table of contents
 
@@ -58,12 +58,13 @@ See [here](#recieve-notifications-whilst-in-fullscreen) for how to enable.
 - Download the [latest release](https://github.com/karstensensensen/Broadifyer/releases/latest).
 - Run the program.
 - Log in to twitch account in opened browser.
+- Allow  Broadifyer access.
 
-![image][AuthImage]
+![image](assets/auth_img.png)
 
 - Add desired streamers and categories by their name.
 
-![image][UsageExample]
+![image](assets/usage_example.gif)
 
 - Close window and wait for streamer to go live.
 
@@ -73,7 +74,7 @@ See [here](#recieve-notifications-whilst-in-fullscreen) for how to enable.
 
 Broadifyer will run in the background, and can be accessed via its tray icon.
 
-![image][TrayIcon]
+![image](assets/tray_location.png)
 
 - Right click the tray icon.
 - Select 'Exit' to stop the application, or 'Edit' to access the configuration window.
