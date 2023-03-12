@@ -76,6 +76,9 @@
                     </StackPanel>
                 </Border>
             </ContentControl>
+
+            <!--  Version String  -->
+
             <TextBlock
                 Margin="5"
                 HorizontalAlignment="Left"

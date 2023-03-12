@@ -29,6 +29,9 @@ namespace BroadifyerApp.ViewModels
             streamers_view.Value = new StreamersViewModel(notifier);
             categories_view.Value = new CategoriesViewModel(notifier, streamers_view.Value.SelectedStreamer);
         }
-    
+        
+        public void openGithub() => Process.Start(new ProcessStartInfo() {
+            FileName = "https://github.com/karstensensensen/Broadifyer",
+            UseShellExecute = true });
     }
 }

@@ -11,9 +11,10 @@
     <ImplicitUsings>Enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
-    <AssemblyVersion>0.2.0.40147</AssemblyVersion>
+    <AssemblyVersion>0.2.0.37342</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <FileVersion>$(AssemblyVersion)</FileVersion>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -24,12 +25,14 @@
     <AvaloniaResource Remove="Assets\Default.axaml" />
     <AvaloniaResource Remove="Assets\Notification.xml" />
     <None Remove=".gitignore" />
+    <None Remove="Assets\github-mark-white.svg" />
     <None Remove="Assets\information-circle-outline.svg" />
     <None Remove="Assets\Notification.xml" />
     <None Remove="close_tab.html" />
     <None Remove="parse_token.html" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\icon.ico" />
     <Content Include="Assets\Notification.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

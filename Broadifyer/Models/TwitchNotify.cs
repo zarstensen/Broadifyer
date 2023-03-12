@@ -126,7 +126,7 @@ namespace BroadifyerApp.Models
                 var query = HttpUtility.ParseQueryString("");
 
                 query["client_id"] = m_twitch_api.Settings.ClientId;
-                query["scope"] = "user:read:follows channel:moderate";
+                query["scope"] = "user:read:follows";
                 query["response_type"] = "token";
                 query["redirect_uri"] = m_redirect_uri;
                 query["force_verify"] = force_verify.ToString().ToLower();
