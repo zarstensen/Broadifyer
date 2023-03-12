@@ -34,7 +34,7 @@ namespace BroadifyerApp
             catch(Exception e)
             {
                 Trace.WriteLine(e);
-                throw e;
+                throw;
             }
 #endif
         }
