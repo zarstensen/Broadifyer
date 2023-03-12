@@ -25,7 +25,10 @@ Table of contents
 
 # About
 
-Broadifyer is a notification app that brings Twitch notifications into the windows notification ecosystem. Recieve going live notifications from any streamer any time, optionally even whilst in [full screen apps](#recieve-notifications-whilst-in-fullscreen). Additional category filters can also be used, to only be notified about the most relevant streams.
+Broadifyer is a notification app that brings Twitch notifications into the windows notification ecosystem.
+Recieve going live notifications from any streamer any time,
+optionally even whilst in [full screen apps](#recieve-notifications-whilst-in-fullscreen).
+Additional category filters can also be used, to only be notified about the most relevant streams.
 
 ![image](assets/app_example.png)
 
@@ -39,6 +42,10 @@ Add any streamer you want to be notified about when the streamer is going live.
 
 Use category filters when you only want to watch a specific streamer stream specific categories.
 
+Can be in either whitelist or blacklist mode.
+If in whitelist, a notification is only sent, if the streamer is streaming the category.
+The opposite is true for blacklist mode, where the notificaton will only be sent,
+if the streamer is NOT streaming the category.
 
 ### Urgent notifications
 
@@ -125,8 +132,3 @@ This marks all notifications sent from the application, as improtant, which allo
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right"><a href="#top">(back to top)</a></p>
-
-
-[AuthImage]: https://github.com/karstensensensen/AsciiRenderer/blob/main/assets/auth_img.png
-[UsageExample]: https://github.com/karstensensensen/AsciiRenderer/blob/main/assets/usage_example.gif
-[TrayIcon]: https://github.com/karstensensensen/AsciiRenderer/blob/main/assets/tray_location.png
