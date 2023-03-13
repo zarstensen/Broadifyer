@@ -376,7 +376,10 @@ namespace BroadifyerApp.Models
         /// </summary>
         public ICategoryInfo filterCategory(ICategory category, IStreamer streamer)
         {
-            m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo(category as Category));
+            if (category is not Category)
+                throw new InvalidCastException($"{nameof(ICategory)} must be implemented by {nameof(Category)}");
+
+            m_streamers[streamer.Id].FilteredCategories.Add(category.Id, new CategoryInfo((category as Category)!));
             return m_streamers[streamer.Id].FilteredCategories[category.Id];
         }
 
@@ -436,6 +439,10 @@ namespace BroadifyerApp.Models
                 if (m_streamers.ContainsKey(new_streamer_info.Id))
                 {
                     Streamer? streamer = m_streamers[new_streamer_info.Id].Streamer as Streamer;
+
+                    if (streamer == null)
+                        throw new InvalidCastException($"{nameof(IStreamer)} must be implemented by {nameof(Streamer)}");
+
                     streamer.icon_uri = new_streamer_info.IconUri;
                     streamer.name = new_streamer_info.DisplayName;
                 }
@@ -481,6 +488,9 @@ namespace BroadifyerApp.Models
                 foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
                 {
                     var category = category_info.Category as Category;
+
+                    if (category == null)
+                        throw new InvalidCastException($"{nameof(ICategory)} must be implemented by {nameof(Category)}");
 
                     category.name = new_cat_info[category.Id].Name;
                     category.icon_uri = new_cat_info[category.Id].IconUri;

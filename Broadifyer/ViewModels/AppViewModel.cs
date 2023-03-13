@@ -182,8 +182,9 @@ namespace BroadifyerApp.ViewModels
     
     public class AppViewModel : ViewModelBase
     {
-        public TwitchNotify notifier;
-        public Settings settings { get; protected set; } = new();
+        // event though it is initialized through settings.load(), the compiler still complains, so do this hack to disable the warning
+        public TwitchNotify notifier = default!;
+        public Settings Settings { get; protected set; } = new();
 
         /// <summary>
         /// returns a version string with the given format
@@ -193,7 +194,7 @@ namespace BroadifyerApp.ViewModels
         {
             get
             {
-                string location;
+                string? location;
 
                 Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -204,8 +205,8 @@ namespace BroadifyerApp.ViewModels
                 else
                     location = Environment.ProcessPath;
 
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(location);
-                string version = fileVersionInfo.ProductVersion;
+                FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
+                string version = file_version_info.ProductVersion ?? "COULD NOT FIND";
 
                 return $"Version: {version}";
             }
@@ -227,7 +228,7 @@ namespace BroadifyerApp.ViewModels
             if (Design.IsDesignMode)
                 return;
 
-            notifier = settings.load();
+            notifier = Settings.load();
 
             var initialize_notifier_task = new Task(async () =>
             {
@@ -236,17 +237,20 @@ namespace BroadifyerApp.ViewModels
                 // therefore a new authorization token is recieved, by deleting the current token file, and calling authUser again.
                 try
                 {
-                    await notifier.authUser(settings.TokenFile, false);
+                    await notifier.authUser(Settings.TokenFile, false);
                 }
                 catch(TwitchLib.Api.Core.Exceptions.BadScopeException e)
                 {
                     Trace.WriteLine(e);
-                    File.Delete(settings.TokenFile);
-                    await notifier.authUser(settings.TokenFile, false);
+
+                    if(Settings.UseTokenFile)
+                        File.Delete(Settings.TokenFile!);
+                    
+                    await notifier.authUser(Settings.TokenFile, false);
                 }
 
-                await notifier.loadConfiguration(settings.ConfigFileName);
-                notifier.PollInterval = settings.PollInterval;
+                await notifier.loadConfiguration(Settings.ConfigFileName);
+                notifier.PollInterval = Settings.PollInterval;
                 notifier.StreamerNotify += notifyUser;
                 notifier.startNotify();
             });
@@ -276,9 +280,9 @@ namespace BroadifyerApp.ViewModels
         {
             ToastNotificationManagerCompat.History.Clear();
             ToastNotificationManagerCompat.Uninstall();
-            notifier.saveConfiguration(settings.ConfigFileName);
+            notifier.saveConfiguration(Settings.ConfigFileName);
             notifier.stopNotify();
-            settings.save();
+            Settings.save();
         }
 
         /// <summary>
@@ -324,7 +328,7 @@ namespace BroadifyerApp.ViewModels
             XmlElement toast = (XmlElement)doc.SelectSingleNode("/toast");
 
             toast.SetAttribute("launch", $"streamer={streamer_info.Streamer.LoginName}");
-            string scenario = settings.UseUrgentNotifications ? "urgent" : "default";
+            string scenario = Settings.UseUrgentNotifications ? "urgent" : "default";
             toast.SetAttribute("scenario", scenario);
 
             XmlElement content = (XmlElement)doc.SelectSingleNode("/toast/visual/binding/text");

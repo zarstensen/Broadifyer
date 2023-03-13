@@ -100,7 +100,7 @@ namespace BroadifyerApp.ViewModels
             Streamers.Add(new(m_notifier.Streamers[found_streamer.Id]));
             this.RaisePropertyChanged(nameof(Streamers));
             
-            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+            m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace BroadifyerApp.ViewModels
 
             this.RaisePropertyChanged(nameof(Streamers));
 
-            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+            m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
         public void removeStreamer(StreamerVM streamer)
@@ -130,7 +130,7 @@ namespace BroadifyerApp.ViewModels
                 Streamers.Remove(streamer);
                 this.RaisePropertyChanged(nameof(Streamers));
 
-                m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+                m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
             }
         }
 

@@ -45,10 +45,10 @@ namespace BroadifyerApp.ViewModels
     }
 
     public abstract class SettingValue<TData, TView> : SettingValueBase
+        where TData : notnull
+        where TView : notnull
     {
-        protected SettingValue(TData init_value) : base(init_value)
-        {
-        }
+        protected SettingValue(TData init_value) : base(init_value) {}
 
         public TView ViewValue { get => GetSetting((TData)Data); set { Data = SetSetting(value); this.RaisePropertyChanged(nameof(ViewValue)); } }
 
@@ -177,55 +177,55 @@ namespace BroadifyerApp.ViewModels
 
             RunOnStartupSetting = new("Run On Startup",
                 "Start the application in a minimized state, every time the computer boots",
-                new ToggleSetting(AppVM.settings.RunsOnStartup));
+                new ToggleSetting(AppVM.Settings.RunsOnStartup));
 
             PollIntervalSetting = new("Poll Interval",
                 "How often the program checks if a streamer has gone live.",
-                new NumericSetting(AppVM.settings.PollInterval));
+                new NumericSetting(AppVM.Settings.PollInterval));
 
             UrgentNotificationsSetting = new("Use Important Notifications",
                 "Notifications will be marked as important, which will allow the notification to appear, whilst using an application in fullscreen mode.",
-                new ToggleSetting(AppVM.settings.UseUrgentNotifications));
+                new ToggleSetting(AppVM.Settings.UseUrgentNotifications));
 
             // advanced settings
 
             BroadcastTimeoutSetting = new("New Broadcast Timeout",
                 "How many seconds the broadcaster must have been offline, before a new broadcast will result in an alert.",
-                new NumericSetting(AppVM.settings.NewBroadcastTimeout));
+                new NumericSetting(AppVM.Settings.NewBroadcastTimeout));
 
             ConfigFileSetting = new("Config File",
                 "Name of the config file, used to store the current streamer configurations.",
-                new FileSetting(AppVM.settings.ConfigFileName));
+                new FileSetting(AppVM.Settings.ConfigFileName));
 
             UseTokenFileSetting = new("Use Token File",
                 "Store the twitch api locally, in order to avoid opening a browser tab, every time the app is started. see README for further info.",
-                new ToggleSetting(AppVM.settings.UseTokenFile));
+                new ToggleSetting(AppVM.Settings.UseTokenFile));
 
             ClientIDSetting = new Setting("Client ID",
                 "The twitch api client id, that is used when polling the twitch api.",
-                new StringSetting(AppVM.settings.SetupSettings.ClientID));
+                new StringSetting(AppVM.Settings.SetupSettings.ClientID));
 
             RedirectURISetting = new Setting("Redirect URI / URL",
                 "The redirect uri / url, that will be used when going through the implicit grant auth flow.",
-                new StringSetting(AppVM.settings.SetupSettings.RedirectURI));
+                new StringSetting(AppVM.Settings.SetupSettings.RedirectURI));
 
             Exit = ReactiveCommand.Create(() => {
 
-                if(AppVM.settings.ConfigFileName != (string)ConfigFileSetting.Data
-                || AppVM.settings.UseTokenFile != (bool)UseTokenFileSetting.Data
-                || AppVM.settings.SetupSettings.ClientID != (string) ClientIDSetting.Data
-                || AppVM.settings.SetupSettings.RedirectURI != (string) RedirectURISetting.Data)
+                if(AppVM.Settings.ConfigFileName != (string)ConfigFileSetting.Data
+                || AppVM.Settings.UseTokenFile != (bool)UseTokenFileSetting.Data
+                || AppVM.Settings.SetupSettings.ClientID != (string) ClientIDSetting.Data
+                || AppVM.Settings.SetupSettings.RedirectURI != (string) RedirectURISetting.Data)
                     WindowVM?.showInfo("Changes will take effect once the app has been restarted.", 5000);
 
-                AppVM.settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
-                AppVM.settings.PollInterval = (int)PollIntervalSetting.Data;
-                AppVM.settings.UseUrgentNotifications = (bool) UrgentNotificationsSetting.Data;
-                AppVM.settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
-                AppVM.settings.ConfigFileName = (string) ConfigFileSetting.Data;
-                AppVM.settings.UseTokenFile = (bool) UseTokenFileSetting.Data;
-                AppVM.settings.SetupSettings.ClientID = (string) ClientIDSetting.Data;
-                AppVM.settings.SetupSettings.RedirectURI = (string) RedirectURISetting.Data;
-                AppVM.settings.save();
+                AppVM.Settings.RunsOnStartup = (bool) RunOnStartupSetting.Data;
+                AppVM.Settings.PollInterval = (int)PollIntervalSetting.Data;
+                AppVM.Settings.UseUrgentNotifications = (bool) UrgentNotificationsSetting.Data;
+                AppVM.Settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
+                AppVM.Settings.ConfigFileName = (string) ConfigFileSetting.Data;
+                AppVM.Settings.UseTokenFile = (bool) UseTokenFileSetting.Data;
+                AppVM.Settings.SetupSettings.ClientID = (string) ClientIDSetting.Data;
+                AppVM.Settings.SetupSettings.RedirectURI = (string) RedirectURISetting.Data;
+                AppVM.Settings.save();
             });
         }
 

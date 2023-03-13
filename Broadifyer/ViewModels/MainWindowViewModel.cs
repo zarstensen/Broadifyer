@@ -20,8 +20,6 @@ using Windows.Data.Xml.Dom;
 using System.Reflection;
 using System.Threading;
 using TwitchLib.Api.Helix.Models.Bits;
-using System.Reflection;
-using System.Diagnostics;
 using System.Windows.Navigation;
 
 namespace BroadifyerApp.ViewModels
@@ -68,7 +66,7 @@ namespace BroadifyerApp.ViewModels
         /// </summary>
         public async Task changeAccount()
         {
-            if (!await notifier.authUser(AppVM.settings.TokenFile, true))
+            if (!await notifier.authUser(AppVM.Settings.TokenFile, true))
                 await showInfo("Failed to change account.", 5000);
         }
 
@@ -89,7 +87,7 @@ namespace BroadifyerApp.ViewModels
                 FileDialogFilter json_filter = new FileDialogFilter { Name = "Json file", Extensions = new List<string> { "json" } };
                 OpenFileDialog dialog = new OpenFileDialog();
 
-                dialog.Filters.Add(json_filter);
+                dialog.Filters!.Add(json_filter);
                 
                 var res = await dialog.ShowAsync(desktop.MainWindow);
 
@@ -101,7 +99,7 @@ namespace BroadifyerApp.ViewModels
                 try
                 {
                     await notifier.loadConfiguration(file);
-                    File.Copy(file, AppVM.settings.ConfigFileName, true);
+                    File.Copy(file, AppVM.Settings.ConfigFileName, true);
                 }
                 catch(Exception ex)
                 {
@@ -119,7 +117,7 @@ namespace BroadifyerApp.ViewModels
                 FileDialogFilter json_filter = new FileDialogFilter { Name = "Json file", Extensions = new List<string> { "json" } };
                 SaveFileDialog dialog = new SaveFileDialog();
 
-                dialog.Filters.Add(json_filter);
+                dialog.Filters!.Add(json_filter);
 
                 var res = await dialog.ShowAsync(desktop.MainWindow);
 
@@ -140,7 +138,7 @@ namespace BroadifyerApp.ViewModels
         public async void reloadCache()
         {
             await AppVM.notifier.reloadAllCache();
-            AppVM.notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+            AppVM.notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
             View.Value = m_config_view_model = new ConfigEditorViewModel(AppVM.notifier);
         }
 

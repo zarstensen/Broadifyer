@@ -59,17 +59,17 @@ namespace BroadifyerApp.ViewModels
             await cinfo.prepareIcons();
 
             TargetStreamer.Value.FilteredCategories.Add(new(cinfo));
-            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+            m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
         public void removeCategory(CategoryVM category)
         {
-            TargetStreamer.Value.FilteredCategories.Remove(category);
-            TargetStreamer.Value.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
-            m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+            TargetStreamer.Value?.FilteredCategories.Remove(category);
+            TargetStreamer.Value?.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
+            m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
-        public void WhiteBlacklistChanged() => m_notifier.saveConfiguration(AppVM.settings.ConfigFileName);
+        public void WhiteBlacklistChanged() => m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
 
         protected TwitchNotify m_notifier;
     }
