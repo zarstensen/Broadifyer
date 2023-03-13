@@ -561,10 +561,11 @@ namespace BroadifyerApp.Models
                 // instead of sleeping for the full PollInterval, the thread sleeps for PollInterval seconds, in 1 second segments.
                 // this makes sure that if PollInterval is updated, while the thread wait for the next poll,
                 // the thread will use the new PollInterval value, instead of sleeping for the old PollInterval amount.
+                // this (&& m_polling) also makes sure the program does not freeze for more than 1 second, when the program is stopped.
 
                 int seconds_slept = 0;
 
-                while (seconds_slept < PollInterval)
+                while (seconds_slept < PollInterval && m_polling)
                 {
                     seconds_slept++;
                     Thread.Sleep(1000);
@@ -577,7 +578,6 @@ namespace BroadifyerApp.Models
         {
             try
             {
-
                 List<string> ids = currentStreamers().Where(info => info.Enable).Select(info => info.Streamer.Id).ToList();
 
                 // if there are no registered live streamers, simply do nothing and wait for the poll interval,
