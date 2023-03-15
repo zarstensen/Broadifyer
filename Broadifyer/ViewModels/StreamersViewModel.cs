@@ -23,6 +23,11 @@ namespace BroadifyerApp.ViewModels
         public Bitmap? Icon { get => IsLive ? streamer_info.RgbIcon : streamer_info.GrayIcon; }
         public Expose<bool, IStreamerInfo> IsWhitelisted { get; set; }
 
+        public void sortCategories()
+        {
+            FilteredCategories = new(FilteredCategories.OrderBy(x => x.category_info).ToList());
+        }
+
         public ObservableCollection<CategoryVM> FilteredCategories { get; set; } = new();
 
         public StreamerVM(IStreamerInfo streamer_info)
@@ -47,6 +52,8 @@ namespace BroadifyerApp.ViewModels
             foreach (ICategoryInfo category_info in streamer_info.FilteredCategories.Values)
                 FilteredCategories.Add(new(category_info));
 
+            sortCategories();
+
             Enable = new(streamer_info, nameof(streamer_info.Enable));
             IsWhitelisted = new(streamer_info, nameof(streamer_info.WhitelistCategories));
         }
@@ -66,8 +73,22 @@ namespace BroadifyerApp.ViewModels
         {
             m_notifier = notifier;
 
+            AppVM.NotifierInitialized += (s) =>
+            {
+                foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
+                    Streamers.Add(new(streamer_info));
+
+                Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
+
+                this.RaisePropertyChanged(nameof(Streamers));
+            };
+
             foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
                 Streamers.Add(new(streamer_info));
+
+            Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
+
+            this.RaisePropertyChanged(nameof(Streamers));
         }
 
         /// <summary>
@@ -98,6 +119,8 @@ namespace BroadifyerApp.ViewModels
             await m_notifier.addStreamers(new() { found_streamer });
 
             Streamers.Add(new(m_notifier.Streamers[found_streamer.Id]));
+            Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
+
             this.RaisePropertyChanged(nameof(Streamers));
             
             m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
@@ -113,6 +136,8 @@ namespace BroadifyerApp.ViewModels
 
             foreach (IStreamer streamer in followed_streamers)
                 Streamers.Add(new(m_notifier.Streamers[streamer.Id]));
+
+            Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
 
             this.RaisePropertyChanged(nameof(Streamers));
 

@@ -218,6 +218,11 @@ namespace BroadifyerApp.ViewModels
         public string ToolTipText { get; set; }
 
         /// <summary>
+        /// event raised when the TwitchNotify instance has finished authorizing the user, loaded all saved configurations and begun notifying.
+        /// </summary>
+        public Action<AppViewModel>? NotifierInitialized;
+
+        /// <summary>
         /// initialize the notifier instance, and set up the required event handles.
         /// </summary>
         public AppViewModel()
@@ -230,7 +235,7 @@ namespace BroadifyerApp.ViewModels
 
             notifier = Settings.load();
 
-            var initialize_notifier_task = new Task(async () =>
+            new Task(async () =>
             {
                 // attempt to authorize
                 // if a BadScopeException is thrown, the credentials in the token file are outdated or invalid.
@@ -253,9 +258,9 @@ namespace BroadifyerApp.ViewModels
                 notifier.PollInterval = Settings.PollInterval;
                 notifier.StreamerNotify += notifyUser;
                 notifier.startNotify();
-            });
 
-            initialize_notifier_task.Start();
+                NotifierInitialized?.Invoke(this);
+            }).Start();
 
             // called when the toast notification is clicked on.
             ToastNotificationManagerCompat.OnActivated += toast_args =>
@@ -269,8 +274,6 @@ namespace BroadifyerApp.ViewModels
 
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 desktop.Exit += (s, e) => onExit();
-
-            initialize_notifier_task.Wait();
         }
 
         /// <summary>

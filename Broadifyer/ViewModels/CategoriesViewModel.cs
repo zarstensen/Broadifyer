@@ -33,6 +33,7 @@ namespace BroadifyerApp.ViewModels
         {
             TargetStreamer = target_streamer;
             m_notifier = notifier;
+            TargetStreamer.Value?.sortCategories();
         }
 
         /// <summary>
@@ -59,6 +60,7 @@ namespace BroadifyerApp.ViewModels
             await cinfo.prepareIcons();
 
             TargetStreamer.Value.FilteredCategories.Add(new(cinfo));
+            TargetStreamer.Value.sortCategories();
             m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
@@ -66,6 +68,7 @@ namespace BroadifyerApp.ViewModels
         {
             TargetStreamer.Value?.FilteredCategories.Remove(category);
             TargetStreamer.Value?.streamer_info.FilteredCategories.Remove(category.category_info.Category.Id);
+            TargetStreamer.Value?.sortCategories();
             m_notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
         }
 
