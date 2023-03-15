@@ -106,7 +106,7 @@ Many other relevant settings can be configured in this window.
 - [Open](#reconfiguring-or-exiting-the-application) the settings window.
 - Toggle the 'Urgent Notification' setting
 
-This marks all notifications sent from the application, as improtant, which allows them to show up, event when in fullscreen mode.
+This marks all notifications sent from the application, as improtant, which allows them to show up, even when in fullscreen mode.
 
 ---
 
