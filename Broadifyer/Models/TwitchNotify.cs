@@ -623,10 +623,9 @@ namespace BroadifyerApp.Models
             bool broadcast_change;
 
             if ((is_live && (DateTime.Now - streamer_info.NotifiedTime).TotalSeconds > NewBroadcastTimeout) || !is_live)
-                broadcast_change = (streamer_info.IsLive ?? true) != is_live;
+                broadcast_change = (streamer_info.IsLive ?? false) != is_live;
             else
                 broadcast_change = false;
-
 
             bool category_change = is_live && (streamer_info.CurrentCategory?.Id ?? String.Empty) != category_id;
 
@@ -661,6 +660,9 @@ namespace BroadifyerApp.Models
 
             if (streamer_info is StreamerInfo sinfo)
             {
+                if (streamer_info.IsLive == null && is_live)
+                    sinfo.was_notified = true;
+
                 sinfo!.is_live = is_live;
 
                 // reset notified status, as the user should only be notified once per broadcast start.

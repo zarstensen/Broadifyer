@@ -73,22 +73,10 @@ namespace BroadifyerApp.ViewModels
         {
             m_notifier = notifier;
 
-            AppVM.NotifierInitialized += (s) =>
-            {
-                foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
-                    Streamers.Add(new(streamer_info));
+            // incase the notifier has not yet been initialized, also call loadFromNotifier, when (if) the NotifierInitialized event is raised.
+            AppVM.NotifierInitialized += (s) => loadFromNotifier();
 
-                Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
-
-                this.RaisePropertyChanged(nameof(Streamers));
-            };
-
-            foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
-                Streamers.Add(new(streamer_info));
-
-            Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
-
-            this.RaisePropertyChanged(nameof(Streamers));
+            loadFromNotifier();
         }
 
         /// <summary>
@@ -118,7 +106,7 @@ namespace BroadifyerApp.ViewModels
 
             await m_notifier.addStreamers(new() { found_streamer });
 
-            Streamers.Add(new(m_notifier.Streamers[found_streamer.Id]));
+            Streamers.Add(createStreamerVM(m_notifier.Streamers[found_streamer.Id]));
             Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
 
             this.RaisePropertyChanged(nameof(Streamers));
@@ -135,7 +123,7 @@ namespace BroadifyerApp.ViewModels
             await m_notifier.addStreamers(followed_streamers);
 
             foreach (IStreamer streamer in followed_streamers)
-                Streamers.Add(new(m_notifier.Streamers[streamer.Id]));
+                Streamers.Add(createStreamerVM(m_notifier.Streamers[streamer.Id]));
 
             Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
 
@@ -151,7 +139,9 @@ namespace BroadifyerApp.ViewModels
             if (m_notifier.Streamers.ContainsKey(streamer.streamer_info.Streamer.Id))
             {
                 m_notifier.removeStreamers(new() { streamer.streamer_info.Streamer });
-                
+
+                streamer.streamer_info.StreamerUpdated -= streamerUpdated;
+
                 Streamers.Remove(streamer);
                 this.RaisePropertyChanged(nameof(Streamers));
 
@@ -159,10 +149,38 @@ namespace BroadifyerApp.ViewModels
             }
         }
 
+        // resorts the streamer list, if the broadcast state has changed, as this should change the streamers order in the list.
+        protected void streamerUpdated(object? sender, StreamerChange change)
+        {
+            if(change == StreamerChange.Broadcast)
+            {
+                Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
+                this.RaisePropertyChanged(nameof(Streamers));
+            }
+        }
+
+        // add all the current TwitchNotify streamers into the Streamers viewmodel, and sort the Streamers list.
+        protected void loadFromNotifier()
+        {
+            foreach (IStreamerInfo streamer_info in m_notifier.currentStreamers())
+                Streamers.Add(createStreamerVM(streamer_info));
+
+            Streamers = new(Streamers.OrderBy(x => x.streamer_info).ToList());
+
+            this.RaisePropertyChanged(nameof(Streamers));
+        }
+
+        // create a StreamerVM instance, and add an eventhandler for this instance being updated, that resorts the Streamers list.
+        protected StreamerVM createStreamerVM(IStreamerInfo sinfo)
+        {
+            StreamerVM streamer_vm = new(sinfo);
+            streamer_vm.streamer_info.StreamerUpdated += streamerUpdated;
+
+            return streamer_vm;
+        }
 
         protected TwitchNotify m_notifier;
-        protected React<StreamerVM?> m_selected_streamer { get; set; } = new();
-
+        protected StreamerVM? m_selected_streamer;
     }
 
 }
