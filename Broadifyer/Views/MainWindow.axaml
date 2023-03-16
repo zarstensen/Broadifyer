@@ -38,6 +38,7 @@
                     <NativeMenu>
                         <NativeMenuItem Command="{Binding changeAccount}" Header="Change account" />
                         <NativeMenuItem Command="{Binding reloadCache}" Header="Refresh" />
+                        <NativeMenuItem Command="{Binding autoUpdate}" Header="Update" />
                         <NativeMenuItem Header="-" />
                         <NativeMenuItem Command="{Binding showSettingsView}" Header="Preferences" />
                     </NativeMenu>

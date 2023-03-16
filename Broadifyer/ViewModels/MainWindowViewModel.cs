@@ -21,6 +21,9 @@ using System.Reflection;
 using System.Threading;
 using TwitchLib.Api.Helix.Models.Bits;
 using System.Windows.Navigation;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using DynamicData.Aggregation;
 
 namespace BroadifyerApp.ViewModels
 {
@@ -142,7 +145,31 @@ namespace BroadifyerApp.ViewModels
             View.Value = m_config_view_model = new ConfigEditorViewModel(AppVM.notifier);
         }
 
+        public async Task autoUpdate()
+        {
+            m_http_client.DefaultRequestHeaders.Add("User-Agent", "agent");
+
+            Regex version_regex = new(@"^v(\d).(\d).(\d)$");
+
+            HttpRequestMessage msg = new(HttpMethod.Get, "https://api.github.com/repos/karstensensensen/Broadifyer/releases/latest");
+            var response = await m_http_client.SendAsync(msg);
+
+            string version = JsonNode.Parse(await response.Content.ReadAsStringAsync())["tag_name"].ToString();
+
+            Trace.WriteLine(version);
+
+            var latest_version_numbers = version_regex.Match(version).Groups.Values.Select(x => int.Parse(x.Value)).ToList();
+
+            for(int i = 0; i < latest_version_numbers.Count; i++)
+            {
+                if (latest_version_numbers[i] > AppVM.VersionNumber[i])
+                    Trace.WriteLine("OUTDATED!!!");
+            }
+
+        }
+
         protected ConfigEditorViewModel m_config_view_model;
+        protected HttpClient m_http_client = new();
 
     }
 }

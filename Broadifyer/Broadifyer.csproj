@@ -13,7 +13,7 @@
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
     <AssemblyVersion>0.3.3.38279</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <FileVersion>0.3.3.23886</FileVersion>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>

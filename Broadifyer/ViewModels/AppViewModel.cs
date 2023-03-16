@@ -194,6 +194,18 @@ namespace BroadifyerApp.ViewModels
         {
             get
             {
+                string version = string.Join('.', VersionNumber) ?? "COULD NOT FIND";
+
+                return $"Version: {version}";
+            }
+        }
+
+        public List<int> VersionNumber
+        {
+            get
+            {
+                List<int> version_number = new(4);
+
                 string? location;
 
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -206,9 +218,13 @@ namespace BroadifyerApp.ViewModels
                     location = Environment.ProcessPath;
 
                 FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
-                string version = file_version_info.ProductVersion ?? "COULD NOT FIND";
 
-                return $"Version: {version}";
+                version_number.Add(file_version_info.ProductMajorPart);
+                version_number.Add(file_version_info.ProductMinorPart);
+                version_number.Add(file_version_info.ProductBuildPart);
+                version_number.Add(file_version_info.ProductPrivatePart);
+
+                return version_number;
             }
         }
 
