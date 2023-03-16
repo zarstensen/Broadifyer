@@ -83,7 +83,7 @@ namespace BroadifyerApp.ViewModels
                 );
         }
 
-        public async void importConfig()
+        public async Task importConfig()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -113,7 +113,7 @@ namespace BroadifyerApp.ViewModels
             }
         }
 
-        public async void exportConfig()
+        public async Task exportConfig()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -138,35 +138,14 @@ namespace BroadifyerApp.ViewModels
             }
         }
 
-        public async void reloadCache()
+        public async Task reloadCache()
         {
             await AppVM.notifier.reloadAllCache();
             AppVM.notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
             View.Value = m_config_view_model = new ConfigEditorViewModel(AppVM.notifier);
         }
 
-        public async Task autoUpdate()
-        {
-            m_http_client.DefaultRequestHeaders.Add("User-Agent", "agent");
-
-            Regex version_regex = new(@"^v(\d).(\d).(\d)$");
-
-            HttpRequestMessage msg = new(HttpMethod.Get, "https://api.github.com/repos/karstensensensen/Broadifyer/releases/latest");
-            var response = await m_http_client.SendAsync(msg);
-
-            string version = JsonNode.Parse(await response.Content.ReadAsStringAsync())["tag_name"].ToString();
-
-            Trace.WriteLine(version);
-
-            var latest_version_numbers = version_regex.Match(version).Groups.Values.Select(x => int.Parse(x.Value)).ToList();
-
-            for(int i = 0; i < latest_version_numbers.Count; i++)
-            {
-                if (latest_version_numbers[i] > AppVM.VersionNumber[i])
-                    Trace.WriteLine("OUTDATED!!!");
-            }
-
-        }
+        
 
         protected ConfigEditorViewModel m_config_view_model;
         protected HttpClient m_http_client = new();

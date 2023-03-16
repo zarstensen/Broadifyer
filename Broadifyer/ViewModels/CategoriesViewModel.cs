@@ -40,7 +40,7 @@ namespace BroadifyerApp.ViewModels
         /// attempt to add a category with the name stored in CategoryInput, and associate it with the passed streamer.
         /// </summary>
         /// <param name="streamer"></param>
-        public async void addCategory()
+        public async Task addCategory()
         {
             if (CategoryInput == "")
             {

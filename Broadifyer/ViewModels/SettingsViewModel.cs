@@ -87,7 +87,7 @@ namespace BroadifyerApp.ViewModels
         {
         }
 
-        public async void folderDialouge()
+        public async Task folderDialouge()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -120,7 +120,7 @@ namespace BroadifyerApp.ViewModels
         {
         }
 
-        public async void fileDialouge()
+        public async Task fileDialouge()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
