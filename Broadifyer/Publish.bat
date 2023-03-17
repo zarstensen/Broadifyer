@@ -4,17 +4,19 @@ echo Deleting previous publish
 
 rd /s /q "./bin/Publish/Release/"
 
-echo Publising 'x64 Release'
+echo Publishing 'x64 Release'
 dotnet publish Broadifyer.csproj /p:PublishProfile="x64 Release"
-echo Publising 'x86 Release'
+echo Publishing 'x86 Release'
 dotnet publish Broadifyer.csproj /p:PublishProfile="x86 Release"
 
 cd "./bin/Publish/Release"
 
 echo Compressing 'x64 Release'
-tar -acf Broadifyer-x64.zip x64
+cd x64
+tar -acf ../Broadifyer-x64.zip *
 echo Compressing 'x86 Release'
-tar -acf Broadifyer-x86.zip x86
+cd x86
+tar -acf ../Broadifyer-x86.zip *
 
 echo Done!
 
