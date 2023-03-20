@@ -26,7 +26,7 @@ using Bitmap = Avalonia.Media.Imaging.Bitmap;
 using SystemStream = System.IO.Stream;
 using TwitchLibStream = TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream;
 
-namespace BroadifyerApp.Models
+namespace Broadifyer.Models
 {
     /// <summary>
     /// class responsible for notifying a user, using windows toast notifications, based on registered streamers and their category conditions.

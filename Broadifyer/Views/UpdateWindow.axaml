@@ -1,0 +1,85 @@
+<Window
+    x:Class="Broadifyer.Views.UpdateWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="UpdateWindow"
+    MinWidth="300"
+    MinHeight="200"
+    MaxWidth="300"
+    MaxHeight="200"
+    ExtendClientAreaChromeHints="PreferSystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
+    mc:Ignorable="d">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <DockPanel Background="{StaticResource Color0}" IsHitTestVisible="False" />
+            <NativeMenuBar HorizontalAlignment="Left" />
+        </Grid>
+        <Grid
+            Background="{StaticResource Color1}"
+            ColumnDefinitions="1*,3*,1*,3*,1*"
+            RowDefinitions="2*,1*">
+            <TextBlock
+                Grid.ColumnSpan="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Classes="h3"
+                FontSize="12"
+                Text="{Binding PopupText.Value}">
+                TEXT
+            </TextBlock>
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,15"
+                Command="{Binding installRelease}"
+                IsVisible="{Binding FoundNewRelease.Value}">
+                Install
+            </Button>
+
+            <Button
+                Grid.Row="1"
+                Grid.Column="3"
+                Margin="10,15"
+                Command="{Binding $parent[Window].Close}"
+                IsVisible="{Binding FoundNewRelease.Value}">
+                Skip
+            </Button>
+
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
+                Margin="50,15"
+                Command="{Binding $parent[Window].Close}"
+                IsVisible="{Binding FoundNoNewRelease.Value}">
+                OK
+            </Button>
+
+            <Border
+                Grid.Row="1"
+                Grid.ColumnSpan="5"
+                Height="8"
+                Margin="40,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Background="{StaticResource Color1}"
+                BorderBrush="{StaticResource Color3}"
+                BorderThickness="1"
+                ClipToBounds="True"
+                CornerRadius="10"
+                IsVisible="{Binding IsLoading.Value}">
+                <Border
+                    Width="100"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    Background="#105995"
+                    Classes="slide"
+                    CornerRadius="{Binding $parent.CornerRadius}" />
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

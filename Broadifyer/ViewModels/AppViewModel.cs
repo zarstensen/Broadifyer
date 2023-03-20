@@ -11,14 +11,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using TwitchLib.Api.Helix;
 using Windows.UI.Notifications;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using Broadifyer.ViewModels;
+using Broadifyer.Views;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     /// <summary>
     /// datastructure storing various configurable settings for the rest of the app.
@@ -271,10 +273,9 @@ namespace BroadifyerApp.ViewModels
             FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
 
             Version = new(file_version_info.ProductMajorPart, file_version_info.ProductMinorPart, file_version_info.ProductBuildPart, file_version_info.ProductPrivatePart);
-            
-            ToolTipText = $"Broadifyer\n{VersionString}";
+            Version = new();
 
-            m_http_client.DefaultRequestHeaders.Add("User-Agent", "agent");
+            ToolTipText = $"Broadifyer\n{VersionString}";
 
             // this code should not be called, if in design mode, as neither a notification nor a twitch api call will be made, during design mode.
             if (Design.IsDesignMode)
@@ -391,69 +392,5 @@ namespace BroadifyerApp.ViewModels
 
             notifier.Show(new ToastNotification(doc));
         }
-
-        /// <summary>
-        /// checks if there exists a newer release version in the github repository.
-        /// 
-        /// returns null if the check failed.
-        /// 
-        /// </summary>
-        public async Task<bool?> checkNewVersion()
-        {
-            Version = new();
-            Regex version_regex = new(@"^v(\d).(\d).(\d)$");
-
-            HttpRequestMessage msg = new(HttpMethod.Get, "https://api.github.com/repos/karstensensensen/Broadifyer/releases/latest");
-            var response = await m_http_client.SendAsync(msg);
-
-            string? version_str = JsonNode.Parse(await response.Content.ReadAsStringAsync())?["tag_name"]?.ToString();
-
-            if (version_str == null)
-            {
-                await WindowVM.showInfo("Unable to retrieve latest version!", 5000);
-                return null;
-            }
-            
-            var version_parsed = version_regex.Match(version_str).Groups.Values.Skip(1).Select(x => int.Parse(x.Value)).ToArray();
-
-            VersionNumber version_number = new(version_parsed);
-
-            return Version.CompareTo(version_number) < 0;
-        }
-
-        /// <summary>
-        /// 
-        /// downloads the latest github release, to the passed destination file.
-        /// 
-        /// </summary>
-        public async Task downloadLatestRelease(string dest)
-        {
-            // download the new release, different depending on the current binary architecture.
-
-            string suffix;
-
-            switch (System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture)
-            {
-                case System.Runtime.InteropServices.Architecture.X64:
-                    suffix = "x64";
-                    break;
-                case System.Runtime.InteropServices.Architecture.X86:
-                    suffix = "x86";
-                    break;
-                default:
-                    await WindowVM.showInfo("Unable to find supported release for current architecture!", 5000);
-                    return;
-            }
-
-            var release_stream = await m_http_client.GetStreamAsync($"https://github.com/karstensensensen/Broadifyer/releases/latest/download/Broadifyer-{suffix}.zip");
-            FileStream file_stream = new(dest, FileMode.OpenOrCreate);
-
-
-            await release_stream.CopyToAsync(file_stream);
-
-            file_stream.Close();
-        }
-
-        protected HttpClient m_http_client = new();
     }
 }

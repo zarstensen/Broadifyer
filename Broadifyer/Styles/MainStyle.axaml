@@ -1,7 +1,7 @@
 ﻿<Styles
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cv="using:BroadifyerApp.Converters"
+    xmlns:cv="using:Broadifyer.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
     <Design.PreviewWith>
         <Border Padding="20" Background="{StaticResource Color1}">
@@ -227,6 +227,28 @@
                 </KeyFrame>
             </Animation>
         </Style.Animations>
+    </Style>
+
+    <!--  slide animation  -->
+
+    <Style Selector="Border.slide">
+
+        <Style.Animations>
+            <Animation
+                FillMode="Forward"
+                IterationCount="Infinite"
+                Duration="0:0:3">
+
+                <KeyFrame Cue="0%">
+                    <Setter Property="TranslateTransform.X" Value="{Binding Bounds.Width, RelativeSource={RelativeSource Self}, Converter={StaticResource NegatorConverter}}" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="TranslateTransform.X" Value="{Binding $parent.Bounds.Width}" />
+                </KeyFrame>
+
+            </Animation>
+        </Style.Animations>
+
     </Style>
 
 </Styles>

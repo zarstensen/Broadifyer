@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 
-namespace BroadifyerApp.Models
+namespace Broadifyer.Models
 {
     /// <summary>
     /// represents identification values for a specific twitch category.

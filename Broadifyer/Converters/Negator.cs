@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BroadifyerApp.Converters
+namespace Broadifyer.Converters
 {
     public class Negator : IValueConverter
     {

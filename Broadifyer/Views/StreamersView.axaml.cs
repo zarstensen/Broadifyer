@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using BroadifyerApp.Models;
-using BroadifyerApp.ViewModels;
+using Broadifyer.Models;
+using Broadifyer.ViewModels;
 
-namespace BroadifyerApp.Views
+namespace Broadifyer.Views
 {
     public partial class StreamersView : UserControl
     {

@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     public class ConfigEditorViewModel : ViewModelBase
     {

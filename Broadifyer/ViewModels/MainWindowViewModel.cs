@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System.Diagnostics;
 using ReactiveUI;
@@ -24,8 +24,9 @@ using System.Windows.Navigation;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using DynamicData.Aggregation;
+using Broadifyer.Views;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
@@ -145,7 +146,20 @@ namespace BroadifyerApp.ViewModels
             View.Value = m_config_view_model = new ConfigEditorViewModel(AppVM.notifier);
         }
 
-        
+        public async Task autoUpdate()
+        {
+            var update_window = new UpdateWindow();
+
+            update_window.DataContext = new UpdateViewModel();
+
+            update_window.Show();
+
+            //if(await checkNewVersion() ?? false)
+            //{
+            //    await downloadLatestRelease("release.zip");
+            //    installRelease("release.zip");
+            //}
+        }
 
         protected ConfigEditorViewModel m_config_view_model;
         protected HttpClient m_http_client = new();

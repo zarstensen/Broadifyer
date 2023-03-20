@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     public class Expose<T, TClass> : ReactiveObject
     {

@@ -12,10 +12,10 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using TwitchLib.Api.Helix.Models.Bits;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
 
     public class Setting : ReactiveObject

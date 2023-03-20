@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace BroadifyerApp.Views
+namespace Broadifyer.Views
 {
     public partial class SettingsView : UserControl
     {

@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Broadifyer.Views
 {
-    public partial class ConfigEditorView : UserControl
+    public partial class UpdateWindow : Window
     {
-        public ConfigEditorView()
+        public UpdateWindow()
         {
             InitializeComponent();
         }
