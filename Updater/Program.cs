@@ -4,6 +4,8 @@ using System.IO.Compression;
 
 try
 {
+    // retrieve the prog id, of the Broadifyer process that called updater.
+    // use it to wait for the process to exit, as this program cannot modify the broadifyer exe, if broadifyer is currently running.
     int proc_id = int.Parse(args[0]);
 
     if (proc_id > 0)
@@ -13,6 +15,9 @@ try
         process.WaitForExit();
     }
 
+    // the downloaded release is in a zip format, however the updater must not be extacted, as it is currently being used,
+    // so this is removed from the archive.
+
     using (ZipArchive archive = ZipFile.Open(args[1], ZipArchiveMode.Update))
     {
         var entries = archive.Entries.Where(entry => entry.Name != AppDomain.CurrentDomain.FriendlyName);
@@ -21,6 +26,8 @@ try
 
         archive.ExtractToDirectory("./", true);
     }
+
+    // delete the downloaded release (args[1])
 
     File.Delete(args[1]);
 

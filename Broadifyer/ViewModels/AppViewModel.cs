@@ -273,7 +273,6 @@ namespace Broadifyer.ViewModels
             FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
 
             Version = new(file_version_info.ProductMajorPart, file_version_info.ProductMinorPart, file_version_info.ProductBuildPart, file_version_info.ProductPrivatePart);
-            Version = new();
 
             ToolTipText = $"Broadifyer\n{VersionString}";
 

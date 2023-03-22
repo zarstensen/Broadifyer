@@ -146,23 +146,6 @@ namespace Broadifyer.ViewModels
             View.Value = m_config_view_model = new ConfigEditorViewModel(AppVM.notifier);
         }
 
-        public async Task autoUpdate()
-        {
-            var update_window = new UpdateWindow();
-
-            update_window.DataContext = new UpdateViewModel();
-
-            update_window.Show();
-
-            //if(await checkNewVersion() ?? false)
-            //{
-            //    await downloadLatestRelease("release.zip");
-            //    installRelease("release.zip");
-            //}
-        }
-
         protected ConfigEditorViewModel m_config_view_model;
-        protected HttpClient m_http_client = new();
-
     }
 }

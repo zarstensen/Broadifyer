@@ -15,16 +15,29 @@ namespace Broadifyer.ViewModels
 {
     public class UpdateViewModel : ViewModelBase
     {
+        /// <summary>
+        /// if true, the popup box should be indicating the program is currently loading.
+        /// </summary>
         public React<bool> IsLoading { get; set; } = true;
+        /// <summary>
+        /// if true, the view should expose the installRelease method.
+        /// </summary>
         public React<bool> FoundNewRelease { get; set; } = false;
+        /// <summary>
+        /// opposite of FoundNewRelease
+        /// </summary>
         public React<bool> FoundNoNewRelease { get; set; } = false;
+        /// <summary>
+        /// text displayed in the popup box.
+        /// </summary>
         public React<string> PopupText { get; set; } = "";
 
         public UpdateViewModel()
         {
             PopupText.Value = "Checking for new versions";
+
+            // github api sometimes requires a user agent header, which is added here.
             m_http_client.DefaultRequestHeaders.Add("User-Agent", "agent");
-            Trace.WriteLine(AppVM);
 
             Dispatcher.UIThread.Post(async () =>
             {
@@ -92,7 +105,7 @@ namespace Broadifyer.ViewModels
         /// </summary>
         public async Task downloadLatestRelease(string dest)
         {
-            // download the new release, different depending on the current binary architecture.
+            // download the new release, different url depending on the current binary architecture.
 
             string suffix;
 
@@ -120,6 +133,7 @@ namespace Broadifyer.ViewModels
 
         public void installRelease(string release)
         {
+            // start the updater executable, and exit the current process, allowing the updater to modify the current exe.
             Process.Start($"Updater", $"{Process.GetCurrentProcess().Id} \"{release}\"");
             AppVM.exitCommand();
         }
