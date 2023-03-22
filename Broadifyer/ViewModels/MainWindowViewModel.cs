@@ -139,6 +139,18 @@ namespace Broadifyer.ViewModels
             }
         }
 
+        /// <summary>
+        /// creates a popup window, that will handle updating the application
+        /// </summary>
+        public void autoUpdate()
+        {
+            var update_window = new UpdateWindow();
+
+            update_window.DataContext = new UpdateViewModel();
+
+            update_window.Show();
+        }
+        
         public async Task reloadCache()
         {
             await AppVM.notifier.reloadAllCache();
