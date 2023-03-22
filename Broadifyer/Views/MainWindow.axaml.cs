@@ -1,8 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
-using BroadifyerApp.ViewModels;
+using Broadifyer.ViewModels;
 
-namespace BroadifyerApp.Views
+namespace Broadifyer.Views
 {
     public partial class MainWindow : Window
     {

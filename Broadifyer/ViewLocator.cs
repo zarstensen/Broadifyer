@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using System;
-using BroadifyerApp.ViewModels;
+using Broadifyer.ViewModels;
 
-namespace BroadifyerApp
+namespace Broadifyer
 {
     public class ViewLocator : IDataTemplate
     {

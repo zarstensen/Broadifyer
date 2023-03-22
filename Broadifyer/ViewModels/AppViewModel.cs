@@ -11,13 +11,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using TwitchLib.Api.Helix;
 using Windows.UI.Notifications;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using Broadifyer.ViewModels;
+using Broadifyer.Views;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     /// <summary>
     /// datastructure storing various configurable settings for the rest of the app.
@@ -180,6 +183,45 @@ namespace BroadifyerApp.ViewModels
         protected string m_config_file_name = "config.json";
     }
     
+    public class VersionNumber : IComparable<VersionNumber>
+    {
+        public VersionNumber(int major = 0, int minor = 0, int build = 0, int revision = 0)
+            : this(new int[] { major, minor, build, revision }) { }
+
+        public VersionNumber(int[] versions)
+        {
+            m_versions = new int[4];
+
+            Array.Copy(versions, m_versions, versions.Length);
+        }
+
+        public int[] Version { get => m_versions; }
+
+        public int Major { get => m_versions[0]; }
+        public int Minor { get => m_versions[0]; }
+        public int Build { get => m_versions[0]; }
+        public int Revision { get => m_versions[0]; }
+
+        int[] m_versions;
+
+        public int CompareTo(VersionNumber? other)
+        {
+            if (other == null)
+                return 1;
+
+            for(int i = 0; i < m_versions.Length; i++)
+                if (Version[i] != other.Version[i])
+                    return Version[i].CompareTo(other.Version[i]);
+
+            return 0;
+        }
+
+        public override string ToString()
+        {
+            return string.Join('.', Version);
+        }
+    }
+
     public class AppViewModel : ViewModelBase
     {
         // event though it is initialized through settings.load(), the compiler still complains, so do this hack to disable the warning
@@ -192,25 +234,13 @@ namespace BroadifyerApp.ViewModels
         /// </summary>
         public string VersionString
         {
-            get
-            {
-                string? location;
-
-                Assembly assembly = Assembly.GetExecutingAssembly();
-
-                // if packaged in a single file, the process path must be used, instead of the assembly location.
-
-                if (assembly.Location != string.Empty)
-                    location = assembly.Location;
-                else
-                    location = Environment.ProcessPath;
-
-                FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
-                string version = file_version_info.ProductVersion ?? "COULD NOT FIND";
-
-                return $"Version: {version}";
-            }
+            get => $"Version: {Version}";
         }
+
+        /// <summary>
+        /// List containing
+        /// </summary>
+        public VersionNumber Version { get; protected set; }
 
         /// <summary>
         /// tooltip displayed when hovering over the tray icon.
@@ -227,7 +257,24 @@ namespace BroadifyerApp.ViewModels
         /// </summary>
         public AppViewModel()
         {
-            ToolTipText = $"Broadifyer\n{VersionString}"; 
+            // initialize VersionNumber
+
+            string? location;
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            // if packaged in a single file, the process path must be used, instead of the assembly location.
+
+            if (assembly.Location != string.Empty)
+                location = assembly.Location;
+            else
+                location = Environment.ProcessPath;
+
+            FileVersionInfo file_version_info = FileVersionInfo.GetVersionInfo(location ?? string.Empty);
+
+            Version = new(file_version_info.ProductMajorPart, file_version_info.ProductMinorPart, file_version_info.ProductBuildPart, file_version_info.ProductPrivatePart);
+
+            ToolTipText = $"Broadifyer\n{VersionString}";
 
             // this code should not be called, if in design mode, as neither a notification nor a twitch api call will be made, during design mode.
             if (Design.IsDesignMode)
@@ -344,6 +391,5 @@ namespace BroadifyerApp.ViewModels
 
             notifier.Show(new ToastNotification(doc));
         }
-
     }
 }

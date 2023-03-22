@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {

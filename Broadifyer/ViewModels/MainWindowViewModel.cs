@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System.Diagnostics;
 using ReactiveUI;
@@ -21,8 +21,12 @@ using System.Reflection;
 using System.Threading;
 using TwitchLib.Api.Helix.Models.Bits;
 using System.Windows.Navigation;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using DynamicData.Aggregation;
+using Broadifyer.Views;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
@@ -80,7 +84,7 @@ namespace BroadifyerApp.ViewModels
                 );
         }
 
-        public async void importConfig()
+        public async Task importConfig()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -110,7 +114,7 @@ namespace BroadifyerApp.ViewModels
             }
         }
 
-        public async void exportConfig()
+        public async Task exportConfig()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -135,7 +139,7 @@ namespace BroadifyerApp.ViewModels
             }
         }
 
-        public async void reloadCache()
+        public async Task reloadCache()
         {
             await AppVM.notifier.reloadAllCache();
             AppVM.notifier.saveConfiguration(AppVM.Settings.ConfigFileName);
@@ -143,6 +147,5 @@ namespace BroadifyerApp.ViewModels
         }
 
         protected ConfigEditorViewModel m_config_view_model;
-
     }
 }

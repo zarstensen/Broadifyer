@@ -1,11 +1,11 @@
 <Application
-    x:Class="BroadifyerApp.App"
+    x:Class="Broadifyer.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cv="using:BroadifyerApp.Converters"
-    xmlns:local="using:BroadifyerApp"
+    xmlns:cv="using:Broadifyer.Converters"
+    xmlns:local="using:Broadifyer"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:vm="using:BroadifyerApp.ViewModels">
+    xmlns:vm="using:Broadifyer.ViewModels">
 
     <Application.DataTemplates>
         <local:ViewLocator />

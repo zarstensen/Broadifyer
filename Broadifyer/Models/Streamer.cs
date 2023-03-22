@@ -9,7 +9,7 @@ using Avalonia.Media.Imaging;
 using System.Collections;
 using ReactiveUI;
 
-namespace BroadifyerApp.Models
+namespace Broadifyer.Models
 {
     /// <summary>
     /// represents an identifier class that represents a twitch broadcaster

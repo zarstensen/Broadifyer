@@ -12,10 +12,10 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using BroadifyerApp.Models;
+using Broadifyer.Models;
 using TwitchLib.Api.Helix.Models.Bits;
 
-namespace BroadifyerApp.ViewModels
+namespace Broadifyer.ViewModels
 {
 
     public class Setting : ReactiveObject
@@ -87,7 +87,7 @@ namespace BroadifyerApp.ViewModels
         {
         }
 
-        public async void folderDialouge()
+        public async Task folderDialouge()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -120,7 +120,7 @@ namespace BroadifyerApp.ViewModels
         {
         }
 
-        public async void fileDialouge()
+        public async Task fileDialouge()
         {
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

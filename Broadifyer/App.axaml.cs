@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Toolkit.Uwp.Notifications;
-using BroadifyerApp.ViewModels;
-using BroadifyerApp.Views;
+using Broadifyer.ViewModels;
+using Broadifyer.Views;
 
-namespace BroadifyerApp
+namespace Broadifyer
 {
     public partial class App : Application
     {

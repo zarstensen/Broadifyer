@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.ReactiveUI;
 using System.Diagnostics;
 
-namespace BroadifyerApp
+namespace Broadifyer
 {
     internal class Program
     {
