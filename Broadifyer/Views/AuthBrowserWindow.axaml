@@ -18,6 +18,6 @@
             <DockPanel Background="{StaticResource Color0}" IsHitTestVisible="False" />
             <NativeMenuBar HorizontalAlignment="Left" />
         </Grid>
-        <webview:WebView Address="{Binding Address}" />
+        <webview:WebView Name="web_view" Address="{Binding Address}" />
     </DockPanel>
 </Window>

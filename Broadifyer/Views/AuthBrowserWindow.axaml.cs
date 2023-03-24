@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using WebViewControl;
 
 namespace Broadifyer.Views
 {
@@ -6,6 +7,8 @@ namespace Broadifyer.Views
     {
         public AuthBrowserWindow()
         {
+            WebView.Settings.OsrEnabled = false;
+            WebView.Settings.LogFile = "BrowserLog.txt";
             InitializeComponent();
         }
     }
