@@ -117,6 +117,7 @@
                 <ContentControl Content="{Binding UrgentNotificationsSetting}" />
                 <ContentControl Content="{Binding BroadcastTimeoutSetting}" />
                 <ContentControl Content="{Binding ConfigFileSetting}" />
+                <ContentControl Content="{Binding UseIntegratedBrowserSetting}" />
                 <ContentControl Content="{Binding UseTokenFileSetting}" />
                 <ContentControl Content="{Binding ClientIDSetting}" />
                 <ContentControl Content="{Binding RedirectURISetting}" />

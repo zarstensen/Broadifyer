@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="UpdateWindow"
+    Title="Broadifyer Updater"
     MinWidth="300"
     MinHeight="200"
     MaxWidth="300"
@@ -12,6 +12,7 @@
     ExtendClientAreaChromeHints="PreferSystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     ExtendClientAreaToDecorationsHint="True"
+    Icon="/Assets/icon.ico"
     mc:Ignorable="d">
     <DockPanel>
         <Grid DockPanel.Dock="Top">

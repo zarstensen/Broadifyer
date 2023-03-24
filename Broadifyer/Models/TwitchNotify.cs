@@ -61,6 +61,11 @@ namespace Broadifyer.Models
         public EventHandler<IStreamerInfo>? StreamerNotify;
 
         /// <summary>
+        /// invoked whenever a uri needs to be opened and presented to the user.
+        /// </summary>
+        public EventHandler<Uri>? OpenUri;
+
+        /// <summary>
         /// readonly dictionary of the registered streamers, mapping the streamer id to the corresponding IStreamerInfo instance
         /// </summary>
         public ReadOnlyDictionary<string, IStreamerInfo> Streamers { get => new(m_streamers); }
@@ -133,7 +138,7 @@ namespace Broadifyer.Models
 
                 auth_endpoint.Query = query.ToString();
 
-                Process.Start(new ProcessStartInfo() { FileName = auth_endpoint.Uri.ToString(), UseShellExecute = true });
+                OpenUri?.Invoke(this, auth_endpoint.Uri);
 
                 HttpListener listener = new();
                 listener.Prefixes.Add(query["redirect_uri"]!);

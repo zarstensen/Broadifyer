@@ -144,9 +144,10 @@ namespace Broadifyer.ViewModels
         /// </summary>
         public void autoUpdate()
         {
-            var update_window = new UpdateWindow();
-
-            update_window.DataContext = new UpdateViewModel();
+            var update_window = new UpdateWindow
+            {
+                DataContext = new UpdateViewModel()
+            };
 
             update_window.Show();
         }

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageOutputPath>$(OutputPath)</PackageOutputPath>
-    <AssemblyVersion>1.0.3.39634</AssemblyVersion>
+    <AssemblyVersion>1.0.3.38735</AssemblyVersion>
   </PropertyGroup>
 
 </Project>

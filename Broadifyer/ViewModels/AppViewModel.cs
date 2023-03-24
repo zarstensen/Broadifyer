@@ -19,6 +19,7 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Broadifyer.ViewModels;
 using Broadifyer.Views;
+using Avalonia.Threading;
 
 namespace Broadifyer.ViewModels
 {
@@ -127,6 +128,10 @@ namespace Broadifyer.ViewModels
             }
         }
 
+        /// <summary>
+        /// specifies whether to use the default browser to open urls, or use an integrated browser, utilizing chrome.
+        /// </summary>
+        public bool UseIntegratedBrowser { get; set; } = false;
         public Settings() => m_notifier = new(SetupSettings.ClientID, SetupSettings.RedirectURI);
 
         [JsonIgnore]
@@ -281,6 +286,7 @@ namespace Broadifyer.ViewModels
                 return;
 
             notifier = Settings.load();
+            notifier.OpenUri += openUri;
 
             new Task(async () =>
             {
@@ -321,6 +327,29 @@ namespace Broadifyer.ViewModels
 
             if (App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 desktop.Exit += (s, e) => onExit();
+        }
+
+        // opens the passed uri, using either the default browser, or an integrated browser, depending on the UseIntegratedBrowser setting.
+        private void openUri(object? s, Uri uri)
+        {
+            if (Settings.UseIntegratedBrowser)
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    AuthBrowserWindow auth_window = new()
+                    {
+                        DataContext = new AuthBrowserViewModel(uri)
+                    };
+
+                    auth_window.Show();
+
+                    NotifierInitialized += _ => Dispatcher.UIThread.Post(() => auth_window.Close());
+                });
+            }
+            else
+            {
+                Process.Start(new ProcessStartInfo() { FileName = uri.ToString(), UseShellExecute = true });
+            }
         }
 
         /// <summary>

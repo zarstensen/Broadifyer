@@ -10,6 +10,7 @@
     Background="{StaticResource Color1}"
     mc:Ignorable="d">
     <Grid>
+
         <Grid ColumnDefinitions="1*,1*">
             <ContentControl
                 Margin="30,10,15,20"

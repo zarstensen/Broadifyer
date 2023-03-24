@@ -1,0 +1,23 @@
+<Window
+    x:Class="Broadifyer.Views.AuthBrowserWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:webview="clr-namespace:WebViewControl;assembly=WebViewControl.Avalonia"
+    Title="Broadifyer Browser"
+    Width="600"
+    Height="500"
+    ExtendClientAreaChromeHints="PreferSystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
+    Icon="/Assets/icon.ico"
+    mc:Ignorable="d">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <DockPanel Background="{StaticResource Color0}" IsHitTestVisible="False" />
+            <NativeMenuBar HorizontalAlignment="Left" />
+        </Grid>
+        <webview:WebView Address="{Binding Address}" />
+    </DockPanel>
+</Window>
