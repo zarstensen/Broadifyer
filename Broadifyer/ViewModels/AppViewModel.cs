@@ -128,10 +128,12 @@ namespace Broadifyer.ViewModels
             }
         }
 
+#if WIN64
         /// <summary>
         /// specifies whether to use the default browser to open urls, or use an integrated browser, utilizing chrome.
         /// </summary>
-        public bool UseIntegratedBrowser { get; set; } = false;
+        public bool UseIntegratedBrowser { get; set; } = true;
+#endif
         public Settings() => m_notifier = new(SetupSettings.ClientID, SetupSettings.RedirectURI);
 
         [JsonIgnore]
@@ -332,6 +334,7 @@ namespace Broadifyer.ViewModels
         // opens the passed uri, using either the default browser, or an integrated browser, depending on the UseIntegratedBrowser setting.
         private void openUri(object? s, Uri uri)
         {
+#if WIN64
             if (Settings.UseIntegratedBrowser)
             {
                 Dispatcher.UIThread.Post(() =>
@@ -347,9 +350,8 @@ namespace Broadifyer.ViewModels
                 });
             }
             else
-            {
+#endif
                 Process.Start(new ProcessStartInfo() { FileName = uri.ToString(), UseShellExecute = true });
-            }
         }
 
         /// <summary>

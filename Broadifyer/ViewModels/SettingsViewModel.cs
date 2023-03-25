@@ -163,7 +163,9 @@ namespace Broadifyer.ViewModels
         Setting UrgentNotificationsSetting { get; set; }
         Setting BroadcastTimeoutSetting { get; set; }
         Setting ConfigFileSetting { get; set; }
+#if WIN64
         Setting UseIntegratedBrowserSetting { get; set; }
+#endif
         Setting UseTokenFileSetting { get; set; }
         Setting ClientIDSetting { get; set; }
         Setting RedirectURISetting { get; set; }
@@ -198,9 +200,11 @@ namespace Broadifyer.ViewModels
                 "Name of the config file, used to store the current streamer configurations.",
                 new FileSetting(AppVM.Settings.ConfigFileName));
 
+#if WIN64
             UseIntegratedBrowserSetting = new("Integrated Browser",
                 "Use an integrated browser window, instead of the default browser when opening urls.",
                 new ToggleSetting(AppVM.Settings.UseIntegratedBrowser));
+#endif
 
             UseTokenFileSetting = new("Use Token File",
                 "Store the twitch api locally, in order to avoid opening a browser tab, every time the app is started. see README for further info.",
@@ -227,7 +231,11 @@ namespace Broadifyer.ViewModels
                 AppVM.Settings.UseUrgentNotifications = (bool) UrgentNotificationsSetting.Data;
                 AppVM.Settings.NewBroadcastTimeout = (int) BroadcastTimeoutSetting.Data;
                 AppVM.Settings.ConfigFileName = (string) ConfigFileSetting.Data;
+
+#if WIN64
                 AppVM.Settings.UseIntegratedBrowser = (bool) UseIntegratedBrowserSetting.Data;
+#endif
+
                 AppVM.Settings.UseTokenFile = (bool) UseTokenFileSetting.Data;
                 AppVM.Settings.SetupSettings.ClientID = (string) ClientIDSetting.Data;
                 AppVM.Settings.SetupSettings.RedirectURI = (string) RedirectURISetting.Data;

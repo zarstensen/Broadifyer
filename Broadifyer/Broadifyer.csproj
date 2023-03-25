@@ -4,20 +4,47 @@
     <TargetFramework>net6.0-windows10.0.20348.0</TargetFramework>
 	  <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <Nullable>enable</Nullable>
+	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
     <TrimMode>copyused</TrimMode>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ImplicitUsings>Enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
-    <AssemblyVersion>0.3.8.41920</AssemblyVersion>
+    <AssemblyVersion>0.3.8.41162</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <FileVersion>0.3.3.23886</FileVersion>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 	  <RuntimeIdentifiers>win10-x64;win10-x86</RuntimeIdentifiers>
 	  <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+	  <Platforms>x64;x86;ARM;ARM64</Platforms>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+        <PlatformTarget>arm64</PlatformTarget>
+    </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM32'">
+        <PlatformTarget>arm</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+        <PlatformTarget>x86</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+        <PlatformTarget>x64</PlatformTarget>
+        <DefineConstants>$(DefineConstants);WIN64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+        <PlatformTarget>x64</PlatformTarget>
+	  <DefineConstants>$(DefineConstants);WIN64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+        <PlatformTarget>x86</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
+        <PlatformTarget>arm</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+        <PlatformTarget>arm64</PlatformTarget>
+	</PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaXaml Remove="Controls\**" />
@@ -26,12 +53,18 @@
     <None Remove="Controls\**" />
     <AvaloniaResource Remove="Assets\Default.axaml" />
     <AvaloniaResource Remove="Assets\Notification.xml" />
-    <None Remove=".gitignore" />
-    <None Remove="Assets\github-mark-white.svg" />
-    <None Remove="Assets\information-circle-outline.svg" />
-    <None Remove="Assets\Notification.xml" />
-    <None Remove="close_tab.html" />
-    <None Remove="parse_token.html" />
+
+	  <None Remove=".gitignore" />
+	  <None Remove="Assets\github-mark-white.svg" />
+	  <None Remove="Assets\information-circle-outline.svg" />
+	  <None Remove="Assets\Notification.xml" />
+	  <None Remove="close_tab.html" />
+	  <None Remove="parse_token.html" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' != 'x64'">
+	  <Compile Remove="ViewModels\AuthBrowserViewModel.cs" />
+	  <Compile Remove="Views\AuthBrowserWindow.axaml.cs" />
+	  <AvaloniaXaml Remove="Views\AuthBrowserWindow.axaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\icon.ico" />
@@ -44,6 +77,10 @@
     <Content Include="parse_token.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ViewModels\AuthBrowserViewModel.cs" />
+    <None Include="Views\AuthBrowserWindow.axaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <!--This helps with theme dll-s trimming.
@@ -62,7 +99,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Svg.Skia" Version="0.5.18" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
-    <PackageReference Include="WebViewControl-Avalonia" Version="2.106.7" />
+    <PackageReference Include="WebViewControl-Avalonia" Version="2.106.7" Condition="'$(Platform)' == 'x64' Or '$(Platform)' == 'ARM64'" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
@@ -77,14 +114,14 @@
     </AvaloniaXaml>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\AuthBrowserWindow.axaml.cs">
-      <DependentUpon>AuthBrowserWindow.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\CategoriesView.axaml.cs">
       <DependentUpon>CategoriesView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\StreamersView.axaml.cs">
       <DependentUpon>StreamersView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PopupWindow.axaml.cs">
+      <DependentUpon>PopupWindow.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

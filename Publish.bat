@@ -9,9 +9,9 @@ echo Publishing Broadifyer
 cd Broadifyer
 
 echo Publishing 'x64 Release'
-dotnet publish Broadifyer.csproj /p:PublishProfile="x64 Release" /p:DebugSymbols=false
+dotnet publish Broadifyer.csproj -p:Platform=x64 /p:PublishProfile="x64 Release" /p:DebugSymbols=false
 echo Publishing 'x86 Release'
-dotnet publish Broadifyer.csproj /p:PublishProfile="x86 Release" /p:DebugSymbols=false
+dotnet publish Broadifyer.csproj -p:Platform=x86 /p:PublishProfile="x86 Release" /p:DebugSymbols=false
 
 echo Publishing updater
 

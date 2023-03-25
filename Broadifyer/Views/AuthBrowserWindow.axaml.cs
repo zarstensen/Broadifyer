@@ -9,6 +9,8 @@ namespace Broadifyer.Views
         {
             WebView.Settings.OsrEnabled = false;
             WebView.Settings.LogFile = "BrowserLog.txt";
+            WebView.Settings.PersistCache = true;
+            WebView.Settings.CachePath = $"{Environment.CurrentDirectory}/Cache/";
             InitializeComponent();
         }
     }
