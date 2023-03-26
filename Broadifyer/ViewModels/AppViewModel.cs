@@ -21,6 +21,10 @@ using Broadifyer.ViewModels;
 using Broadifyer.Views;
 using Avalonia.Threading;
 
+#if WIN64
+using WebViewControl;
+#endif
+
 namespace Broadifyer.ViewModels
 {
     /// <summary>
@@ -264,6 +268,15 @@ namespace Broadifyer.ViewModels
         /// </summary>
         public AppViewModel()
         {
+            // set webview control settings
+
+#if WIN64
+            WebView.Settings.OsrEnabled = false;
+            WebView.Settings.LogFile = "BrowserLog.txt";
+            WebView.Settings.PersistCache = true;
+            WebView.Settings.CachePath = $"{Environment.CurrentDirectory}/Cache/";
+#endif
+
             // initialize VersionNumber
 
             string? location;
@@ -290,7 +303,9 @@ namespace Broadifyer.ViewModels
             notifier = Settings.load();
             notifier.OpenUri += openUri;
 
-            new Task(async () =>
+            Trace.WriteLine(Settings.TokenFile);
+
+            var notify_init_task = new Task(async () =>
             {
                 // attempt to authorize
                 // if a BadScopeException is thrown, the credentials in the token file are outdated or invalid.
@@ -299,13 +314,13 @@ namespace Broadifyer.ViewModels
                 {
                     await notifier.authUser(Settings.TokenFile, false);
                 }
-                catch(TwitchLib.Api.Core.Exceptions.BadScopeException e)
+                catch (TwitchLib.Api.Core.Exceptions.BadScopeException e)
                 {
                     Trace.WriteLine(e);
 
-                    if(Settings.UseTokenFile)
+                    if (Settings.UseTokenFile)
                         File.Delete(Settings.TokenFile!);
-                    
+
                     await notifier.authUser(Settings.TokenFile, false);
                 }
 
@@ -315,7 +330,11 @@ namespace Broadifyer.ViewModels
                 notifier.startNotify();
 
                 NotifierInitialized?.Invoke(this);
-            }).Start();
+            });
+
+            var fault_task = notify_init_task.ContinueWith(t => Trace.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+            
+            notify_init_task.Start();
 
             // called when the toast notification is clicked on.
             ToastNotificationManagerCompat.OnActivated += toast_args =>

@@ -162,7 +162,7 @@ namespace Broadifyer.Models
                     }
                     else if (req.QueryString.Count == 0)
                     {
-                        var resp = await File.ReadAllBytesAsync("parse_token.html");
+                        var resp = await File.ReadAllBytesAsync($"{AppContext.BaseDirectory}/parse_token.html");
                         await res.OutputStream.WriteAsync(resp);
                         await res.OutputStream.FlushAsync();
 
@@ -171,7 +171,7 @@ namespace Broadifyer.Models
                     else
                     {
                         token = req.QueryString["access_token"]!;
-                        var resp = await File.ReadAllBytesAsync("close_tab.html");
+                        var resp = await File.ReadAllBytesAsync($"{AppContext.BaseDirectory}/close_tab.html");
                         await res.OutputStream.WriteAsync(resp);
                         await res.OutputStream.FlushAsync();
 
