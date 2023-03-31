@@ -91,8 +91,13 @@ namespace Broadifyer.Models
         {
             m_polling = true;
 
-            m_poll_thread = new Thread(async () => await pollThread());
-            m_poll_thread.Start();
+            m_poll_task = new Task(() => { pollThread().Wait(); });
+            
+            m_poll_task.ContinueWith(
+                (t) => Trace.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+
+            m_poll_task.Start();
+            m_poll_task.Wait();
         }
 
         /// <summary>
@@ -103,8 +108,8 @@ namespace Broadifyer.Models
         {
             m_polling = false;
 
-            m_poll_thread?.Join();
-            m_poll_thread = null;
+            m_poll_task?.Wait();
+            m_poll_task = null;
         }
 
         /// <summary>
@@ -528,7 +533,7 @@ namespace Broadifyer.Models
         protected string m_redirect_uri;
         
         protected bool m_polling = false;
-        protected Thread? m_poll_thread = null;
+        protected Task? m_poll_task = null;
 
         #endregion protected fields
 
@@ -573,7 +578,7 @@ namespace Broadifyer.Models
                 while (seconds_slept < PollInterval && m_polling)
                 {
                     seconds_slept++;
-                    Thread.Sleep(1000);
+                    await Task.Delay(1000);
                 }
             }
         }

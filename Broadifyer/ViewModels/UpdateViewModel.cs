@@ -39,7 +39,7 @@ namespace Broadifyer.ViewModels
             // github api sometimes requires a user agent header, which is added here.
             m_http_client.DefaultRequestHeaders.Add("User-Agent", "agent");
 
-            Dispatcher.UIThread.Post(async () =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var (new_version, version_number) = await checkNewVersion();
 
@@ -133,8 +133,8 @@ namespace Broadifyer.ViewModels
 
         public void installRelease(string release)
         {
-            // start the updater executable, and exit the current process, allowing the updater to modify the current exe.
-            Process.Start($"Updater", $"{Process.GetCurrentProcess().Id} \"{release}\"");
+            // start the executable, and exit the current process, allowing the updater to modify the current exe.
+            Process.Start($"Updater", $"{Environment.ProcessId} \"{release}\"");
             AppVM.exitCommand();
         }
 

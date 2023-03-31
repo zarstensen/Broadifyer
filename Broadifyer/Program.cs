@@ -12,7 +12,7 @@ namespace Broadifyer
         [STAThread]
         public static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Environment.CurrentDirectory);
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Environment.ProcessPath));
 
             Directory.CreateDirectory("logs");
 
@@ -22,6 +22,7 @@ namespace Broadifyer
             Trace.Indent();
 
             Trace.WriteLine(string.Join('\n', args));
+
 #if !DEBUG
             try
             {

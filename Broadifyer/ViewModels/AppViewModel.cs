@@ -356,7 +356,7 @@ namespace Broadifyer.ViewModels
 #if WIN64
             if (Settings.UseIntegratedBrowser)
             {
-                Dispatcher.UIThread.Post(() =>
+                Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     AuthBrowserWindow auth_window = new()
                     {
@@ -365,7 +365,7 @@ namespace Broadifyer.ViewModels
 
                     auth_window.Show();
 
-                    NotifierInitialized += _ => Dispatcher.UIThread.Post(() => auth_window.Close());
+                    NotifierInitialized += _ => Dispatcher.UIThread.InvokeAsync(() => auth_window.Close());
                 });
             }
             else
@@ -423,7 +423,7 @@ namespace Broadifyer.ViewModels
             var notifier = ToastNotificationManagerCompat.CreateToastNotifier();
 
             XmlDocument doc = new();
-            doc.LoadXml(File.ReadAllText($"./Assets/Notification.xml"));
+            doc.LoadXml(File.ReadAllText($"{AppContext.BaseDirectory}/Assets/Notification.xml"));
 
             XmlElement toast = (XmlElement)doc.SelectSingleNode("/toast");
 
