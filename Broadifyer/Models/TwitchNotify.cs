@@ -566,8 +566,14 @@ namespace Broadifyer.Models
         {
             while (m_polling)
             {
-                await poll();
-
+                try
+                {
+                    await poll();
+                }
+                catch(HttpRequestException e)
+                {
+                    Trace.WriteLine($"Caught exception whilst polling twitch:\n{e}");
+                }
                 // instead of sleeping for the full PollInterval, the thread sleeps for PollInterval seconds, in 1 second segments.
                 // this makes sure that if PollInterval is updated, while the thread wait for the next poll,
                 // the thread will use the new PollInterval value, instead of sleeping for the old PollInterval amount.

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageOutputPath>$(OutputPath)</PackageOutputPath>
-    <AssemblyVersion>1.0.4.29683</AssemblyVersion>
+    <AssemblyVersion>1.0.5.27209</AssemblyVersion>
 	<RuntimeIdentifiers>win10-x64;win10-x86</RuntimeIdentifiers>
 	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
