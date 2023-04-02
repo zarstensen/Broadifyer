@@ -20,6 +20,7 @@ Table of contents
     - [Run on startup](#run-on-startup)
     - [Recieve notifications whilst in fullscreen](#recieve-notifications-whilst-in-fullscreen)
     - [Export / Import configuration](#export--import-configuration)
+    - [Using the integrated browser](#using-the-integrated-browser)
   - [Building](#building)
   - [License](#license)
 
@@ -57,6 +58,7 @@ See [here](#recieve-notifications-whilst-in-fullscreen) for how to enable.
 - [TwitchLib](https://github.com/TwitchLib/TwitchLib) (twitch api requests)
 - [Avalonia](https://www.avaloniaui.net/) (user interface)
 - [Json.NET](https://www.newtonsoft.com/json) (json file parsing)
+- [WebView](https://github.com/OutSystems/WebView) (integrated browser)
 
 <p align="right"><a href="#top">(back to top)</a></p>
 
@@ -116,12 +118,19 @@ This marks all notifications sent from the application, as improtant, which allo
 - Select the 'File' menu.
 - Select 'Export' or 'Import' to save or load the current configuration.
 
+<p align="right"><a href="#top">(back to top)</a></p>
+
+---
+
+### Using the integrated browser
+
 ---
 
 ## Building
 
 - Open Broadifyer.sln, using Visual studio (developed with vs 2022)
-- Build the Broadifyer.csproj in any configuration.
+- Build the Broadifyer.csproj project in any configuration.
+- Optionally build the Updater.csproj project (build output is automatically placed in the Broadifyer bin folder)
 - Done!
 
 <p align="right"><a href="#top">(back to top)</a></p>
